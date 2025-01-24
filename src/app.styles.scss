@@ -1,0 +1,41 @@
+:root {
+  --devmcee-mega-menu-admin-primary-color: #000;
+  --devmcee-mega-menu-admin-primary-contrast-color: #fff;
+  --devmcee-mega-menu-admin-secondary-color: #f8f9fa;
+  --devmcee-mega-menu-admin-button-primary-color: #3a3a3a;
+  --devmcee-mega-menu-admin-button-secondary-color: #F5F6FA;
+  --devmcee-mega-menu-admin-button-secondary-hover-color: #D9DADF;
+  --devmcee-mega-menu-admin-action-button-primary-color: #2782ad;
+  --devmcee-mega-menu-admin-action-button-primary-color-hover: #1f6789;
+  --devmcee-mega-menu-admin-action-button-primary-color-disabled: #BABABA;
+  --devmcee-mega-menu-admin-action-button-primary-color-delete: #b32d2e;
+  --devmcee-mega-menu-admin-action-button-primary-color-delete-hover: #721d1d;
+  --devmcee-mega-menu-admin-background-secondary-color: #F5F6FA;
+  --devmcee-mega-menu-admin-border-secondary-color: #dcdcde;
+
+  --devmcee-mega-menu-admin-builder-container-root-column-width:  300px;
+
+  --devmcee-mega-menu-primary-color: #4462ff;
+  --devmcee-mega-menu-secondary-color: #f8f9fa;
+  --devmcee-mega-menu-font-primary-color: #000;
+  --devmcee-mega-menu-font-secondary-color: #5B6073;
+  --devmcee-mega-menu-button-primary-color: #4462ff;
+  --devmcee-mega-menu-button-primary-hover-color: #3650d1;
+  --devmcee-mega-menu-button-secondary-color: #F5F6FA;
+  --devmcee-mega-menu-button-secondary-hover-color: #D9DADF;
+  --devmcee-mega-menu-mobile-menu-button-secondary-color: #fff;
+  --devmcee-mega-menu-column-background-color: #1EA52317;
+  --devmcee-mega-menu-border-color: #c3c4c7;
+  --devmcee-mega-menu-border-secondary-color: #d3d5e6;
+}
+
+.devmcee-mega-menu-builder {
+  &-container {
+    margin: 16px 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: var(--devmcee-mega-menu-admin-primary-contrast-color);
+    min-height: 600px;
+  }
+}

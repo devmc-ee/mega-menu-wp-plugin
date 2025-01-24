@@ -1,0 +1,11 @@
+{
+	"name": "devmcee/mega-menu",
+	"type": "wordpress-plugin",
+	"license": "GPL-3.0-or-later",
+	"autoload": {
+		"psr-4": {
+			"Devmcee\\MegaMenu\\": "admin/"
+		}
+	},
+	"require": {}
+}

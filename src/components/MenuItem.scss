@@ -1,0 +1,33 @@
+.devmcee-mega-menu-builder-menu-item {
+  border-bottom: 1px solid var(--devmcee-mega-menu-admin-border-secondary-color);
+
+  &-title {
+    &-container {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px;
+    }
+  }
+
+  &-form {
+    &-title {
+      &-bar {
+        padding: 8px;
+        display: flex;
+        justify-content: space-between;
+        background-color: var(--devmcee-mega-menu-admin-background-secondary-color);
+      }
+    }
+
+    &__fields-container {
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      row-gap: 8px;
+
+      & input {
+        width: 100%;
+      }
+    }
+  }
+}

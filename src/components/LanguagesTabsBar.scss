@@ -1,0 +1,27 @@
+.devmcee-mega-menu-languages-tabs {
+  &-bar-container {
+    display: flex;
+  }
+  &-tab {
+    padding: 8px 24px;
+    cursor: pointer;
+    background-color: var(--devmcee-mega-menu-admin-primary-contrast-color);
+    border: 1px solid var(--devmcee-mega-menu-border-color); 
+    border-left: none;
+    text-transform: uppercase;
+
+    &--active {
+      background-color: var(--devmcee-mega-menu-admin-primary-color);
+      color: var(--devmcee-mega-menu-admin-primary-contrast-color)
+
+    }
+
+    &--add {
+      border: none;
+      background-color: var(--devmcee-mega-menu-admin-primary-contrast-color);
+    }
+  }
+  &-tab:first-child {
+    border-left: 1px solid var(--devmcee-mega-menu-border-color);
+  }
+}
