@@ -15,12 +15,13 @@ export const EndpointName = {
 } as const;
 
 export type EndpointName = ValueOf<typeof EndpointName>;
+export type EndpointMap =  Record<EndpointName, string>;
 
 export type MegaMenuInitData = {
 	languages: LanguageCode[];
 	defaultLanguage: LanguageCode;
 	data: MegaMenuData;
-	endpoints: Record<EndpointName, string>;
+	endpoints:EndpointMap;
 	customNonce: string;
 	postID: number;
 };
@@ -60,3 +61,9 @@ export type SaveMenuRequestBody = {
 	data: MegaMenuData;
 	postID: number;
 };
+
+// reducers
+export type UnknownAction<T extends string, P> = {
+  type: T;
+  payload: P;
+}

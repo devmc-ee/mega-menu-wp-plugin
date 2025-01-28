@@ -14,37 +14,32 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _app_styles_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./app.styles.scss */ "./src/app.styles.scss");
 /* harmony import */ var _components_MegaMenuContainer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/MegaMenuContainer */ "./src/components/MegaMenuContainer.tsx");
+/* harmony import */ var _hooks_useMenuState__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./hooks/useMenuState */ "./src/hooks/useMenuState.ts");
+/* harmony import */ var _hooks_useMenuMetaState__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./hooks/useMenuMetaState */ "./src/hooks/useMenuMetaState.ts");
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
 
 
 
-// Data passed from PHP
 
 const App = () => {
   const {
+    state: initData
+  } = (0,_hooks_useMenuState__WEBPACK_IMPORTED_MODULE_2__.useMenuState)();
+  const {
+    state: metaState
+  } = (0,_hooks_useMenuMetaState__WEBPACK_IMPORTED_MODULE_3__.useMenuMetaState)();
+  const {
     languages,
     defaultLanguage,
-    data,
     ...rest
-  } = devmceeMegaMenuInitData;
-  console.log('devmceeMegaMenuInitData', devmceeMegaMenuInitData);
+  } = metaState;
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
     className: "devmcee-mega-menu-builder-container"
   }, /*#__PURE__*/React.createElement(_components_MegaMenuContainer__WEBPACK_IMPORTED_MODULE_1__.MegaMenuContainer, _extends({
     defaultLanguage: defaultLanguage || 'en',
     languages: !languages?.length ? ['en'] : languages,
-    data: data || {
-      menuItemsMap: {},
-      menuItemsListToLocaleMap: {},
-      subMenuItemsMap: {},
-      subMenuItemsColumnsMap: {}
-    }
-  }, rest))), /*#__PURE__*/React.createElement("pre", null, JSON.stringify({
-    subMenuItemsMap: data.subMenuItemsMap,
-    menuItemsMap: data.menuItemsMap,
-    menuItemsListToLocaleMap: data.menuItemsListToLocaleMap,
-    subMenuItemsColumnsMap: data.subMenuItemsColumnsMap
-  }, null, 2)));
+    data: initData
+  }, rest))), /*#__PURE__*/React.createElement("details", null, /*#__PURE__*/React.createElement("summary", null, "Data"), /*#__PURE__*/React.createElement("pre", null, JSON.stringify(initData, null, 2))), /*#__PURE__*/React.createElement("details", null, /*#__PURE__*/React.createElement("summary", null, "Meta"), /*#__PURE__*/React.createElement("pre", null, JSON.stringify(metaState, null, 2))));
 };
 
 /***/ }),
@@ -62,6 +57,8 @@ __webpack_require__.r(__webpack_exports__);
 const EndpointName = {
   SAVE: 'save'
 };
+
+// reducers
 
 /***/ }),
 
@@ -908,6 +905,58 @@ const useMenuItemForm = ({
 
 /***/ }),
 
+/***/ "./src/hooks/useMenuMetaState.ts":
+/*!***************************************!*\
+  !*** ./src/hooks/useMenuMetaState.ts ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useMenuMetaState: () => (/* binding */ useMenuMetaState)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _providers_MenuMetaContextProvider__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../providers/MenuMetaContextProvider */ "./src/providers/MenuMetaContextProvider.tsx");
+
+
+const useMenuMetaState = () => {
+  const state = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(_providers_MenuMetaContextProvider__WEBPACK_IMPORTED_MODULE_1__.MenuMetaStateContext);
+  const dispatch = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(_providers_MenuMetaContextProvider__WEBPACK_IMPORTED_MODULE_1__.MenuMetaDispatchContext);
+  return {
+    state,
+    dispatch
+  };
+};
+
+/***/ }),
+
+/***/ "./src/hooks/useMenuState.ts":
+/*!***********************************!*\
+  !*** ./src/hooks/useMenuState.ts ***!
+  \***********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useMenuState: () => (/* binding */ useMenuState)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _providers_MenuDataContextProvider__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../providers/MenuDataContextProvider */ "./src/providers/MenuDataContextProvider.tsx");
+
+
+const useMenuState = () => {
+  const state = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(_providers_MenuDataContextProvider__WEBPACK_IMPORTED_MODULE_1__.MenuStateContext);
+  const dispatch = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(_providers_MenuDataContextProvider__WEBPACK_IMPORTED_MODULE_1__.MenuDispatchContext);
+  return {
+    state,
+    dispatch
+  };
+};
+
+/***/ }),
+
 /***/ "./src/hooks/useSubMenuItems.ts":
 /*!**************************************!*\
   !*** ./src/hooks/useSubMenuItems.ts ***!
@@ -958,6 +1007,137 @@ const useSubMenuItems = ({
     deleteNewSubItem,
     setActiveSubMenuItemUuid
   };
+};
+
+/***/ }),
+
+/***/ "./src/providers/MenuDataContextProvider.tsx":
+/*!***************************************************!*\
+  !*** ./src/providers/MenuDataContextProvider.tsx ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   MenuDataContextProvider: () => (/* binding */ MenuDataContextProvider),
+/* harmony export */   MenuDispatchContext: () => (/* binding */ MenuDispatchContext),
+/* harmony export */   MenuStateContext: () => (/* binding */ MenuStateContext),
+/* harmony export */   menuInitialState: () => (/* binding */ menuInitialState)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _reducers_menuStateReducer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../reducers/menuStateReducer */ "./src/reducers/menuStateReducer.ts");
+
+
+
+// Provided by WordPress wp_localize_script
+
+const menuInitialState = Object.assign({
+  subMenuItemsMap: {},
+  menuItemsMap: {},
+  menuItemsListToLocaleMap: {},
+  subMenuItemsColumnsMap: {}
+}, devmceeMegaMenuInitData.data);
+const MenuStateContext = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.createContext)(menuInitialState);
+const MenuDispatchContext = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.createContext)(() => void 0);
+const MenuDataContextProvider = ({
+  children
+}) => {
+  const [state, dispatch] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useReducer)(_reducers_menuStateReducer__WEBPACK_IMPORTED_MODULE_1__.menuStateReducer, menuInitialState);
+  return /*#__PURE__*/React.createElement(MenuStateContext.Provider, {
+    value: state
+  }, /*#__PURE__*/React.createElement(MenuDispatchContext.Provider, {
+    value: dispatch
+  }, children));
+};
+
+/***/ }),
+
+/***/ "./src/providers/MenuMetaContextProvider.tsx":
+/*!***************************************************!*\
+  !*** ./src/providers/MenuMetaContextProvider.tsx ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   MenuMetaContextProvider: () => (/* binding */ MenuMetaContextProvider),
+/* harmony export */   MenuMetaDispatchContext: () => (/* binding */ MenuMetaDispatchContext),
+/* harmony export */   MenuMetaStateContext: () => (/* binding */ MenuMetaStateContext),
+/* harmony export */   menuMetaInitialState: () => (/* binding */ menuMetaInitialState)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _app_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../app.types */ "./src/app.types.ts");
+/* harmony import */ var _reducers_menuMetaReducer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../reducers/menuMetaReducer */ "./src/reducers/menuMetaReducer.ts");
+
+
+
+
+// Provided by WordPress wp_localize_script
+
+const {
+  ['data']: _,
+  ...meta
+} = devmceeMegaMenuInitData;
+const menuMetaInitialState = Object.assign({
+  languages: [],
+  defaultLanguage: 'en',
+  endpoints: {
+    [_app_types__WEBPACK_IMPORTED_MODULE_1__.EndpointName.SAVE]: ''
+  },
+  customNonce: "",
+  postID: 0
+}, meta);
+const MenuMetaStateContext = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.createContext)(menuMetaInitialState);
+const MenuMetaDispatchContext = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.createContext)(() => void 0);
+const MenuMetaContextProvider = ({
+  children
+}) => {
+  const [state, dispatch] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useReducer)(_reducers_menuMetaReducer__WEBPACK_IMPORTED_MODULE_2__.menuMetaReducer, menuMetaInitialState);
+  return /*#__PURE__*/React.createElement(MenuMetaStateContext.Provider, {
+    value: state
+  }, /*#__PURE__*/React.createElement(MenuMetaDispatchContext.Provider, {
+    value: dispatch
+  }, children));
+};
+
+/***/ }),
+
+/***/ "./src/reducers/menuMetaReducer.ts":
+/*!*****************************************!*\
+  !*** ./src/reducers/menuMetaReducer.ts ***!
+  \*****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   menuMetaReducer: () => (/* binding */ menuMetaReducer)
+/* harmony export */ });
+const menuMetaReducer = (state, action) => {
+  switch (action.type) {
+    default:
+      return state;
+  }
+};
+
+/***/ }),
+
+/***/ "./src/reducers/menuStateReducer.ts":
+/*!******************************************!*\
+  !*** ./src/reducers/menuStateReducer.ts ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   menuStateReducer: () => (/* binding */ menuStateReducer)
+/* harmony export */ });
+const menuStateReducer = (state, action) => {
+  switch (action.type) {
+    default:
+      return state;
+  }
 };
 
 /***/ }),
@@ -2095,13 +2275,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _App__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./App */ "./src/App.tsx");
+/* harmony import */ var _providers_MenuDataContextProvider__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./providers/MenuDataContextProvider */ "./src/providers/MenuDataContextProvider.tsx");
+/* harmony import */ var _providers_MenuMetaContextProvider__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./providers/MenuMetaContextProvider */ "./src/providers/MenuMetaContextProvider.tsx");
+
+
 
 
 document.addEventListener('DOMContentLoaded', () => {
   const rootElement = document.getElementById('devmcee-mega-menu-root');
   if (rootElement) {
     const root = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createRoot)(rootElement);
-    root.render(/*#__PURE__*/React.createElement(_App__WEBPACK_IMPORTED_MODULE_1__.App, null));
+    root.render(/*#__PURE__*/React.createElement(_providers_MenuMetaContextProvider__WEBPACK_IMPORTED_MODULE_3__.MenuMetaContextProvider, null, /*#__PURE__*/React.createElement(_providers_MenuDataContextProvider__WEBPACK_IMPORTED_MODULE_2__.MenuDataContextProvider, null, /*#__PURE__*/React.createElement(_App__WEBPACK_IMPORTED_MODULE_1__.App, null))));
   }
 });
 })();

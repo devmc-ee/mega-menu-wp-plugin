@@ -1,45 +1,47 @@
 import { FC } from 'react';
-import { MegaMenuInitData } from './app.types';
 import './app.styles.scss';
 import { MegaMenuContainer } from './components/MegaMenuContainer';
-
-// Data passed from PHP
-declare var devmceeMegaMenuInitData: MegaMenuInitData;
+import { useMenuState } from './hooks/useMenuState';
+import { useMenuMetaState } from './hooks/useMenuMetaState';
 
 export const App: FC = () => {
-	const { languages, defaultLanguage, data, ...rest } =
-		devmceeMegaMenuInitData;
+	const { state: initData } = useMenuState()
+	const { state: metaState } = useMenuMetaState();
 
-	console.log('devmceeMegaMenuInitData', devmceeMegaMenuInitData);
+	const { languages, defaultLanguage, ...rest } = metaState;
+
 	return (
 		<>
 			<div className="devmcee-mega-menu-builder-container">
 				<MegaMenuContainer
 					defaultLanguage={defaultLanguage || 'en'}
 					languages={!languages?.length ? ['en'] : languages}
-					data={
-						data || {
-							menuItemsMap: {},
-							menuItemsListToLocaleMap: {},
-							subMenuItemsMap: {},
-							subMenuItemsColumnsMap: {},
-						}
-					}
+					data={initData}
 					{...rest}
 				/>
 			</div>
-			<pre>
-				{JSON.stringify(
-					{
-						subMenuItemsMap: data.subMenuItemsMap,
-						menuItemsMap: data.menuItemsMap,
-						menuItemsListToLocaleMap: data.menuItemsListToLocaleMap,
-						subMenuItemsColumnsMap: data.subMenuItemsColumnsMap,
-					},
-					null,
-					2
-				)}
-			</pre>
+			<details>
+				<summary>Data</summary>
+				<pre>
+					{JSON.stringify(
+						initData,
+						null,
+						2
+					)}
+
+				</pre>
+			</details>
+			<details>
+				<summary>Meta</summary>
+				<pre>
+					{JSON.stringify(
+						metaState,
+						null,
+						2
+					)}
+
+				</pre>
+			</details>
 		</>
 	);
 };
