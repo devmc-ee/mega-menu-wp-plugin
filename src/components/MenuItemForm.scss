@@ -14,8 +14,10 @@
     flex-direction: column;
     row-gap: 8px;
 
+    & textarea,
     & input {
       width: 100%;
+      border-color: var(--devmcee-mega-menu-admin-border-secondary-color);
     }
   }
 

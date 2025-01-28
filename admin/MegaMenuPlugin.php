@@ -7,6 +7,8 @@ namespace Devmcee\MegaMenu;
 class MegaMenuPlugin
 {
   public $post_type = 'devmcee_mega_menu';
+  public $endpoint_base = 'devmcee-mega-menu/v2';
+  public $post_meta_key = '_devmcee_mega_menu_data';
 
   public function __construct(protected string $pluginFile, private LanguageServiceInterface $languageService)
   {
@@ -18,9 +20,10 @@ class MegaMenuPlugin
 
   public function init()
   {
-    // Register the menu
     $this->register_mega_menu_post_type();
     // admin
+    add_action('rest_api_init', array($this, 'register_rest_routes'));
+
     add_filter('manage_devmcee_mega_menu_posts_columns', array($this, 'add_shortcode_column'));
     add_action('manage_devmcee_mega_menu_posts_custom_column', array($this, 'add_shortcode_data'), 10, 2);
     add_filter('post_row_actions', array($this, 'remove_quick_edit'), 10, 2);
@@ -32,7 +35,7 @@ class MegaMenuPlugin
 
   public function activate()
   {
-    // Trigger our function that registers the custom post type plugin.
+    // Register the menu
     // Clear the permalinks after the post type has been registered.
     flush_rewrite_rules();
   }
@@ -62,13 +65,68 @@ class MegaMenuPlugin
       true
     );
 
+    $postID = get_the_ID();
+    $data = get_post_meta($postID, $this->post_meta_key, true);
+
+    if (empty($data)) {
+      $data = $this->get_mega_menu_init_data();
+      update_post_meta( $postID, $this->post_meta_key, $data );
+    };
+
     wp_localize_script('devmcee-mm-admin-ui-script', 'devmceeMegaMenuInitData', [
       'languages' => $this->languageService->get_active_languages(),
       'defaultLanguage' => $this->languageService->get_default_language(),
-      'data' => array('menuItemsListToLocaleMap' => []),
+      'data' => $data,
+      'endpoints' => array(
+        'save' => esc_url_raw(rest_url($this->endpoint_base . '/save'))
+      ),
+      'customNonce'    => wp_create_nonce('wp_rest'),
+      'postID' =>$postID
     ]);
-    
+
     wp_enqueue_script('devmcee-mm-admin-ui-script');
+  }
+
+  function register_rest_routes()
+  {
+    register_rest_route($this->endpoint_base, '/save', array(
+      'methods'  => \WP_REST_Server::CREATABLE,
+      'callback' => array($this, 'save_menu'),
+      'permission_callback' => function () {
+        return current_user_can('edit_posts');
+      }
+    ));
+  }
+
+  function save_menu(\WP_REST_Request $request)
+  {
+    $body = $request->get_json_params();
+    $post_id = $body['postID'];
+
+    if (empty($post_id)) {
+      return  rest_ensure_response("Invalid post id");
+    }
+
+    $data = $body['data'];
+    $post_type = get_post_type($post_id);
+
+    if ($post_type !== $this->post_type) {
+      return  rest_ensure_response('Invalid post type');
+    }
+
+    $result = update_post_meta($post_id, $this->post_meta_key, $data);
+
+    if ($result) {
+      return  rest_ensure_response('success');
+    }
+
+    return  new \WP_REST_Response(
+      array(
+        'status' => 422,
+        'response' => 'error',
+        'body_response' => 'Failed to save data'
+      )
+    );
   }
 
   function register_mega_menu_post_type()
@@ -82,7 +140,7 @@ class MegaMenuPlugin
       'add_new_item'       => 'Add New Menu',
       'new_item'           => 'New Mega Menu',
       'edit_item'          => 'Edit Mega Menu',
-      'view_item'          => 'View Mega Menu',
+      'view_item'          => '',
       'all_items'          => 'All Mega Menus',
       'search_items'       => 'Search Mega Menus',
       'not_found'          => 'No menu found.',
@@ -167,5 +225,24 @@ class MegaMenuPlugin
     }
 
     return $output;
+  }
+
+  private function get_mega_menu_init_data() {
+    $languages = $this->languageService->get_active_languages();
+    $menuItemsListToLocaleMap = [];
+
+    foreach ($languages as $language) {
+      $menuItemsListToLocaleMap[$language] = [];
+    }
+
+    if (empty($menuItemsListToLocaleMap)) {
+      $menuItemsListToLocaleMap['en'] = [];
+    }
+
+    return array(
+      'menuItemsListToLocaleMap' => $menuItemsListToLocaleMap,
+      'menuItemsMap' => new \stdClass(),
+      'subMenuItemsMap' => new \stdClass(),
+    );
   }
 }

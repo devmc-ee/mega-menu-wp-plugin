@@ -13,7 +13,8 @@
   --devmcee-mega-menu-admin-background-secondary-color: #F5F6FA;
   --devmcee-mega-menu-admin-border-secondary-color: #dcdcde;
 
-  --devmcee-mega-menu-admin-builder-container-root-column-width:  300px;
+  --devmcee-mega-menu-admin-builder-container-root-column-width: 300px;
+  --devmcee-mega-menu-admin-builder-secondary-font-size: 10px;
 
   --devmcee-mega-menu-primary-color: #4462ff;
   --devmcee-mega-menu-secondary-color: #f8f9fa;
@@ -35,7 +36,6 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    background-color: var(--devmcee-mega-menu-admin-primary-contrast-color);
     min-height: 600px;
   }
 }

@@ -1,66 +1,92 @@
-import {
-	ChangeEvent,
-	FormEvent,
-	useMemo,
-	useState,
-} from 'react';
+import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react';
 import { MenuItem, MenuItemFormData } from '../app.types';
 
-type UseMenuItemFormData = MenuItemFormData & {
-	onSave: ( menuItem: MenuItemFormData ) => void;
-	onDelete: ( uuid?: MenuItem[ 'uuid' ] ) => void;
+type UseMenuItemFormData = Omit<
+	MenuItemFormData,
+	'subMenuItemsColumnsUuid'
+> & {
+	columnIndex?: number;
+	subMenuItemsColumnsUuid?: MenuItem['subMenuItemsColumnsUuid'];
+	onSave: (menuItem: MenuItemFormData) => void;
+	onDelete: (uuid?: MenuItem['uuid']) => void;
 };
 
-export const useMenuItemForm = ( {
+export const useMenuItemForm = ({
 	title,
 	url,
 	classes,
 	uuid,
-	subItemsList,
+	subMenuItemsColumnsUuid,
+	description,
+	columnIndex,
 	onSave,
 	onDelete,
-}: UseMenuItemFormData ) => {
-	const [ form, setForm ] = useState< MenuItemFormData >( {
+}: UseMenuItemFormData) => {
+	const [form, setForm] = useState<MenuItemFormData>({
 		title,
 		url,
 		classes,
 		uuid,
-		subItemsList,
-	} );
+		description,
+		subMenuItemsColumnsUuid: subMenuItemsColumnsUuid || null,
+		columnIndex,
+	});
+
+	const isSubMenu = useMemo(
+		() => typeof columnIndex === 'number',
+		[columnIndex]
+	);
 
 	const canSubmit = useMemo(
-		() => !! form.title && !! form.url,
-		[ form.title, form.url ]
+		() =>
+			!isSubMenu
+				? !!form.title && !!form.url
+				: !!form.title && !!form.url && !!form.description,
+		[form.title, form.url, form.description]
 	);
+
 	const headerTitle = useMemo(
-		() => ( uuid ? form.title : `${ form.title || 'New item' }` ),
-		[ uuid, form.title ]
+		() => (uuid ? form.title : `${form.title || 'New item'}`),
+		[uuid, form.title]
 	);
 
 	const save = (
-		event: FormEvent< HTMLButtonElement | HTMLFormElement >
+		event: FormEvent<HTMLButtonElement | HTMLFormElement>
 	) => {
 		event.preventDefault();
 
-		if ( ! form.title || ! form.url ) {
+		if (
+			!form.title ||
+			!form.url ||
+			(isSubMenu && !form.description)
+		) {
 			return;
 		}
-		onSave( form );
+
+		onSave(form);
 	};
 
-	const changeField = ( event: ChangeEvent< HTMLInputElement > ) => {
+	const changeField = (
+		event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+	) => {
 		const { name, value } = event.target;
 
-		setForm( ( prev ) => ( {
+		setForm((prev) => ({
 			...prev,
-			[ name ]: value,
-		} ) );
+			[name]: value,
+		}));
 	};
 
 	const deleteItem = () => {
-		onDelete( form.uuid );
+		onDelete(form.uuid);
 	};
 
+	useEffect(() => {
+		setForm((prev) => ({
+			...prev,
+			subMenuItemsColumnsUuid: subMenuItemsColumnsUuid || null,
+		}));
+	}, [subMenuItemsColumnsUuid]);
 	return {
 		form,
 		headerTitle,

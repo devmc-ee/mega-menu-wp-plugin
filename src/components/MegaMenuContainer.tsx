@@ -4,50 +4,67 @@ import { useMegaMenu } from '../hooks/useMegaMenu';
 import { MenuItem } from './MenuItem';
 import { MenuItemForm } from './MenuItemForm';
 import { LanguagesTabsBar } from './LanguagesTabsBar';
-import { MegaMenuInitData, MenuItem as MenuItemType } from '../app.types';
+import { MegaMenuInitData } from '../app.types';
 import { useLanguagesTabsBar } from '../hooks/useLanguagesTabsBar';
+import { SubMenuItemsContainer } from './SubMenuItemsContainer';
 
-export const MegaMenuContainer: FC< MegaMenuInitData > = ( {
+export const MegaMenuContainer: FC<MegaMenuInitData> = ({
 	languages,
 	defaultLanguage,
-}: MegaMenuInitData ) => {
-	const { activeLanguageTab, setActiveLanguageTab } = useLanguagesTabsBar( {
+	data,
+	endpoints,
+	customNonce,
+	postID,
+}: MegaMenuInitData) => {
+	const { activeLanguageTab, setActiveLanguageTab } = useLanguagesTabsBar({
 		defaultLanguage,
-	} );
+	});
 
 	const {
 		menuItemsListToLocaleMap,
 		menuItemsMap,
 		subMenuItemsMap,
+		subMenuItemsColumnsMap,
 		newMenuItem,
 		activeFormUuid,
 		setActiveFormUuid,
 		addNewMenuItem,
 		saveMenuItem,
 		deletMenuItem,
-	} = useMegaMenu( { languages, selectedLanguage: activeLanguageTab } );
+		createSubItemsColumns,
+		deleteSubItemsColumns,
+		saveSubItem,
+		deleteSubItem,
+	} = useMegaMenu({
+		languages,
+		selectedLanguage: activeLanguageTab,
+		data,
+		endpoints,
+		customNonce,
+		postID,
+	});
 
 	return (
 		<>
-			{ languages.length && (
+			{languages.length && (
 				<LanguagesTabsBar
-					languages={ languages }
-					activeLanguageTab={ activeLanguageTab }
-					setActiveLanguageTab={ setActiveLanguageTab }
+					languages={languages}
+					activeLanguageTab={activeLanguageTab}
+					setActiveLanguageTab={setActiveLanguageTab}
 				/>
-			) }
+			)}
 			<div className="devmcee-mega-menu-builder-content-container">
 				<div className="devmcee-mega-menu-builder-content__root-menu">
 					<div className="devmcee-mega-menu-builder-content-action-bar">
 						<button
 							type="button"
 							className="devmcee-mega-menu-builder-content-action-button devmcee-mega-menu-builder-content-action-button--add"
-							onClick={ addNewMenuItem }
+							onClick={addNewMenuItem}
 						>
 							Add menu item
 						</button>
 						<button
-							disabled={ true }
+							disabled={true}
 							type="button"
 							className="devmcee-mega-menu-builder-content-action-button devmcee-mega-menu-builder-content-action-button--import"
 						>
@@ -55,46 +72,51 @@ export const MegaMenuContainer: FC< MegaMenuInitData > = ( {
 						</button>
 					</div>
 					<div className="devmcee-mega-menu-builder-content-menu-container">
-						{ menuItemsListToLocaleMap[
+						{menuItemsListToLocaleMap[
 							activeLanguageTab || defaultLanguage
 						]
 							?.values()
-							.map( ( uuid ) => {
+							.map((uuid) => {
 								return (
 									<MenuItem
-										key={ uuid }
-										activeFormUuid={ activeFormUuid }
-										setActiveFormUuid={ setActiveFormUuid }
-										{ ...menuItemsMap[ uuid ] }
-										onSave={ saveMenuItem }
-										onDelete={ deletMenuItem }
+										key={uuid}
+										activeFormUuid={activeFormUuid}
+										setActiveFormUuid={setActiveFormUuid}
+										{...menuItemsMap[uuid]}
+										subMenuItemsMap={subMenuItemsMap}
+										subMenuItemsColumns={
+											menuItemsMap[uuid].subMenuItemsColumnsUuid
+											&& subMenuItemsColumnsMap[
+												menuItemsMap[uuid].subMenuItemsColumnsUuid
+											]
+										}
+										onSave={saveMenuItem}
+										onDelete={deletMenuItem}
 									/>
 								);
-							} ) }
-						{ newMenuItem && (
+							})}
+						{newMenuItem && (
 							<div className="devmcee-mega-menu-builder-menu-item">
 								<MenuItemForm
-									onDelete={ deletMenuItem }
-									{ ...newMenuItem }
-									onSave={ saveMenuItem }
+									onDelete={deletMenuItem}
+									{...newMenuItem}
+									onSave={saveMenuItem}
 								/>
 							</div>
-						) }
+						)}
 					</div>
 				</div>
 				<div className="devmcee-mega-menu-builder-content__sub-menu">
-					<pre>
-						{ JSON.stringify(
-							{
-								menuItemsListToLocaleMap,
-								menuItemsMap,
-								subMenuItemsMap: subMenuItemsMap,
-								newMenuItem,
-							},
-							null,
-							2
-						) }
-					</pre>
+					<SubMenuItemsContainer
+						menuItemsMap={menuItemsMap}
+						activeFormUuid={activeFormUuid}
+						subMenuItemsMap={subMenuItemsMap}
+						subMenuItemsColumnsMap={subMenuItemsColumnsMap}
+						onCreateSubItemsColumns={createSubItemsColumns}
+						onDeleteSubItemsColumns={deleteSubItemsColumns}
+						onSaveSubItem={saveSubItem}
+						onDeleteSubItem={deleteSubItem}
+					/>
 				</div>
 			</div>
 		</>

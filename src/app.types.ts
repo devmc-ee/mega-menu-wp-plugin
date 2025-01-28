@@ -1,13 +1,28 @@
 import { UUID } from 'node:crypto';
 
-export type MegaMenuData = {};
+export type ValueOf<T> = T[keyof T];
+export type MegaMenuData = {
+	menuItemsListToLocaleMap: MenuItemsListToLocaleMap;
+	menuItemsMap: MenuItemsMap;
+	subMenuItemsMap: SubMenuItemsMap;
+	subMenuItemsColumnsMap: SubMenuItemsColumnsMap;
+};
 
 export type LanguageCode = string;
+
+export const EndpointName = {
+	SAVE: 'save',
+} as const;
+
+export type EndpointName = ValueOf<typeof EndpointName>;
 
 export type MegaMenuInitData = {
 	languages: LanguageCode[];
 	defaultLanguage: LanguageCode;
 	data: MegaMenuData;
+	endpoints: Record<EndpointName, string>;
+	customNonce: string;
+	postID: number;
 };
 
 export type MenuItemBase = {
@@ -17,21 +32,31 @@ export type MenuItemBase = {
 	classes?: string;
 };
 
+export type SubMenuItemsColumn = SubMenuItem['uuid'][];
+
 export type MenuItem = MenuItemBase & {
-	subItemsList: SubMenuItem[ 'uuid' ][];
+	subMenuItemsColumnsUuid: keyof SubMenuItemsColumnsMap | null;
 };
 
-export type MenuItemsMap = Record< MenuItem[ 'uuid' ], MenuItem >;
-export type MenuItemsList = MenuItem[ 'uuid' ][];
+export type MenuItemsMap = Record<MenuItem['uuid'], MenuItem>;
+export type MenuItemsList = MenuItem['uuid'][];
 
-export type MenuItemsListToLocaleMap = Record< LanguageCode, MenuItemsList >;
+export type MenuItemsListToLocaleMap = Record<LanguageCode, MenuItemsList>;
 
 export type SubMenuItem = MenuItemBase & {
 	description: string;
 };
 
-export type SubMenuItemsMap = Record< SubMenuItem[ 'uuid' ], SubMenuItem >;
+export type SubMenuItemsMap = Record<SubMenuItem['uuid'], SubMenuItem>;
+export type SubMenuItemsColumnsMap = Record<UUID, SubMenuItemsColumn[]>;
 
-export type MenuItemFormData = Omit< MenuItem, 'uuid' > & {
-	uuid?: MenuItem[ 'uuid' ];
+export type MenuItemFormData = Omit<MenuItem, 'uuid'> & {
+	uuid?: MenuItem['uuid'];
+	description?: string;
+	columnIndex?: number;
+};
+
+export type SaveMenuRequestBody = {
+	data: MegaMenuData;
+	postID: number;
 };

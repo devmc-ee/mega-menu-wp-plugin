@@ -30,4 +30,11 @@
       }
     }
   }
+
+  &__sub-title {
+    &-container {
+      padding: 0 8px 8px;
+      font-size: var(--devmcee-mega-menu-admin-builder-secondary-font-size);
+    }
+  }
 }

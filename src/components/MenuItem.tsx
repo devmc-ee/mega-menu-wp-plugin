@@ -1,33 +1,51 @@
-import { FC, useState } from 'react';
-import { MenuItemFormData, MenuItem as MenuItemType } from '../app.types';
+import { FC, useMemo, useState } from 'react';
+import {
+	MenuItemFormData,
+	MenuItem as MenuItemType,
+	SubMenuItemsColumn,
+	SubMenuItemsMap,
+} from '../app.types';
 import { MenuItemForm } from './MenuItemForm';
 import './MenuItem.scss';
 
 type MenuItemProps = MenuItemType & {
-	activeFormUuid: MenuItemType[ 'uuid' ] | null;
-	setActiveFormUuid: ( uuid: MenuItemType[ 'uuid' ] ) => void;
-	onSave: ( menuItem: MenuItemFormData ) => void;
-	onDelete: ( uuid?: MenuItemType[ 'uuid' ] ) => void;
+	activeFormUuid: MenuItemType['uuid'] | null;
+	subMenuItemsMap: SubMenuItemsMap;
+	subMenuItemsColumns: SubMenuItemsColumn[] | null;
+	setActiveFormUuid: (uuid: MenuItemType['uuid']) => void;
+	onSave: (menuItem: MenuItemFormData) => void;
+	onDelete: (uuid?: MenuItemType['uuid']) => void;
 };
 
-export const MenuItem: FC< MenuItemProps > = ( {
+export const MenuItem: FC<MenuItemProps> = ({
 	activeFormUuid,
 	setActiveFormUuid: setFormActive,
 	onDelete,
 	onSave,
 	title,
-	subItemsList,
+	subMenuItemsMap,
+	subMenuItemsColumns,
+	subMenuItemsColumnsUuid,
 	...rest
-} ) => {
-	const [ isEditMode, setIsEditMode ] = useState( false );
+}) => {
+	const [isEditMode, setIsEditMode] = useState(false);
+
+	const subMenuItemsAmount = useMemo(
+		() =>
+			subMenuItemsColumns?.reduce(
+				(acc, column) => acc + column.length,
+				0
+			) || 0,
+		[subMenuItemsColumns]
+	);
 
 	return (
 		<div className="devmcee-mega-menu-builder-menu-item">
-			{ ! isEditMode ? (
+			{!isEditMode ? (
 				<>
 					<div className="devmcee-mega-menu-builder-menu-item-title-container">
 						<span className="devmcee-mega-menu-builder-menu-item-title">
-							{ title }
+							{title}
 						</span>
 						<button
 							disabled={
@@ -36,31 +54,31 @@ export const MenuItem: FC< MenuItemProps > = ( {
 							}
 							type="button"
 							className="devmcee-mega-menu-builder-content-action-button"
-							onClick={ () => {
-								setIsEditMode( true );
-								setFormActive( rest.uuid );
-							} }
+							onClick={() => {
+								setIsEditMode(true);
+								setFormActive(rest.uuid);
+							}}
 						>
 							Edit
 						</button>
 					</div>
-					<div className="devmcee-mega-menu-builder-menu-item-sub-title-container">
-						{ subItemsList.length > 0 &&
-							`${ subItemsList.length } sub items` }
+					<div className="devmcee-mega-menu-builder-menu-item__sub-title-container">
+						{subMenuItemsColumnsUuid &&
+							`Sub items amount: ${subMenuItemsAmount}`}
 					</div>
 				</>
 			) : (
 				<MenuItemForm
-					title={ title }
-					subItemsList={ subItemsList }
-					{ ...rest }
-					onSave={ ( props ) => {
-						onSave( props );
-						setIsEditMode( false );
-					} }
-					onDelete={ onDelete }
+					title={title}
+					subMenuItemsColumnsUuid={subMenuItemsColumnsUuid}
+					{...rest}
+					onSave={(props) => {
+						onSave(props);
+						setIsEditMode(false);
+					}}
+					onDelete={onDelete}
 				/>
-			) }
+			)}
 		</div>
 	);
 };
