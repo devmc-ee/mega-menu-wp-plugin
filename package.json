@@ -13,7 +13,10 @@
 		"lint:md:docs": "wp-scripts lint-md-docs",
 		"lint:pkg-json": "wp-scripts lint-pkg-json",
 		"test:e2e": "wp-scripts test-e2e",
-		"test:unit": "wp-scripts test-unit-js"
+		"test:unit": "wp-scripts test-unit-js",
+		"test:playwright": "wp-scripts test-playwright",
+		"test:playwright:help": "wp-scripts test-playwright --help",
+		"test:playwright:debug": "wp-scripts test-playwright --debug"
 	},
 	"keywords": [],
 	"main": "index.js",
@@ -23,12 +26,15 @@
 		"@wordpress/element": "^6.16.0",
 		"@wordpress/scripts": "^30.9.0",
 		"react": "^18.3.1",
-		"react-dom": "^18.3.1"
+		"react-dom": "^18.3.1",
+		"uuid": "^11.0.5"
 	},
 	"devDependencies": {
 		"@babel/preset-react": "^7.26.3",
 		"@babel/preset-typescript": "^7.26.0",
 		"@jest/globals": "^29.7.0",
+		"@testing-library/dom": "^10.4.0",
+		"@testing-library/react": "^16.2.0",
 		"@types/react": "^18.3.18",
 		"@types/react-dom": "^18.3.5",
 		"css-loader": "^7.1.2",

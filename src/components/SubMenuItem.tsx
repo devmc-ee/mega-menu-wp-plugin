@@ -1,60 +1,31 @@
-import { FC, useState } from 'react';
-import { MenuItemForm } from './MenuItemForm';
-import { MenuItemFormData, SubMenuItem as SubMenuItemType } from '../app.types';
+import { FC } from 'react';
+import { SubMenuItem as SubMenuItemType } from '../app.types';
+import { Button } from './buttons/Button';
+import './SubMenuItem.scss';
 
 type SubMenuItemProps = SubMenuItemType & {
-	activeSubItemFormUuid: SubMenuItemType['uuid'] | null;
+	activeSubItemFormUuid?: SubMenuItemType['uuid'] | null;
 	columnIndex: number;
-	onSave: (props: MenuItemFormData) => void;
-	onDelete: () => void;
 	setFormActive: (uuid: SubMenuItemType['uuid']) => void;
 };
 
 export const SubMenuItem: FC<SubMenuItemProps> = ({
 	uuid,
 	title,
-	url,
-	classes,
 	activeSubItemFormUuid,
-	columnIndex,
 	setFormActive,
-	onSave,
-	onDelete,
 }: SubMenuItemProps) => {
-	const [isEditMode, setIsEditMode] = useState(false);
-
-	return !isEditMode ? (
+	return (
 		<div className="devmcee-mega-menu-builder-content__sub-menu-item">
 			<span className="devmcee-mega-menu-builder-content__sub-menu-item-title">
 				{title}
 			</span>
-			<button
-				disabled={
-					activeSubItemFormUuid !== null &&
-					activeSubItemFormUuid !== uuid
-				}
-				type="button"
-				className="devmcee-mega-menu-builder-content-action-button"
-				onClick={() => {
-					setIsEditMode(true);
-					setFormActive(uuid);
-				}}
-			>
-				Edit
-			</button>
+			<Button
+				title='Edit'
+				onClick={() => setFormActive(uuid)}
+				disabled={!!activeSubItemFormUuid && activeSubItemFormUuid !== uuid}
+				testId={`sub-menu-item-form-${title}__edit-button`}
+			/>
 		</div>
-	) : (
-		<MenuItemForm
-			title={title}
-			columnIndex={columnIndex}
-			url={url}
-			classes={classes}
-			uuid={uuid}
-			onSave={(props) => {
-				onSave(props);
-				setIsEditMode(false);
-			}}
-			onDelete={onDelete}
-		/>
-	);
+	)
 };

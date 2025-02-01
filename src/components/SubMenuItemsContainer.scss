@@ -2,6 +2,7 @@
   &__sub-menu {
     display: flex;
     width: 100%;
+
     &-container {
       padding: 8px;
       display: flex;
@@ -9,7 +10,9 @@
       justify-content: space-between;
       column-gap: 8px;
       align-items: flex-start;
+      background-color: var(--devmcee-mega-menu-admin-background-secondary-color);
     }
+
     &-column {
       display: flex;
       flex-direction: column;
@@ -17,7 +20,8 @@
       border: 1px solid var(--devmcee-mega-menu-admin-border-secondary-color);
       width: 33.33%;
       height: 100%;
-      
+      background-color: var(--devmcee-mega-menu-admin-primary-contrast-color);
+
       &-header {
         display: flex;
         align-items: center;
@@ -26,7 +30,14 @@
       }
 
       &-content {
-        padding: 8px;
+
+        &-placeholder {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100%;
+          padding: 8px;
+        }
       }
     }
   }

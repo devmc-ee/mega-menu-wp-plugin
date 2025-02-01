@@ -13,33 +13,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   App: () => (/* binding */ App)
 /* harmony export */ });
 /* harmony import */ var _app_styles_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./app.styles.scss */ "./src/app.styles.scss");
-/* harmony import */ var _components_MegaMenuContainer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/MegaMenuContainer */ "./src/components/MegaMenuContainer.tsx");
-/* harmony import */ var _hooks_useMenuState__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./hooks/useMenuState */ "./src/hooks/useMenuState.ts");
-/* harmony import */ var _hooks_useMenuMetaState__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./hooks/useMenuMetaState */ "./src/hooks/useMenuMetaState.ts");
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
-
+/* harmony import */ var _components_MenuContainer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/MenuContainer */ "./src/components/MenuContainer.tsx");
+/* harmony import */ var _components_MenuDataPrinter__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/MenuDataPrinter */ "./src/components/MenuDataPrinter.tsx");
 
 
 
 const App = () => {
-  const {
-    state: initData
-  } = (0,_hooks_useMenuState__WEBPACK_IMPORTED_MODULE_2__.useMenuState)();
-  const {
-    state: metaState
-  } = (0,_hooks_useMenuMetaState__WEBPACK_IMPORTED_MODULE_3__.useMenuMetaState)();
-  const {
-    languages,
-    defaultLanguage,
-    ...rest
-  } = metaState;
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
     className: "devmcee-mega-menu-builder-container"
-  }, /*#__PURE__*/React.createElement(_components_MegaMenuContainer__WEBPACK_IMPORTED_MODULE_1__.MegaMenuContainer, _extends({
-    defaultLanguage: defaultLanguage || 'en',
-    languages: !languages?.length ? ['en'] : languages,
-    data: initData
-  }, rest))), /*#__PURE__*/React.createElement("details", null, /*#__PURE__*/React.createElement("summary", null, "Data"), /*#__PURE__*/React.createElement("pre", null, JSON.stringify(initData, null, 2))), /*#__PURE__*/React.createElement("details", null, /*#__PURE__*/React.createElement("summary", null, "Meta"), /*#__PURE__*/React.createElement("pre", null, JSON.stringify(metaState, null, 2))));
+  }, /*#__PURE__*/React.createElement(_components_MenuContainer__WEBPACK_IMPORTED_MODULE_1__.MenuContainer, null)), /*#__PURE__*/React.createElement(_components_MenuDataPrinter__WEBPACK_IMPORTED_MODULE_2__.MenuDataPrinter, null));
 };
 
 /***/ }),
@@ -72,18 +54,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   LanguagesTabsBar: () => (/* binding */ LanguagesTabsBar)
 /* harmony export */ });
-/* harmony import */ var _LanguagesTabsBar_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./LanguagesTabsBar.scss */ "./src/components/LanguagesTabsBar.scss");
+/* harmony import */ var _hooks_useMenuMetaState__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../hooks/useMenuMetaState */ "./src/hooks/useMenuMetaState.ts");
+/* harmony import */ var _LanguagesTabsBar_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./LanguagesTabsBar.scss */ "./src/components/LanguagesTabsBar.scss");
 
-const LanguagesTabsBar = ({
-  languages,
-  activeLanguageTab,
-  setActiveLanguageTab
-}) => {
+
+const LanguagesTabsBar = () => {
+  const {
+    state,
+    dispatchers: {
+      setActiveLanguageTab
+    }
+  } = (0,_hooks_useMenuMetaState__WEBPACK_IMPORTED_MODULE_0__.useMenuMetaState)();
+  const {
+    languages,
+    activeLanguageTab
+  } = state;
   return /*#__PURE__*/React.createElement("div", {
     className: "devmcee-mega-menu-languages-tabs-bar-container"
   }, languages.map(language => {
     return /*#__PURE__*/React.createElement("button", {
       key: language,
+      "data-TestId": `language-tab--${language}`,
       className: `devmcee-mega-menu-languages-tabs-tab ${activeLanguageTab === language ? 'devmcee-mega-menu-languages-tabs-tab--active' : ''}`,
       onClick: () => setActiveLanguageTab(language),
       type: "button"
@@ -93,117 +84,58 @@ const LanguagesTabsBar = ({
 
 /***/ }),
 
-/***/ "./src/components/MegaMenuContainer.tsx":
-/*!**********************************************!*\
-  !*** ./src/components/MegaMenuContainer.tsx ***!
-  \**********************************************/
+/***/ "./src/components/MenuContainer.tsx":
+/*!******************************************!*\
+  !*** ./src/components/MenuContainer.tsx ***!
+  \******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   MegaMenuContainer: () => (/* binding */ MegaMenuContainer)
+/* harmony export */   MenuContainer: () => (/* binding */ MenuContainer)
 /* harmony export */ });
 /* harmony import */ var _MegaMenuContainer_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MegaMenuContainer.scss */ "./src/components/MegaMenuContainer.scss");
-/* harmony import */ var _hooks_useMegaMenu__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../hooks/useMegaMenu */ "./src/hooks/useMegaMenu.ts");
-/* harmony import */ var _MenuItem__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MenuItem */ "./src/components/MenuItem.tsx");
-/* harmony import */ var _MenuItemForm__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./MenuItemForm */ "./src/components/MenuItemForm.tsx");
-/* harmony import */ var _LanguagesTabsBar__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./LanguagesTabsBar */ "./src/components/LanguagesTabsBar.tsx");
-/* harmony import */ var _hooks_useLanguagesTabsBar__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../hooks/useLanguagesTabsBar */ "./src/hooks/useLanguagesTabsBar.ts");
-/* harmony import */ var _SubMenuItemsContainer__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./SubMenuItemsContainer */ "./src/components/SubMenuItemsContainer.tsx");
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+/* harmony import */ var _LanguagesTabsBar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./LanguagesTabsBar */ "./src/components/LanguagesTabsBar.tsx");
+/* harmony import */ var _SubMenuItemsContainer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./SubMenuItemsContainer */ "./src/components/SubMenuItemsContainer.tsx");
+/* harmony import */ var _MenuItemsContainer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./MenuItemsContainer */ "./src/components/MenuItemsContainer.tsx");
+/* harmony import */ var _MenuItemsActionBar__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./MenuItemsActionBar */ "./src/components/MenuItemsActionBar.tsx");
 
 
 
 
 
+const MenuContainer = () => /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_LanguagesTabsBar__WEBPACK_IMPORTED_MODULE_1__.LanguagesTabsBar, null), /*#__PURE__*/React.createElement("div", {
+  className: "devmcee-mega-menu-builder-content-container"
+}, /*#__PURE__*/React.createElement("div", {
+  className: "devmcee-mega-menu-builder-content__root-menu"
+}, /*#__PURE__*/React.createElement(_MenuItemsActionBar__WEBPACK_IMPORTED_MODULE_4__.MenuItemsActionBar, null), /*#__PURE__*/React.createElement(_MenuItemsContainer__WEBPACK_IMPORTED_MODULE_3__.MenuItemsContainer, null)), /*#__PURE__*/React.createElement("div", {
+  className: "devmcee-mega-menu-builder-content__sub-menu"
+}, /*#__PURE__*/React.createElement(_SubMenuItemsContainer__WEBPACK_IMPORTED_MODULE_2__.SubMenuItemsContainer, null))));
+
+/***/ }),
+
+/***/ "./src/components/MenuDataPrinter.tsx":
+/*!********************************************!*\
+  !*** ./src/components/MenuDataPrinter.tsx ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   MenuDataPrinter: () => (/* binding */ MenuDataPrinter)
+/* harmony export */ });
+/* harmony import */ var _hooks_useMenuState__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../hooks/useMenuState */ "./src/hooks/useMenuState.ts");
+/* harmony import */ var _hooks_useMenuMetaState__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../hooks/useMenuMetaState */ "./src/hooks/useMenuMetaState.ts");
 
 
-const MegaMenuContainer = ({
-  languages,
-  defaultLanguage,
-  data,
-  endpoints,
-  customNonce,
-  postID
-}) => {
+const MenuDataPrinter = () => {
   const {
-    activeLanguageTab,
-    setActiveLanguageTab
-  } = (0,_hooks_useLanguagesTabsBar__WEBPACK_IMPORTED_MODULE_5__.useLanguagesTabsBar)({
-    defaultLanguage
-  });
+    state: initData
+  } = (0,_hooks_useMenuState__WEBPACK_IMPORTED_MODULE_0__.useMenuState)();
   const {
-    menuItemsListToLocaleMap,
-    menuItemsMap,
-    subMenuItemsMap,
-    subMenuItemsColumnsMap,
-    newMenuItem,
-    activeFormUuid,
-    setActiveFormUuid,
-    addNewMenuItem,
-    saveMenuItem,
-    deletMenuItem,
-    createSubItemsColumns,
-    deleteSubItemsColumns,
-    saveSubItem,
-    deleteSubItem
-  } = (0,_hooks_useMegaMenu__WEBPACK_IMPORTED_MODULE_1__.useMegaMenu)({
-    languages,
-    selectedLanguage: activeLanguageTab,
-    data,
-    endpoints,
-    customNonce,
-    postID
-  });
-  return /*#__PURE__*/React.createElement(React.Fragment, null, languages.length && /*#__PURE__*/React.createElement(_LanguagesTabsBar__WEBPACK_IMPORTED_MODULE_4__.LanguagesTabsBar, {
-    languages: languages,
-    activeLanguageTab: activeLanguageTab,
-    setActiveLanguageTab: setActiveLanguageTab
-  }), /*#__PURE__*/React.createElement("div", {
-    className: "devmcee-mega-menu-builder-content-container"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "devmcee-mega-menu-builder-content__root-menu"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "devmcee-mega-menu-builder-content-action-bar"
-  }, /*#__PURE__*/React.createElement("button", {
-    type: "button",
-    className: "devmcee-mega-menu-builder-content-action-button devmcee-mega-menu-builder-content-action-button--add",
-    onClick: addNewMenuItem
-  }, "Add menu item"), /*#__PURE__*/React.createElement("button", {
-    disabled: true,
-    type: "button",
-    className: "devmcee-mega-menu-builder-content-action-button devmcee-mega-menu-builder-content-action-button--import"
-  }, "Import")), /*#__PURE__*/React.createElement("div", {
-    className: "devmcee-mega-menu-builder-content-menu-container"
-  }, menuItemsListToLocaleMap[activeLanguageTab || defaultLanguage]?.values().map(uuid => {
-    return /*#__PURE__*/React.createElement(_MenuItem__WEBPACK_IMPORTED_MODULE_2__.MenuItem, _extends({
-      key: uuid,
-      activeFormUuid: activeFormUuid,
-      setActiveFormUuid: setActiveFormUuid
-    }, menuItemsMap[uuid], {
-      subMenuItemsMap: subMenuItemsMap,
-      subMenuItemsColumns: menuItemsMap[uuid].subMenuItemsColumnsUuid && subMenuItemsColumnsMap[menuItemsMap[uuid].subMenuItemsColumnsUuid],
-      onSave: saveMenuItem,
-      onDelete: deletMenuItem
-    }));
-  }), newMenuItem && /*#__PURE__*/React.createElement("div", {
-    className: "devmcee-mega-menu-builder-menu-item"
-  }, /*#__PURE__*/React.createElement(_MenuItemForm__WEBPACK_IMPORTED_MODULE_3__.MenuItemForm, _extends({
-    onDelete: deletMenuItem
-  }, newMenuItem, {
-    onSave: saveMenuItem
-  }))))), /*#__PURE__*/React.createElement("div", {
-    className: "devmcee-mega-menu-builder-content__sub-menu"
-  }, /*#__PURE__*/React.createElement(_SubMenuItemsContainer__WEBPACK_IMPORTED_MODULE_6__.SubMenuItemsContainer, {
-    menuItemsMap: menuItemsMap,
-    activeFormUuid: activeFormUuid,
-    subMenuItemsMap: subMenuItemsMap,
-    subMenuItemsColumnsMap: subMenuItemsColumnsMap,
-    onCreateSubItemsColumns: createSubItemsColumns,
-    onDeleteSubItemsColumns: deleteSubItemsColumns,
-    onSaveSubItem: saveSubItem,
-    onDeleteSubItem: deleteSubItem
-  }))));
+    state: metaState
+  } = (0,_hooks_useMenuMetaState__WEBPACK_IMPORTED_MODULE_1__.useMenuMetaState)();
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("details", null, /*#__PURE__*/React.createElement("summary", null, "Data"), /*#__PURE__*/React.createElement("pre", null, JSON.stringify(initData, null, 2))), /*#__PURE__*/React.createElement("details", null, /*#__PURE__*/React.createElement("summary", null, "Meta"), /*#__PURE__*/React.createElement("pre", null, JSON.stringify(metaState, null, 2))));
 };
 
 /***/ }),
@@ -218,142 +150,112 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   MenuItem: () => (/* binding */ MenuItem)
 /* harmony export */ });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _MenuItemForm__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MenuItemForm */ "./src/components/MenuItemForm.tsx");
-/* harmony import */ var _MenuItem_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MenuItem.scss */ "./src/components/MenuItem.scss");
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
-
+/* harmony import */ var _MenuItem_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MenuItem.scss */ "./src/components/MenuItem.scss");
+/* harmony import */ var _buttons_Button__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./buttons/Button */ "./src/components/buttons/Button.tsx");
 
 
 const MenuItem = ({
   activeFormUuid,
   setActiveFormUuid: setFormActive,
-  onDelete,
-  onSave,
   title,
-  subMenuItemsMap,
-  subMenuItemsColumns,
-  subMenuItemsColumnsUuid,
-  ...rest
+  subMenuItemsAmount,
+  uuid
 }) => {
-  const [isEditMode, setIsEditMode] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
-  const subMenuItemsAmount = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => subMenuItemsColumns?.reduce((acc, column) => acc + column.length, 0) || 0, [subMenuItemsColumns]);
   return /*#__PURE__*/React.createElement("div", {
     className: "devmcee-mega-menu-builder-menu-item"
-  }, !isEditMode ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("div", {
     className: "devmcee-mega-menu-builder-menu-item-title-container"
   }, /*#__PURE__*/React.createElement("span", {
     className: "devmcee-mega-menu-builder-menu-item-title"
-  }, title), /*#__PURE__*/React.createElement("button", {
-    disabled: activeFormUuid !== null && activeFormUuid !== rest.uuid,
-    type: "button",
-    className: "devmcee-mega-menu-builder-content-action-button",
-    onClick: () => {
-      setIsEditMode(true);
-      setFormActive(rest.uuid);
-    }
-  }, "Edit")), /*#__PURE__*/React.createElement("div", {
+  }, title), /*#__PURE__*/React.createElement(_buttons_Button__WEBPACK_IMPORTED_MODULE_1__.Button, {
+    title: "Edit",
+    disabled: !!activeFormUuid && activeFormUuid !== uuid,
+    onClick: () => setFormActive(uuid),
+    testId: `${title}-edit-button`
+  })), /*#__PURE__*/React.createElement("div", {
     className: "devmcee-mega-menu-builder-menu-item__sub-title-container"
-  }, subMenuItemsColumnsUuid && `Sub items amount: ${subMenuItemsAmount}`)) : /*#__PURE__*/React.createElement(_MenuItemForm__WEBPACK_IMPORTED_MODULE_1__.MenuItemForm, _extends({
-    title: title,
-    subMenuItemsColumnsUuid: subMenuItemsColumnsUuid
-  }, rest, {
-    onSave: props => {
-      onSave(props);
-      setIsEditMode(false);
-    },
-    onDelete: onDelete
-  })));
+  }, `${subMenuItemsAmount} Sub Items`));
 };
 
 /***/ }),
 
-/***/ "./src/components/MenuItemForm.tsx":
-/*!*****************************************!*\
-  !*** ./src/components/MenuItemForm.tsx ***!
-  \*****************************************/
+/***/ "./src/components/MenuItemsActionBar.tsx":
+/*!***********************************************!*\
+  !*** ./src/components/MenuItemsActionBar.tsx ***!
+  \***********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   MenuItemForm: () => (/* binding */ MenuItemForm)
+/* harmony export */   MenuItemsActionBar: () => (/* binding */ MenuItemsActionBar)
 /* harmony export */ });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _hooks_useMenuItemForm__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../hooks/useMenuItemForm */ "./src/hooks/useMenuItemForm.ts");
-/* harmony import */ var _MenuItemForm_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MenuItemForm.scss */ "./src/components/MenuItemForm.scss");
+/* harmony import */ var _hooks_useMenuItems__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../hooks/useMenuItems */ "./src/hooks/useMenuItems.ts");
+/* harmony import */ var _buttons_Button__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./buttons/Button */ "./src/components/buttons/Button.tsx");
 
 
-
-const MenuItemForm = ({
-  onSave,
-  onDelete,
-  columnIndex,
-  ...rest
-}) => {
-  const isSubMenu = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => typeof columnIndex === 'number', [columnIndex]);
+const MenuItemsActionBar = () => {
   const {
-    headerTitle,
-    canSubmit,
-    form,
-    save,
-    changeField,
-    deleteItem
-  } = (0,_hooks_useMenuItemForm__WEBPACK_IMPORTED_MODULE_1__.useMenuItemForm)({
-    onSave,
-    onDelete,
-    columnIndex,
-    ...rest
-  });
-  return /*#__PURE__*/React.createElement("form", {
-    autoComplete: "off",
-    onSubmit: save,
-    className: "devmcee-mega-menu-builder-menu-item-form"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "devmcee-mega-menu-builder-menu-item-form-title-bar"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "devmcee-mega-menu-builder-menu-item-form-title"
-  }, headerTitle), /*#__PURE__*/React.createElement("span", null)), /*#__PURE__*/React.createElement("div", {
-    className: "devmcee-mega-menu-builder-menu-item-form__fields-container"
-  }, /*#__PURE__*/React.createElement("input", {
-    required: true,
-    type: "text",
-    name: "title",
-    placeholder: "title",
-    value: form.title,
-    onChange: changeField
-  }), isSubMenu && /*#__PURE__*/React.createElement("textarea", {
-    required: true,
-    name: "description",
-    placeholder: "description",
-    value: form.description,
-    onChange: changeField
-  }), /*#__PURE__*/React.createElement("input", {
-    required: true,
-    type: "text",
-    name: "url",
-    placeholder: "url",
-    value: form.url,
-    onChange: changeField
-  }), /*#__PURE__*/React.createElement("input", {
-    type: "text",
-    name: "classes",
-    placeholder: "classes",
-    value: form.classes,
-    onChange: changeField
-  })), /*#__PURE__*/React.createElement("div", {
-    className: "devmcee-mega-menu-builder-menu-item-form__footer-actions-container"
-  }, /*#__PURE__*/React.createElement("button", {
-    onClick: deleteItem,
-    type: "button",
-    className: "devmcee-mega-menu-builder-content-action-button devmcee-mega-menu-builder-content-action-button--delete"
-  }, "Delete"), /*#__PURE__*/React.createElement("button", {
-    type: "submit",
-    disabled: !canSubmit,
-    className: "devmcee-mega-menu-builder-content-action-button devmcee-mega-menu-builder-menu-item-action-button",
-    onSubmit: save
-  }, "Save")));
+    addNewMenuItem
+  } = (0,_hooks_useMenuItems__WEBPACK_IMPORTED_MODULE_0__.useMenuItems)();
+  return /*#__PURE__*/React.createElement("div", {
+    className: "devmcee-mega-menu-builder-content-action-bar"
+  }, /*#__PURE__*/React.createElement(_buttons_Button__WEBPACK_IMPORTED_MODULE_1__.Button, {
+    title: "Add menu item",
+    testId: "add-menu-item-button",
+    onClick: addNewMenuItem
+  }), /*#__PURE__*/React.createElement(_buttons_Button__WEBPACK_IMPORTED_MODULE_1__.Button, {
+    title: "Import",
+    testId: "import-menu-items-button",
+    onClick: addNewMenuItem,
+    disabled: true
+  }));
+};
+
+/***/ }),
+
+/***/ "./src/components/MenuItemsContainer.tsx":
+/*!***********************************************!*\
+  !*** ./src/components/MenuItemsContainer.tsx ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   MenuItemsContainer: () => (/* binding */ MenuItemsContainer)
+/* harmony export */ });
+/* harmony import */ var _hooks_useMenuItems__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../hooks/useMenuItems */ "./src/hooks/useMenuItems.ts");
+/* harmony import */ var _MenuItem__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MenuItem */ "./src/components/MenuItem.tsx");
+/* harmony import */ var _forms_MenuItemForm__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./forms/MenuItemForm */ "./src/components/forms/MenuItemForm.tsx");
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+
+
+
+const MenuItemsContainer = () => {
+  const {
+    menuItemUuidList,
+    menuItems,
+    isNewMenuItemForm: isNewMenuItemForm,
+    activeFormUuid,
+    getSubMenuItemsAmount,
+    setActiveFormUuid
+  } = (0,_hooks_useMenuItems__WEBPACK_IMPORTED_MODULE_0__.useMenuItems)();
+  return /*#__PURE__*/React.createElement("div", {
+    className: "devmcee-mega-menu-builder-content-menu-container"
+  }, menuItemUuidList.map(uuid => {
+    return !activeFormUuid || activeFormUuid !== uuid ? /*#__PURE__*/React.createElement(_MenuItem__WEBPACK_IMPORTED_MODULE_1__.MenuItem, _extends({
+      key: uuid,
+      activeFormUuid: activeFormUuid,
+      setActiveFormUuid: setActiveFormUuid
+    }, menuItems[uuid], {
+      subMenuItemsAmount: getSubMenuItemsAmount(uuid)
+    })) : /*#__PURE__*/React.createElement("div", {
+      className: "devmcee-mega-menu-builder-menu-item"
+    }, /*#__PURE__*/React.createElement(_forms_MenuItemForm__WEBPACK_IMPORTED_MODULE_2__.MenuItemForm, {
+      subMenuItemsAmount: getSubMenuItemsAmount(uuid)
+    }));
+  }), isNewMenuItemForm && /*#__PURE__*/React.createElement("div", {
+    className: "devmcee-mega-menu-builder-menu-item"
+  }, /*#__PURE__*/React.createElement(_forms_MenuItemForm__WEBPACK_IMPORTED_MODULE_2__.MenuItemForm, null)));
 };
 
 /***/ }),
@@ -368,47 +270,26 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   SubMenuItem: () => (/* binding */ SubMenuItem)
 /* harmony export */ });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _MenuItemForm__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MenuItemForm */ "./src/components/MenuItemForm.tsx");
+/* harmony import */ var _buttons_Button__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./buttons/Button */ "./src/components/buttons/Button.tsx");
+/* harmony import */ var _SubMenuItem_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SubMenuItem.scss */ "./src/components/SubMenuItem.scss");
 
 
 const SubMenuItem = ({
   uuid,
   title,
-  url,
-  classes,
   activeSubItemFormUuid,
-  columnIndex,
-  setFormActive,
-  onSave,
-  onDelete
+  setFormActive
 }) => {
-  const [isEditMode, setIsEditMode] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
-  return !isEditMode ? /*#__PURE__*/React.createElement("div", {
+  return /*#__PURE__*/React.createElement("div", {
     className: "devmcee-mega-menu-builder-content__sub-menu-item"
   }, /*#__PURE__*/React.createElement("span", {
     className: "devmcee-mega-menu-builder-content__sub-menu-item-title"
-  }, title), /*#__PURE__*/React.createElement("button", {
-    disabled: activeSubItemFormUuid !== null && activeSubItemFormUuid !== uuid,
-    type: "button",
-    className: "devmcee-mega-menu-builder-content-action-button",
-    onClick: () => {
-      setIsEditMode(true);
-      setFormActive(uuid);
-    }
-  }, "Edit")) : /*#__PURE__*/React.createElement(_MenuItemForm__WEBPACK_IMPORTED_MODULE_1__.MenuItemForm, {
-    title: title,
-    columnIndex: columnIndex,
-    url: url,
-    classes: classes,
-    uuid: uuid,
-    onSave: props => {
-      onSave(props);
-      setIsEditMode(false);
-    },
-    onDelete: onDelete
-  });
+  }, title), /*#__PURE__*/React.createElement(_buttons_Button__WEBPACK_IMPORTED_MODULE_0__.Button, {
+    title: "Edit",
+    onClick: () => setFormActive(uuid),
+    disabled: !!activeSubItemFormUuid && activeSubItemFormUuid !== uuid,
+    testId: `sub-menu-item-form-${title}__edit-button`
+  }));
 };
 
 /***/ }),
@@ -423,55 +304,49 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   SubMenuItemColumn: () => (/* binding */ SubMenuItemColumn)
 /* harmony export */ });
-/* harmony import */ var _MenuItemForm__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MenuItemForm */ "./src/components/MenuItemForm.tsx");
-/* harmony import */ var _SubMenuItem__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SubMenuItem */ "./src/components/SubMenuItem.tsx");
+/* harmony import */ var _hooks_useSubMenuItemColumn__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../hooks/useSubMenuItemColumn */ "./src/hooks/useSubMenuItemColumn.ts");
+/* harmony import */ var _buttons_Button__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./buttons/Button */ "./src/components/buttons/Button.tsx");
+/* harmony import */ var _forms_SubMenuItemForm__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./forms/SubMenuItemForm */ "./src/components/forms/SubMenuItemForm.tsx");
+/* harmony import */ var _SubMenuItem__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./SubMenuItem */ "./src/components/SubMenuItem.tsx");
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
 
 
+
+
 const SubMenuItemColumn = ({
-  newSubItem,
   subItemUuidList,
-  columnIndex,
-  activeColumnIndex,
-  subMenuItemsMap,
-  activeSubMenuItemUuid,
-  addNewSubItem,
-  saveSubMenuItem,
-  onDeleteSubItem,
-  setActiveSubMenuItemUuid
+  columnIndex
 }) => {
+  const {
+    subMenuItems,
+    subMenuItemForm,
+    initSubMenuItemForm,
+    initSubMenuItemFormForEditing
+  } = (0,_hooks_useSubMenuItemColumn__WEBPACK_IMPORTED_MODULE_0__.useSubMenuItemColumn)({
+    subItemUuidList
+  });
   return /*#__PURE__*/React.createElement("div", {
     className: "devmcee-mega-menu-builder-content__sub-menu-column"
   }, /*#__PURE__*/React.createElement("div", {
     className: "devmcee-mega-menu-builder-content__sub-menu-column-header"
-  }, /*#__PURE__*/React.createElement("button", {
-    type: "button",
-    className: "devmcee-mega-menu-builder-content-action-button devmcee-mega-menu-builder-content-action-button--add",
-    onClick: () => addNewSubItem(columnIndex)
-  }, "Add sub item")), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement(_buttons_Button__WEBPACK_IMPORTED_MODULE_1__.Button, {
+    title: "Add sub item",
+    onClick: () => initSubMenuItemForm(columnIndex),
+    testId: `sub-items-column-${columnIndex}__add-sub-item-button`
+  })), /*#__PURE__*/React.createElement("div", {
     className: "devmcee-mega-menu-builder-content__sub-menu-column-content"
-  }, !newSubItem && subItemUuidList.length === 0 && 'No sub items', subItemUuidList.map(uuid => {
-    return /*#__PURE__*/React.createElement(_SubMenuItem__WEBPACK_IMPORTED_MODULE_1__.SubMenuItem, _extends({
-      activeSubItemFormUuid: activeSubMenuItemUuid,
-      key: uuid,
-      columnIndex: columnIndex
-    }, subMenuItemsMap[uuid], {
-      onSave: saveSubMenuItem,
-      onDelete: () => onDeleteSubItem(columnIndex, uuid),
-      setFormActive: setActiveSubMenuItemUuid
-    }));
-  }), newSubItem && activeColumnIndex === columnIndex && /*#__PURE__*/React.createElement("div", {
-    className: "devmcee-mega-menu-builder-content__sub-menu-item"
-  }, /*#__PURE__*/React.createElement(_MenuItemForm__WEBPACK_IMPORTED_MODULE_0__.MenuItemForm, {
-    onSave: saveSubMenuItem,
-    onDelete: () => onDeleteSubItem(columnIndex, newSubItem.uuid),
-    title: newSubItem.title,
-    url: newSubItem.url,
-    columnIndex: columnIndex,
-    classes: newSubItem.classes,
-    uuid: newSubItem.uuid,
-    subMenuItemsColumnsUuid: null
-  }))));
+  }, !subMenuItemForm && subItemUuidList.length === 0 && /*#__PURE__*/React.createElement("div", {
+    className: "devmcee-mega-menu-builder-content__sub-menu-column-content-placeholder"
+  }, "No sub items"), subMenuItems.map(subMenuItem => {
+    return !subMenuItemForm || subMenuItemForm && subMenuItemForm?.uuid !== subMenuItem.uuid ? /*#__PURE__*/React.createElement(_SubMenuItem__WEBPACK_IMPORTED_MODULE_3__.SubMenuItem, _extends({
+      activeSubItemFormUuid: subMenuItemForm?.uuid,
+      key: subMenuItem.uuid
+    }, subMenuItem, {
+      setFormActive: initSubMenuItemFormForEditing
+    })) : /*#__PURE__*/React.createElement(_forms_SubMenuItemForm__WEBPACK_IMPORTED_MODULE_2__.SubMenuItemForm, null);
+  }), subMenuItemForm && !subMenuItemForm?.uuid && subMenuItemForm?.columnIndex === columnIndex && /*#__PURE__*/React.createElement("div", {
+    className: "devmcee-mega-menu-builder-content__sub-menu-item-container"
+  }, /*#__PURE__*/React.createElement(_forms_SubMenuItemForm__WEBPACK_IMPORTED_MODULE_2__.SubMenuItemForm, null))));
 };
 
 /***/ }),
@@ -486,346 +361,288 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   SubMenuItemsContainer: () => (/* binding */ SubMenuItemsContainer)
 /* harmony export */ });
-/* harmony import */ var _hooks_useSubMenuItems__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../hooks/useSubMenuItems */ "./src/hooks/useSubMenuItems.ts");
+/* harmony import */ var _hooks_useSubMenuItemsContainer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../hooks/useSubMenuItemsContainer */ "./src/hooks/useSubMenuItemsContainer.ts");
 /* harmony import */ var _SubMenuItemsContainer_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SubMenuItemsContainer.scss */ "./src/components/SubMenuItemsContainer.scss");
 /* harmony import */ var _SubMenuItemColumn__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./SubMenuItemColumn */ "./src/components/SubMenuItemColumn.tsx");
 
 
 
-const SubMenuItemsContainer = ({
-  menuItemsMap,
-  activeFormUuid,
-  subMenuItemsMap,
-  subMenuItemsColumnsMap,
-  onCreateSubItemsColumns,
-  onSaveSubItem,
-  onDeleteSubItem
-}) => {
+const SubMenuItemsContainer = () => {
   const {
-    activeSubMenuItemUuid,
     activeMenuItem,
-    columnsData,
-    newSubItem,
-    activeColumnIndex,
-    addNewSubItem,
-    deleteNewSubItem,
-    setActiveSubMenuItemUuid
-  } = (0,_hooks_useSubMenuItems__WEBPACK_IMPORTED_MODULE_0__.useSubMenuItems)({
-    menuItemsMap,
-    activeFormUuid,
-    subMenuItemsMap,
-    subMenuItemsColumnsMap
-  });
+    columnsData
+  } = (0,_hooks_useSubMenuItemsContainer__WEBPACK_IMPORTED_MODULE_0__.useSubMenuItemsContainer)();
   return /*#__PURE__*/React.createElement("div", {
     className: "devmcee-mega-menu-builder-content__sub-menu-container"
-  }, !activeMenuItem && /*#__PURE__*/React.createElement("div", {
+  }, (!activeMenuItem || activeMenuItem && !activeMenuItem.uuid) && /*#__PURE__*/React.createElement("div", {
     className: "devmcee-mega-menu-builder-content__sub-menu-placeholder"
-  }, "Start editing a menu item to see it's sub items"), activeMenuItem && !activeMenuItem?.subMenuItemsColumnsUuid && /*#__PURE__*/React.createElement("button", {
-    type: "button",
-    className: "devmcee-mega-menu-builder-content-action-button devmcee-mega-menu-builder-content-action-button--add",
-    onClick: onCreateSubItemsColumns
-  }, "Add sub items"), activeMenuItem && columnsData?.length && columnsData.map((subItemUuidList, i) => {
+  }, !activeMenuItem ? `Select a menu item to edit its sub items` : `Save menu item to add sub items`), activeMenuItem && columnsData?.length && columnsData.map((subItemUuidList, i) => {
     return /*#__PURE__*/React.createElement(_SubMenuItemColumn__WEBPACK_IMPORTED_MODULE_2__.SubMenuItemColumn, {
       key: i,
       columnIndex: i,
-      activeSubMenuItemUuid: activeSubMenuItemUuid,
-      activeColumnIndex: activeColumnIndex,
-      subItemUuidList: subItemUuidList,
-      newSubItem: newSubItem,
-      subMenuItemsMap: subMenuItemsMap,
-      setActiveSubMenuItemUuid: setActiveSubMenuItemUuid,
-      saveSubMenuItem: (...props) => {
-        deleteNewSubItem();
-        onSaveSubItem(...props);
-      },
-      addNewSubItem: addNewSubItem,
-      onDeleteSubItem: (...props) => {
-        deleteNewSubItem();
-        onDeleteSubItem(...props);
-      }
+      subItemUuidList: subItemUuidList
     });
   }));
 };
 
 /***/ }),
 
-/***/ "./src/hooks/useLanguagesTabsBar.ts":
-/*!******************************************!*\
-  !*** ./src/hooks/useLanguagesTabsBar.ts ***!
-  \******************************************/
+/***/ "./src/components/buttons/Button.tsx":
+/*!*******************************************!*\
+  !*** ./src/components/buttons/Button.tsx ***!
+  \*******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   useLanguagesTabsBar: () => (/* binding */ useLanguagesTabsBar)
+/* harmony export */   Button: () => (/* binding */ Button)
 /* harmony export */ });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-
-const useLanguagesTabsBar = ({
-  defaultLanguage
+const Button = ({
+  onClick,
+  title,
+  testId,
+  disabled = false,
+  classes = '',
+  type = 'button'
 }) => {
-  const [activeLanguageTab, setActiveLanguageTab] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(defaultLanguage);
-  return {
-    activeLanguageTab,
-    setActiveLanguageTab
-  };
+  const args = Object.assign({
+    'data-TestId': testId,
+    disabled,
+    className: `devmcee-mega-menu-builder-content-action-button ${classes}`.trim(),
+    type
+  }, type === 'submit' ? {
+    onSubmit: onClick
+  } : {
+    onClick
+  });
+  return /*#__PURE__*/React.createElement("button", args, title);
 };
 
 /***/ }),
 
-/***/ "./src/hooks/useMegaMenu.ts":
-/*!**********************************!*\
-  !*** ./src/hooks/useMegaMenu.ts ***!
-  \**********************************/
+/***/ "./src/components/forms/MenuItemForm.tsx":
+/*!***********************************************!*\
+  !*** ./src/components/forms/MenuItemForm.tsx ***!
+  \***********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   useMegaMenu: () => (/* binding */ useMegaMenu)
+/* harmony export */   MenuItemForm: () => (/* binding */ MenuItemForm)
+/* harmony export */ });
+/* harmony import */ var _hooks_useMenuItemForm__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../hooks/useMenuItemForm */ "./src/hooks/useMenuItemForm.ts");
+/* harmony import */ var _MenuItemForm_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MenuItemForm.scss */ "./src/components/forms/MenuItemForm.scss");
+/* harmony import */ var _buttons_Button__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../buttons/Button */ "./src/components/buttons/Button.tsx");
+
+
+
+const MenuItemForm = ({
+  subMenuItemsAmount
+}) => {
+  const {
+    headerTitle,
+    canSubmit,
+    form,
+    save,
+    changeField,
+    deleteItem,
+    closeForm,
+    addSubMenuItemColumns
+  } = (0,_hooks_useMenuItemForm__WEBPACK_IMPORTED_MODULE_0__.useMenuItemForm)();
+  return /*#__PURE__*/React.createElement("form", {
+    autoComplete: "off",
+    onSubmit: save,
+    className: "devmcee-mega-menu-builder-menu-item-form"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "devmcee-mega-menu-builder-menu-item-form-title-bar"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "devmcee-mega-menu-builder-menu-item-form-title"
+  }, headerTitle), /*#__PURE__*/React.createElement(_buttons_Button__WEBPACK_IMPORTED_MODULE_2__.Button, {
+    title: "Cancel",
+    testId: "menu-item-form__cancel-button",
+    onClick: closeForm
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "devmcee-mega-menu-builder-menu-item-form__fields-container"
+  }, /*#__PURE__*/React.createElement("input", {
+    required: true,
+    type: "text",
+    name: "title",
+    "data-TestId": "menu-item-form__title",
+    placeholder: "title",
+    value: form?.title,
+    onChange: changeField
+  }), /*#__PURE__*/React.createElement("input", {
+    required: true,
+    type: "text",
+    "data-TestId": "menu-item-form__url",
+    name: "url",
+    placeholder: "url",
+    value: form?.url,
+    onChange: changeField
+  }), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    name: "classes",
+    placeholder: "classes",
+    value: form?.classes,
+    onChange: changeField
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "devmcee-mega-menu-builder-menu-item-form__footer-actions-container"
+  }, /*#__PURE__*/React.createElement(_buttons_Button__WEBPACK_IMPORTED_MODULE_2__.Button, {
+    title: "Delete",
+    disabled: !form?.uuid || !!subMenuItemsAmount && subMenuItemsAmount > 0,
+    onClick: deleteItem,
+    testId: `${form?.title || 'menu-item-form'}__delete-button`,
+    classes: "devmcee-mega-menu-builder-content-action-button--delete"
+  }), form?.uuid && !form?.subMenuItemsColumnsUuid && /*#__PURE__*/React.createElement(_buttons_Button__WEBPACK_IMPORTED_MODULE_2__.Button, {
+    title: "Add sub items",
+    onClick: addSubMenuItemColumns,
+    testId: "add-sub-items-button"
+  }), /*#__PURE__*/React.createElement(_buttons_Button__WEBPACK_IMPORTED_MODULE_2__.Button, {
+    title: "Save",
+    testId: "menu-item-form__save-button",
+    onClick: save,
+    type: "submit",
+    disabled: !canSubmit
+  })));
+};
+
+/***/ }),
+
+/***/ "./src/components/forms/SubMenuItemForm.tsx":
+/*!**************************************************!*\
+  !*** ./src/components/forms/SubMenuItemForm.tsx ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SubMenuItemForm: () => (/* binding */ SubMenuItemForm)
+/* harmony export */ });
+/* harmony import */ var _MenuItemForm_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MenuItemForm.scss */ "./src/components/forms/MenuItemForm.scss");
+/* harmony import */ var _buttons_Button__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../buttons/Button */ "./src/components/buttons/Button.tsx");
+/* harmony import */ var _hooks_useSubMenuItemForm__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../hooks/useSubMenuItemForm */ "./src/hooks/useSubMenuItemForm.ts");
+
+
+
+const SubMenuItemForm = ({}) => {
+  const {
+    headerTitle,
+    canSubmit,
+    form,
+    save,
+    changeField,
+    deleteItem,
+    closeForm
+  } = (0,_hooks_useSubMenuItemForm__WEBPACK_IMPORTED_MODULE_2__.useSubMenuItemForm)();
+  return /*#__PURE__*/React.createElement("form", {
+    autoComplete: "off",
+    onSubmit: save,
+    "data-TestId": "sub-menu-item-form",
+    className: "devmcee-mega-menu-builder-menu-item-form"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "devmcee-mega-menu-builder-menu-item-form-title-bar"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "devmcee-mega-menu-builder-menu-item-form-title"
+  }, headerTitle), /*#__PURE__*/React.createElement(_buttons_Button__WEBPACK_IMPORTED_MODULE_1__.Button, {
+    title: "Cancel",
+    testId: "sub-menu-item-form__cancel-button",
+    onClick: closeForm
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "devmcee-mega-menu-builder-menu-item-form__fields-container"
+  }, /*#__PURE__*/React.createElement("input", {
+    required: true,
+    type: "text",
+    name: "title",
+    "data-TestId": "sub-menu-item-form__title",
+    placeholder: "title",
+    value: form?.title,
+    onChange: changeField
+  }), /*#__PURE__*/React.createElement("textarea", {
+    required: true,
+    name: "description",
+    placeholder: "description",
+    "data-TestId": "sub-menu-item-form__description",
+    value: form?.description,
+    onChange: changeField
+  }), /*#__PURE__*/React.createElement("input", {
+    required: true,
+    type: "text",
+    "data-TestId": "sub-menu-item-form__url",
+    name: "url",
+    placeholder: "url",
+    value: form?.url,
+    onChange: changeField
+  }), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    name: "classes",
+    placeholder: "classes",
+    value: form?.classes,
+    onChange: changeField
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "devmcee-mega-menu-builder-menu-item-form__footer-actions-container"
+  }, /*#__PURE__*/React.createElement(_buttons_Button__WEBPACK_IMPORTED_MODULE_1__.Button, {
+    title: "Delete",
+    disabled: !form?.uuid,
+    onClick: deleteItem,
+    testId: `sub-menu-item-form__delete-button`,
+    classes: "devmcee-mega-menu-builder-content-action-button--delete"
+  }), /*#__PURE__*/React.createElement(_buttons_Button__WEBPACK_IMPORTED_MODULE_1__.Button, {
+    title: "Save",
+    testId: "sub-menu-item-form__save-button",
+    onClick: save,
+    type: "submit",
+    disabled: !canSubmit
+  })));
+};
+
+/***/ }),
+
+/***/ "./src/hooks/useApiRequest.ts":
+/*!************************************!*\
+  !*** ./src/hooks/useApiRequest.ts ***!
+  \************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useApiRequest: () => (/* binding */ useApiRequest)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _app_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../app.types */ "./src/app.types.ts");
+/* harmony import */ var _useMenuMetaState__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./useMenuMetaState */ "./src/hooks/useMenuMetaState.ts");
 
 
-const useMegaMenu = ({
-  languages,
-  selectedLanguage,
-  endpoints,
-  customNonce,
-  postID,
-  data
-}) => {
-  const [newMenuItem, setNewMenuItem] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
-  const [menuItemsMap, setMenuItemsMap] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(data.menuItemsMap || {});
-  const [menuItemsListToLocaleMap, setMenuItemsListToLocaleMap] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(data.menuItemsListToLocaleMap || {});
-  const [subMenuItemsMap, setSubMenuItems] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(data?.subMenuItemsMap || {});
-  const [subMenuItemsColumnsMap, setSubMenuItemsColumnsMap] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(data?.subMenuItemsColumnsMap || {});
-  const [activeFormUuid, setActiveFormUuid] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
-  const addNewMenuItem = () => {
-    setNewMenuItem({
-      title: '',
-      url: '',
-      subMenuItemsColumnsUuid: null
-    });
-  };
-  const sendRequest = ({
-    menuItemsListToLocaleMap,
-    menuItemsMap,
-    subMenuItemsMap,
-    subMenuItemsColumnsMap,
-    onSuccess
-  }) => {
-    fetch(endpoints[_app_types__WEBPACK_IMPORTED_MODULE_1__.EndpointName.SAVE], {
+
+const useApiRequest = () => {
+  const {
+    state: metaState
+  } = (0,_useMenuMetaState__WEBPACK_IMPORTED_MODULE_2__.useMenuMetaState)();
+  const {
+    customNonce,
+    postID,
+    endpoints
+  } = metaState;
+  const url = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => endpoints[_app_types__WEBPACK_IMPORTED_MODULE_1__.EndpointName.SAVE], [endpoints, _app_types__WEBPACK_IMPORTED_MODULE_1__.EndpointName.SAVE]);
+  const sendRequest = async data => {
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-WP-Nonce': customNonce
       },
       body: JSON.stringify({
-        data: {
-          menuItemsListToLocaleMap,
-          menuItemsMap,
-          subMenuItemsMap,
-          subMenuItemsColumnsMap
-        },
+        data,
         postID
       })
-    }).then(response => {
-      if (response.ok) {
-        return response.json();
-      }
+    });
+    if (!response.ok) {
       throw new Error('Network response was not ok.');
-    }).then(data => {
-      console.log(data);
-      onSuccess();
-    }).catch(error => console.error(error));
-  };
-  const saveMenuItem = menuItem => {
-    const uuid = menuItem.uuid || crypto.randomUUID();
-    const newMenuItemsListToLocaleMap = updateMenuItemsListToLocaleMap(menuItemsListToLocaleMap, uuid);
-    const newMenuItemsMap = updateMenuItemsMap(menuItemsMap, menuItem, uuid);
-    sendRequest({
-      menuItemsListToLocaleMap: newMenuItemsListToLocaleMap,
-      menuItemsMap: newMenuItemsMap,
-      subMenuItemsMap,
-      subMenuItemsColumnsMap: subMenuItemsColumnsMap,
-      onSuccess: () => {
-        setMenuItemsListToLocaleMap(newMenuItemsListToLocaleMap);
-        setMenuItemsMap(newMenuItemsMap);
-        setNewMenuItem(null);
-        setActiveFormUuid(null);
-      }
-    });
-  };
-  const updateMenuItemsListToLocaleMap = (prev, uuid) => {
-    const prevItems = new Set(prev[selectedLanguage]);
-    prevItems.add(uuid);
-    return {
-      ...prev,
-      [selectedLanguage]: [...prevItems]
-    };
-  };
-  const updateMenuItemsMap = (prev, menuItem, uuid) => ({
-    ...prev,
-    [uuid]: {
-      ...menuItem,
-      uuid
     }
-  });
-  const deleteItemInMenuItemsListToLocaleMap = (prev, uuid) => {
-    const prevItems = new Set(prev[selectedLanguage]);
-    prevItems.delete(uuid);
-    return {
-      ...prev,
-      [selectedLanguage]: [...prevItems]
-    };
+    return response.json();
   };
-  const deleteItemInMenuItemsMap = (prev, uuid) => {
-    const {
-      [uuid]: _,
-      ...rest
-    } = prev;
-    return rest;
-  };
-  const deleteSubMenuItemsColumnsMapItem = (prev, uuid) => {
-    if (!uuid) return prev;
-    const {
-      [uuid]: _,
-      ...rest
-    } = prev;
-    return rest;
-  };
-  const deletMenuItem = uuid => {
-    setActiveFormUuid(null);
-    if (!uuid) {
-      setNewMenuItem(null);
-      return;
-    }
-    const newMenuItemsListToLocaleMap = deleteItemInMenuItemsListToLocaleMap(menuItemsListToLocaleMap, uuid);
-    const newMenuItemsMap = deleteItemInMenuItemsMap(menuItemsMap, uuid);
-    const newSubMenuItemsColumnsMap = deleteSubMenuItemsColumnsMapItem(subMenuItemsColumnsMap, menuItemsMap[uuid].subMenuItemsColumnsUuid);
-    sendRequest({
-      menuItemsListToLocaleMap: newMenuItemsListToLocaleMap,
-      menuItemsMap: newMenuItemsMap,
-      subMenuItemsMap: subMenuItemsMap,
-      subMenuItemsColumnsMap: newSubMenuItemsColumnsMap,
-      onSuccess: () => {
-        setMenuItemsListToLocaleMap(newMenuItemsListToLocaleMap);
-        setMenuItemsMap(newMenuItemsMap);
-        setSubMenuItemsColumnsMap(newSubMenuItemsColumnsMap);
-      }
-    });
-  };
-  const createSubItemsColumns = () => {
-    const uuid = crypto.randomUUID();
-    setSubMenuItemsColumnsMap(prev => ({
-      ...prev,
-      [uuid]: [[], [], []]
-    }));
-    if (activeFormUuid) {
-      setMenuItemsMap(prev => ({
-        ...prev,
-        [activeFormUuid]: {
-          ...prev[activeFormUuid],
-          subMenuItemsColumnsUuid: uuid
-        }
-      }));
-    }
-  };
-  const deleteSubItemsColumns = () => {};
-  const updateSubMenuItemsMap = (prev, subMenuItem) => {
-    const {
-      uuid
-    } = subMenuItem;
-    return {
-      ...prev,
-      [uuid]: {
-        ...subMenuItem
-      }
-    };
-  };
-  const updateSubMenuItemsColumnsMap = (prev, subMenuItem) => {
-    const {
-      uuid,
-      columnIndex
-    } = subMenuItem;
-    const activeFormColumnsUuid = menuItemsMap[activeFormUuid].subMenuItemsColumnsUuid;
-    prev[activeFormColumnsUuid][columnIndex].push(uuid);
-    return {
-      ...prev,
-      [activeFormColumnsUuid]: [...prev[activeFormColumnsUuid]]
-    };
-  };
-  const saveSubItem = subMenuItem => {
-    subMenuItem.uuid = subMenuItem.uuid || crypto.randomUUID();
-    const newSubMenuItemsMap = updateSubMenuItemsMap(subMenuItemsMap, subMenuItem);
-    const newSubMenuItemsColumnsMap = updateSubMenuItemsColumnsMap(subMenuItemsColumnsMap, subMenuItem);
-    sendRequest({
-      menuItemsListToLocaleMap,
-      menuItemsMap,
-      subMenuItemsMap: newSubMenuItemsMap,
-      subMenuItemsColumnsMap: subMenuItemsColumnsMap,
-      onSuccess: () => {
-        setSubMenuItems(newSubMenuItemsMap);
-        setSubMenuItemsColumnsMap(newSubMenuItemsColumnsMap);
-      }
-    });
-  };
-  const deleteSubMenuItemsMapItem = (prev, uuid) => {
-    const {
-      [uuid]: _,
-      ...rest
-    } = prev;
-    return {
-      ...rest
-    };
-  };
-  const deleteSubMenuItemFromColoumn = (prev, uuid, columnIndex) => {
-    const activeFormColumnsUuid = menuItemsMap[activeFormUuid].subMenuItemsColumnsUuid;
-    const newSubMenuItemsList = prev[activeFormColumnsUuid][columnIndex].filter(_uuid => _uuid !== uuid);
-    return {
-      ...prev,
-      [activeFormColumnsUuid]: [...newSubMenuItemsList]
-    };
-  };
-  const deleteSubItem = (columnIndex, uuid) => {
-    if (!uuid) return;
-    const newSubMenuItemsMap = deleteSubMenuItemsMapItem(subMenuItemsMap, uuid);
-    const newSubMenuItemsColumnsMap = deleteSubMenuItemFromColoumn(subMenuItemsColumnsMap, uuid, columnIndex);
-    sendRequest({
-      menuItemsListToLocaleMap,
-      menuItemsMap,
-      subMenuItemsMap: newSubMenuItemsMap,
-      subMenuItemsColumnsMap: subMenuItemsColumnsMap,
-      onSuccess: () => {
-        setSubMenuItems(newSubMenuItemsMap);
-        setSubMenuItemsColumnsMap(newSubMenuItemsColumnsMap);
-      }
-    });
-  };
-  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    if (languages.length) {
-      const menuItemsListToLocalEntities = languages.map(lang => [lang, data?.menuItemsListToLocaleMap[lang] || []]);
-      setMenuItemsListToLocaleMap(Object.fromEntries(menuItemsListToLocalEntities));
-    }
-  }, [languages, data.menuItemsListToLocaleMap]);
   return {
-    menuItemsMap,
-    menuItemsListToLocaleMap,
-    subMenuItemsMap: subMenuItemsMap,
-    subMenuItemsColumnsMap,
-    newMenuItem,
-    activeFormUuid,
-    createSubItemsColumns,
-    deleteSubItemsColumns,
-    saveSubItem,
-    deleteSubItem,
-    addNewMenuItem,
-    saveMenuItem,
-    deletMenuItem,
-    setActiveFormUuid
+    sendRequest
   };
 };
 
@@ -843,63 +660,134 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _useMenuState__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./useMenuState */ "./src/hooks/useMenuState.ts");
 
-const useMenuItemForm = ({
-  title,
-  url,
-  classes,
-  uuid,
-  subMenuItemsColumnsUuid,
-  description,
-  columnIndex,
-  onSave,
-  onDelete
-}) => {
-  const [form, setForm] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
-    title,
-    url,
-    classes,
-    uuid,
-    description,
-    subMenuItemsColumnsUuid: subMenuItemsColumnsUuid || null,
-    columnIndex
-  });
-  const isSubMenu = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => typeof columnIndex === 'number', [columnIndex]);
-  const canSubmit = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => !isSubMenu ? !!form.title && !!form.url : !!form.title && !!form.url && !!form.description, [form.title, form.url, form.description]);
-  const headerTitle = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => uuid ? form.title : `${form.title || 'New item'}`, [uuid, form.title]);
-  const save = event => {
+
+const useMenuItemForm = () => {
+  const {
+    state: {
+      menuItemForm
+    },
+    dispatchers: {
+      changeMenuItemFieldValue,
+      saveMenuItem,
+      removeMenuItem,
+      removeMenuItemForm,
+      initSubMenuItemColumns
+    }
+  } = (0,_useMenuState__WEBPACK_IMPORTED_MODULE_1__.useMenuState)();
+  const canSubmit = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => menuItemForm && menuItemForm.title && menuItemForm.url, [menuItemForm?.title, menuItemForm?.url]);
+  const headerTitle = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
+    if (!menuItemForm) {
+      return '';
+    }
+    return menuItemForm.uuid ? menuItemForm.title : `${menuItemForm.title || 'New item'}`;
+  }, [menuItemForm?.uuid, menuItemForm?.title]);
+  const save = async event => {
     event.preventDefault();
-    if (!form.title || !form.url || isSubMenu && !form.description) {
+    if (!menuItemForm?.title || !menuItemForm?.url) {
       return;
     }
-    onSave(form);
+    saveMenuItem();
   };
   const changeField = event => {
     const {
       name,
       value
     } = event.target;
-    setForm(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    changeMenuItemFieldValue(name, value);
   };
   const deleteItem = () => {
-    onDelete(form.uuid);
+    if (!menuItemForm?.uuid) {
+      return removeMenuItemForm();
+    }
+    return removeMenuItem();
   };
-  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    setForm(prev => ({
-      ...prev,
-      subMenuItemsColumnsUuid: subMenuItemsColumnsUuid || null
-    }));
-  }, [subMenuItemsColumnsUuid]);
+  const closeForm = () => {
+    removeMenuItemForm();
+  };
+  const addSubMenuItemColumns = () => {
+    initSubMenuItemColumns(crypto.randomUUID());
+  };
   return {
-    form,
+    form: menuItemForm,
     headerTitle,
     canSubmit,
     save,
     changeField,
-    deleteItem
+    deleteItem,
+    closeForm,
+    addSubMenuItemColumns
+  };
+};
+
+/***/ }),
+
+/***/ "./src/hooks/useMenuItems.ts":
+/*!***********************************!*\
+  !*** ./src/hooks/useMenuItems.ts ***!
+  \***********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useMenuItems: () => (/* binding */ useMenuItems)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _useMenuState__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./useMenuState */ "./src/hooks/useMenuState.ts");
+/* harmony import */ var _useMenuMetaState__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./useMenuMetaState */ "./src/hooks/useMenuMetaState.ts");
+
+
+
+const useMenuItems = () => {
+  const {
+    state: {
+      menuItemForm,
+      localMenu,
+      menuItems,
+      subMenuItems,
+      subMenuItemsColumns
+    },
+    dispatchers: {
+      initMenuItemForm,
+      initMenuItemFormForEditing,
+      removeMenuItemForm,
+      deleteMenuItemUuidFromLocalMenu
+    }
+  } = (0,_useMenuState__WEBPACK_IMPORTED_MODULE_1__.useMenuState)();
+  const {
+    state: metaState
+  } = (0,_useMenuMetaState__WEBPACK_IMPORTED_MODULE_2__.useMenuMetaState)();
+  const {
+    activeLanguageTab: selectedLanguage
+  } = metaState;
+  const activeFormUuid = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => menuItemForm?.uuid, [menuItemForm]);
+  const setActiveFormUuid = uuid => initMenuItemFormForEditing(selectedLanguage, uuid);
+  const addNewMenuItem = () => initMenuItemForm(selectedLanguage);
+  const deletMenuItem = async uuid => {
+    if (!uuid) {
+      removeMenuItemForm();
+      return;
+    }
+    deleteMenuItemUuidFromLocalMenu(uuid, selectedLanguage);
+  };
+  const getSubMenuItemsAmount = uuid => {
+    const menuItem = menuItems[uuid];
+    if (!menuItem.subMenuItemsColumnsUuid) return 0;
+    return subMenuItemsColumns[menuItem.subMenuItemsColumnsUuid]?.reduce((acc, column) => acc + column.length, 0);
+  };
+  return {
+    menuItems,
+    menuItemUuidList: localMenu[selectedLanguage],
+    subMenuItemsMap: subMenuItems,
+    subMenuItemsColumnsMap: subMenuItemsColumns,
+    isNewMenuItemForm: menuItemForm && !menuItemForm?.uuid,
+    activeFormUuid,
+    addNewMenuItem,
+    deletMenuItem,
+    setActiveFormUuid,
+    getSubMenuItemsAmount
   };
 };
 
@@ -918,14 +806,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _providers_MenuMetaContextProvider__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../providers/MenuMetaContextProvider */ "./src/providers/MenuMetaContextProvider.tsx");
+/* harmony import */ var _reducers_menuMeta_type__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../reducers/menuMeta.type */ "./src/reducers/menuMeta.type.ts");
+
 
 
 const useMenuMetaState = () => {
   const state = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(_providers_MenuMetaContextProvider__WEBPACK_IMPORTED_MODULE_1__.MenuMetaStateContext);
   const dispatch = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(_providers_MenuMetaContextProvider__WEBPACK_IMPORTED_MODULE_1__.MenuMetaDispatchContext);
+  const setActiveLanguageTab = languageCode => dispatch({
+    type: _reducers_menuMeta_type__WEBPACK_IMPORTED_MODULE_2__.MenuMetaActionType.ACTIVE_LANGUAGE_TAB_SET,
+    payload: languageCode
+  });
   return {
     state,
-    dispatch
+    dispatchers: {
+      dispatch,
+      setActiveLanguageTab
+    }
   };
 };
 
@@ -944,54 +841,283 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _providers_MenuDataContextProvider__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../providers/MenuDataContextProvider */ "./src/providers/MenuDataContextProvider.tsx");
+/* harmony import */ var _reducers_menuState_types__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../reducers/menuState.types */ "./src/reducers/menuState.types.ts");
+
 
 
 const useMenuState = () => {
   const state = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(_providers_MenuDataContextProvider__WEBPACK_IMPORTED_MODULE_1__.MenuStateContext);
   const dispatch = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(_providers_MenuDataContextProvider__WEBPACK_IMPORTED_MODULE_1__.MenuDispatchContext);
+  const initMenuItemForm = languageCode => {
+    dispatch({
+      type: _reducers_menuState_types__WEBPACK_IMPORTED_MODULE_2__.MenuStateActionType.MENU_ITEM_FORM_INITED,
+      payload: {
+        languageCode
+      }
+    });
+  };
+  const initMenuItemFormForEditing = (languageCode, uuid) => {
+    dispatch({
+      type: _reducers_menuState_types__WEBPACK_IMPORTED_MODULE_2__.MenuStateActionType.MENU_ITEM_FORM_INITED_FOR_EDITING,
+      payload: {
+        languageCode,
+        uuid
+      }
+    });
+  };
+  const removeMenuItemForm = () => dispatch({
+    type: _reducers_menuState_types__WEBPACK_IMPORTED_MODULE_2__.MenuStateActionType.MENU_ITEM_FORM_REMOVED
+  });
+  const addMenuItemUuidToLocalMenu = (uuid, locale) => {
+    dispatch({
+      type: _reducers_menuState_types__WEBPACK_IMPORTED_MODULE_2__.MenuStateActionType.MENU_ITEM_UUID_ADDED_TO_LOCAL_MENU,
+      payload: {
+        uuid,
+        languageCode: locale
+      }
+    });
+  };
+  const deleteMenuItemUuidFromLocalMenu = (uuid, locale) => {
+    dispatch({
+      type: _reducers_menuState_types__WEBPACK_IMPORTED_MODULE_2__.MenuStateActionType.MENU_ITEM_UUID_DELETED_FROM_LOCAL_MENU,
+      payload: {
+        uuid,
+        languageCode: locale
+      }
+    });
+  };
+  const changeMenuItemFieldValue = (fieldName, value) => {
+    dispatch({
+      type: _reducers_menuState_types__WEBPACK_IMPORTED_MODULE_2__.MenuStateActionType.MENU_ITEM_FORM_FIELD_CHANGED,
+      payload: {
+        fieldName,
+        value
+      }
+    });
+  };
+  const saveMenuItem = () => {
+    dispatch({
+      type: _reducers_menuState_types__WEBPACK_IMPORTED_MODULE_2__.MenuStateActionType.MENU_ITEM_SAVED
+    });
+  };
+  const removeMenuItem = () => {
+    dispatch({
+      type: _reducers_menuState_types__WEBPACK_IMPORTED_MODULE_2__.MenuStateActionType.MENU_ITEM_REMOVED
+    });
+  };
+  const initSubMenuItemColumns = uuid => {
+    dispatch({
+      type: _reducers_menuState_types__WEBPACK_IMPORTED_MODULE_2__.MenuStateActionType.SUB_MENU_ITEMS_COLUMNS_INITED,
+      payload: {
+        uuid
+      }
+    });
+  };
+  const initSubMenuItemForm = columnIndex => {
+    dispatch({
+      type: _reducers_menuState_types__WEBPACK_IMPORTED_MODULE_2__.MenuStateActionType.SUB_MENU_ITEM_FORM_INITED,
+      payload: {
+        columnIndex
+      }
+    });
+  };
+  const initSubMenuItemFormForEditing = uuid => {
+    dispatch({
+      type: _reducers_menuState_types__WEBPACK_IMPORTED_MODULE_2__.MenuStateActionType.SUB_MENU_ITEM_FORM_INITED_FOR_EDITING,
+      payload: {
+        uuid
+      }
+    });
+  };
+  const removeSubMenuItemForm = () => {
+    dispatch({
+      type: _reducers_menuState_types__WEBPACK_IMPORTED_MODULE_2__.MenuStateActionType.SUB_MENU_ITEM_FORM_REMOVED
+    });
+  };
+  const changeSubMenuItemFieldValue = (fieldName, value) => {
+    dispatch({
+      type: _reducers_menuState_types__WEBPACK_IMPORTED_MODULE_2__.MenuStateActionType.SUB_MENU_ITEM_FORM_FIELD_CHANGED,
+      payload: {
+        fieldName,
+        value
+      }
+    });
+  };
+  const saveSubMenuItem = () => {
+    dispatch({
+      type: _reducers_menuState_types__WEBPACK_IMPORTED_MODULE_2__.MenuStateActionType.SUB_MENU_ITEM_FORM_SAVED
+    });
+  };
+  const removeSubMenuItem = () => {
+    dispatch({
+      type: _reducers_menuState_types__WEBPACK_IMPORTED_MODULE_2__.MenuStateActionType.SUB_MENU_ITEM_REMOVED
+    });
+  };
   return {
     state,
-    dispatch
+    dispatchers: {
+      saveMenuItem,
+      saveSubMenuItem,
+      removeMenuItem,
+      removeSubMenuItem,
+      initMenuItemForm,
+      initSubMenuItemForm,
+      removeMenuItemForm,
+      removeSubMenuItemForm,
+      addMenuItemUuidToLocalMenu,
+      deleteMenuItemUuidFromLocalMenu,
+      changeMenuItemFieldValue,
+      changeSubMenuItemFieldValue,
+      initMenuItemFormForEditing,
+      initSubMenuItemFormForEditing,
+      initSubMenuItemColumns
+    }
   };
 };
 
 /***/ }),
 
-/***/ "./src/hooks/useSubMenuItems.ts":
-/*!**************************************!*\
-  !*** ./src/hooks/useSubMenuItems.ts ***!
-  \**************************************/
+/***/ "./src/hooks/useSubMenuItemColumn.ts":
+/*!*******************************************!*\
+  !*** ./src/hooks/useSubMenuItemColumn.ts ***!
+  \*******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   useSubMenuItems: () => (/* binding */ useSubMenuItems)
+/* harmony export */   useSubMenuItemColumn: () => (/* binding */ useSubMenuItemColumn)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _useMenuState__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./useMenuState */ "./src/hooks/useMenuState.ts");
 
-const useSubMenuItems = ({
-  menuItemsMap,
-  activeFormUuid,
-  subMenuItemsMap,
-  subMenuItemsColumnsMap
+
+const useSubMenuItemColumn = ({
+  subItemUuidList
 }) => {
+  const {
+    state: {
+      subMenuItems: allSubMenuItems,
+      subMenuItemForm
+    },
+    dispatchers: {
+      initSubMenuItemForm,
+      initSubMenuItemFormForEditing
+    }
+  } = (0,_useMenuState__WEBPACK_IMPORTED_MODULE_1__.useMenuState)();
+  const subMenuItems = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => subItemUuidList.map(uuid => allSubMenuItems[uuid]), [allSubMenuItems, subItemUuidList]);
+  return {
+    subMenuItems,
+    subMenuItemForm,
+    initSubMenuItemForm,
+    initSubMenuItemFormForEditing
+  };
+};
+
+/***/ }),
+
+/***/ "./src/hooks/useSubMenuItemForm.ts":
+/*!*****************************************!*\
+  !*** ./src/hooks/useSubMenuItemForm.ts ***!
+  \*****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useSubMenuItemForm: () => (/* binding */ useSubMenuItemForm)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _useMenuState__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./useMenuState */ "./src/hooks/useMenuState.ts");
+
+
+const useSubMenuItemForm = () => {
+  const {
+    state: {
+      subMenuItemForm
+    },
+    dispatchers: {
+      saveSubMenuItem,
+      changeSubMenuItemFieldValue,
+      removeSubMenuItem,
+      removeSubMenuItemForm
+    }
+  } = (0,_useMenuState__WEBPACK_IMPORTED_MODULE_1__.useMenuState)();
+  const canSubmit = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => subMenuItemForm && subMenuItemForm.title && subMenuItemForm.url, [subMenuItemForm?.title, subMenuItemForm?.url]);
+  const headerTitle = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
+    if (!subMenuItemForm) {
+      return '';
+    }
+    return subMenuItemForm.uuid ? subMenuItemForm.title : `${subMenuItemForm.title || 'New sub item'}`;
+  }, [subMenuItemForm?.uuid, subMenuItemForm?.title]);
+  const save = async event => {
+    event.preventDefault();
+    if (!subMenuItemForm?.title || !subMenuItemForm?.url) {
+      return;
+    }
+    saveSubMenuItem();
+  };
+  const changeField = event => {
+    const {
+      name,
+      value
+    } = event.target;
+    changeSubMenuItemFieldValue(name, value);
+  };
+  const deleteItem = () => {
+    if (!subMenuItemForm?.uuid) {
+      return removeSubMenuItemForm();
+    }
+    return removeSubMenuItem();
+  };
+  const closeForm = () => {
+    removeSubMenuItemForm();
+  };
+  return {
+    form: subMenuItemForm,
+    headerTitle,
+    canSubmit,
+    save,
+    changeField,
+    deleteItem,
+    closeForm
+  };
+};
+
+/***/ }),
+
+/***/ "./src/hooks/useSubMenuItemsContainer.ts":
+/*!***********************************************!*\
+  !*** ./src/hooks/useSubMenuItemsContainer.ts ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useSubMenuItemsContainer: () => (/* binding */ useSubMenuItemsContainer)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _useMenuState__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./useMenuState */ "./src/hooks/useMenuState.ts");
+
+
+const useSubMenuItemsContainer = () => {
+  const {
+    state: {
+      menuItemForm,
+      subMenuItemsColumns
+    }
+  } = (0,_useMenuState__WEBPACK_IMPORTED_MODULE_1__.useMenuState)();
   const [newSubItem, setNewSubItem] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const [activeColumnIndex, setActiveColumnIndex] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const [activeSubMenuItemUuid, setActiveSubMenuItemUuid] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
-  const activeMenuItem = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => activeFormUuid ? menuItemsMap[activeFormUuid] : null, [activeFormUuid, menuItemsMap]);
   const columnsData = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
-    if (!activeMenuItem || !subMenuItemsColumnsMap) return null;
-    if (!activeMenuItem.subMenuItemsColumnsUuid) return null;
-    return subMenuItemsColumnsMap[activeMenuItem.subMenuItemsColumnsUuid];
-  }, [activeMenuItem?.subMenuItemsColumnsUuid, subMenuItemsColumnsMap]);
+    if (!menuItemForm || !subMenuItemsColumns) return null;
+    if (!menuItemForm.subMenuItemsColumnsUuid) return null;
+    return subMenuItemsColumns[menuItemForm.subMenuItemsColumnsUuid];
+  }, [menuItemForm?.subMenuItemsColumnsUuid, subMenuItemsColumns]);
   const addNewSubItem = columnIndex => {
     setActiveColumnIndex(columnIndex);
-    setNewSubItem({
-      title: '',
-      url: '',
-      description: ''
-    });
   };
   const deleteNewSubItem = () => {
     setNewSubItem(null);
@@ -1001,12 +1127,64 @@ const useSubMenuItems = ({
     activeSubMenuItemUuid,
     activeColumnIndex,
     newSubItem,
-    addNewSubItem,
-    activeMenuItem,
+    activeMenuItem: menuItemForm,
     columnsData,
+    addNewSubItem,
     deleteNewSubItem,
     setActiveSubMenuItemUuid
   };
+};
+
+/***/ }),
+
+/***/ "./src/providers/ApiServiceProvider.tsx":
+/*!**********************************************!*\
+  !*** ./src/providers/ApiServiceProvider.tsx ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ApiServiceProvider: () => (/* binding */ ApiServiceProvider)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _hooks_useMenuState__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../hooks/useMenuState */ "./src/hooks/useMenuState.ts");
+/* harmony import */ var _hooks_useApiRequest__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../hooks/useApiRequest */ "./src/hooks/useApiRequest.ts");
+
+
+
+const ApiServiceProvider = ({
+  children
+}) => {
+  const {
+    state,
+    dispatchers: {
+      removeMenuItemForm: closeMenuItemForm,
+      removeSubMenuItemForm: closeSubMenuItemForm
+    }
+  } = (0,_hooks_useMenuState__WEBPACK_IMPORTED_MODULE_1__.useMenuState)();
+  const {
+    sendRequest
+  } = (0,_hooks_useApiRequest__WEBPACK_IMPORTED_MODULE_2__.useApiRequest)();
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    const isMenuItemFormSubmitted = state.menuItemForm?.isSubmitted;
+    const isSubMenuItemFormSubmitted = state.subMenuItemForm?.isSubmitted;
+    if (isMenuItemFormSubmitted || isSubMenuItemFormSubmitted) {
+      sendRequest({
+        menuItems: state.menuItems,
+        subMenuItems: state.subMenuItems,
+        localMenu: state.localMenu,
+        subMenuItemsColumns: state.subMenuItemsColumns
+      }).then(() => {
+        if (!isSubMenuItemFormSubmitted) {
+          closeMenuItemForm();
+        }
+        closeSubMenuItemForm();
+      });
+    }
+  }, [state.menuItemForm?.isSubmitted, state.subMenuItemForm?.isSubmitted]);
+  return children;
 };
 
 /***/ }),
@@ -1032,12 +1210,20 @@ __webpack_require__.r(__webpack_exports__);
 
 // Provided by WordPress wp_localize_script
 
+let extenalData = {
+  data: {}
+};
+if (typeof devmceeMegaMenuInitData !== 'undefined') {
+  extenalData = devmceeMegaMenuInitData;
+}
 const menuInitialState = Object.assign({
-  subMenuItemsMap: {},
-  menuItemsMap: {},
-  menuItemsListToLocaleMap: {},
-  subMenuItemsColumnsMap: {}
-}, devmceeMegaMenuInitData.data);
+  menuItemForm: null,
+  subMenuItemForm: null,
+  subMenuItems: {},
+  menuItems: {},
+  localMenu: {},
+  subMenuItemsColumns: {}
+}, extenalData?.data || {});
 const MenuStateContext = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.createContext)(menuInitialState);
 const MenuDispatchContext = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.createContext)(() => void 0);
 const MenuDataContextProvider = ({
@@ -1076,19 +1262,24 @@ __webpack_require__.r(__webpack_exports__);
 
 // Provided by WordPress wp_localize_script
 
-const {
-  ['data']: _,
-  ...meta
-} = devmceeMegaMenuInitData;
+let externalMetaData = {};
+if (typeof devmceeMegaMenuInitData !== 'undefined') {
+  const {
+    ['data']: _,
+    ...meta
+  } = devmceeMegaMenuInitData;
+  externalMetaData = meta;
+}
 const menuMetaInitialState = Object.assign({
   languages: [],
   defaultLanguage: 'en',
+  activeLanguageTab: 'en',
   endpoints: {
     [_app_types__WEBPACK_IMPORTED_MODULE_1__.EndpointName.SAVE]: ''
   },
   customNonce: "",
   postID: 0
-}, meta);
+}, externalMetaData);
 const MenuMetaStateContext = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.createContext)(menuMetaInitialState);
 const MenuMetaDispatchContext = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.createContext)(() => void 0);
 const MenuMetaContextProvider = ({
@@ -1104,6 +1295,22 @@ const MenuMetaContextProvider = ({
 
 /***/ }),
 
+/***/ "./src/reducers/menuMeta.type.ts":
+/*!***************************************!*\
+  !*** ./src/reducers/menuMeta.type.ts ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   MenuMetaActionType: () => (/* binding */ MenuMetaActionType)
+/* harmony export */ });
+const MenuMetaActionType = {
+  ACTIVE_LANGUAGE_TAB_SET: 'meta/ACTIVE_LANGUAGE_TAB_SET'
+};
+
+/***/ }),
+
 /***/ "./src/reducers/menuMetaReducer.ts":
 /*!*****************************************!*\
   !*** ./src/reducers/menuMetaReducer.ts ***!
@@ -1114,11 +1321,51 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   menuMetaReducer: () => (/* binding */ menuMetaReducer)
 /* harmony export */ });
+/* harmony import */ var _menuMeta_type__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./menuMeta.type */ "./src/reducers/menuMeta.type.ts");
+
 const menuMetaReducer = (state, action) => {
+  console.log('[MenuMetaReducer:action]', action);
   switch (action.type) {
+    case _menuMeta_type__WEBPACK_IMPORTED_MODULE_0__.MenuMetaActionType.ACTIVE_LANGUAGE_TAB_SET:
+      {
+        return {
+          ...state,
+          activeLanguageTab: action.payload
+        };
+      }
     default:
       return state;
   }
+};
+
+/***/ }),
+
+/***/ "./src/reducers/menuState.types.ts":
+/*!*****************************************!*\
+  !*** ./src/reducers/menuState.types.ts ***!
+  \*****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   MenuStateActionType: () => (/* binding */ MenuStateActionType)
+/* harmony export */ });
+const MenuStateActionType = {
+  MENU_ITEM_FORM_INITED: 'menu/MENU_ITEM_FORM_INITED',
+  MENU_ITEM_FORM_INITED_FOR_EDITING: 'menu/MENU_ITEM_FORM_INITED_FOR_EDITING',
+  MENU_ITEM_FORM_REMOVED: 'menu/MENU_ITEM_FORM_REMOVED',
+  MENU_ITEM_FORM_FIELD_CHANGED: 'menu/MENU_ITEM_FORM_FIELD_CHANGED',
+  MENU_ITEM_UUID_ADDED_TO_LOCAL_MENU: 'menu/MENU_ITEM_UUID_ADDED_TO_LOCAL_MENU',
+  MENU_ITEM_UUID_DELETED_FROM_LOCAL_MENU: 'menu/MENU_ITEM_UUID_DELETED_FROM_LOCAL_MENU',
+  MENU_ITEM_SAVED: 'menu/MENU_ITEM_SAVED',
+  MENU_ITEM_REMOVED: 'menu/MENU_ITEM_REMOVED',
+  SUB_MENU_ITEMS_COLUMNS_INITED: 'menu/SUB_MENU_ITEMS_COLUMNS_INITED',
+  SUB_MENU_ITEM_FORM_INITED: 'menu/SUB_MENU_ITEM_FORM_INITED',
+  SUB_MENU_ITEM_FORM_INITED_FOR_EDITING: 'menu/SUB_MENU_ITEM_FORM_INITED_FOR_EDITING',
+  SUB_MENU_ITEM_FORM_REMOVED: 'menu/SUB_MENU_ITEM_FORM_REMOVED',
+  SUB_MENU_ITEM_FORM_FIELD_CHANGED: 'menu/SUB_MENU_ITEM_FORM_FIELD_CHANGED',
+  SUB_MENU_ITEM_FORM_SAVED: 'menu/SUB_MENU_ITEM_FORM_SAVED',
+  SUB_MENU_ITEM_REMOVED: 'menu/SUB_MENU_ITEM_REMOVED'
 };
 
 /***/ }),
@@ -1133,8 +1380,292 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   menuStateReducer: () => (/* binding */ menuStateReducer)
 /* harmony export */ });
+/* harmony import */ var _menuState_types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./menuState.types */ "./src/reducers/menuState.types.ts");
+
 const menuStateReducer = (state, action) => {
+  console.log('[MenuStateReducer:action]', action);
   switch (action.type) {
+    case _menuState_types__WEBPACK_IMPORTED_MODULE_0__.MenuStateActionType.MENU_ITEM_FORM_INITED:
+      {
+        const {
+          languageCode
+        } = action.payload;
+        return {
+          ...state,
+          menuItemForm: {
+            isSubmitted: false,
+            languageCode,
+            title: '',
+            url: '',
+            subMenuItemsColumnsUuid: null
+          }
+        };
+      }
+    case _menuState_types__WEBPACK_IMPORTED_MODULE_0__.MenuStateActionType.MENU_ITEM_FORM_INITED_FOR_EDITING:
+      {
+        const {
+          languageCode,
+          uuid
+        } = action.payload;
+        const menuItem = state.menuItems[uuid];
+        return {
+          ...state,
+          menuItemForm: {
+            ...menuItem,
+            isSubmitted: false,
+            languageCode
+          }
+        };
+      }
+    case _menuState_types__WEBPACK_IMPORTED_MODULE_0__.MenuStateActionType.MENU_ITEM_FORM_REMOVED:
+      {
+        return {
+          ...state,
+          menuItemForm: null
+        };
+      }
+    case _menuState_types__WEBPACK_IMPORTED_MODULE_0__.MenuStateActionType.MENU_ITEM_FORM_FIELD_CHANGED:
+      {
+        if (!state.menuItemForm) return state;
+        const {
+          fieldName,
+          value
+        } = action.payload;
+        return {
+          ...state,
+          menuItemForm: {
+            ...state.menuItemForm,
+            [fieldName]: value,
+            isSubmitted: false
+          }
+        };
+      }
+    case _menuState_types__WEBPACK_IMPORTED_MODULE_0__.MenuStateActionType.MENU_ITEM_UUID_ADDED_TO_LOCAL_MENU:
+      {
+        const {
+          languageCode: locale,
+          uuid
+        } = action.payload;
+        const localMenu = new Set(state.localMenu[locale]);
+        localMenu.add(uuid);
+        return {
+          ...state,
+          localMenu: {
+            ...state.localMenu,
+            [locale]: [...localMenu]
+          }
+        };
+      }
+    case _menuState_types__WEBPACK_IMPORTED_MODULE_0__.MenuStateActionType.MENU_ITEM_UUID_DELETED_FROM_LOCAL_MENU:
+      {
+        const {
+          languageCode: locale,
+          uuid
+        } = action.payload;
+        return {
+          ...state,
+          localMenu: {
+            ...state.localMenu,
+            [locale]: [...state.localMenu[locale].filter(_uuid => _uuid !== uuid)]
+          }
+        };
+      }
+    case _menuState_types__WEBPACK_IMPORTED_MODULE_0__.MenuStateActionType.MENU_ITEM_SAVED:
+      {
+        if (!state.menuItemForm) return state;
+        // save on edit if uuid exists, otherwise - new item
+        const uuid = state.menuItemForm.uuid || crypto.randomUUID();
+        const localMenu = new Set(state.localMenu[state.menuItemForm.languageCode]);
+        localMenu.add(uuid);
+        const {
+          isSubmitted,
+          ...menuItemsForm
+        } = state.menuItemForm;
+        return {
+          ...state,
+          menuItemForm: {
+            ...state.menuItemForm,
+            isSubmitted: true
+          },
+          localMenu: {
+            ...state.localMenu,
+            [state.menuItemForm.languageCode]: [...localMenu]
+          },
+          menuItems: {
+            ...state.menuItems,
+            [uuid]: {
+              ...menuItemsForm,
+              uuid
+            }
+          }
+        };
+      }
+    case _menuState_types__WEBPACK_IMPORTED_MODULE_0__.MenuStateActionType.MENU_ITEM_REMOVED:
+      {
+        if (!state.menuItemForm || !state.menuItemForm.uuid) return state;
+        const uuid = state.menuItemForm.uuid;
+        const languageCode = state.menuItemForm.languageCode;
+        const {
+          [uuid]: _,
+          ...menuItems
+        } = state.menuItems;
+        return {
+          ...state,
+          menuItemForm: {
+            ...state.menuItemForm,
+            isSubmitted: true
+          },
+          localMenu: {
+            ...state.localMenu,
+            [languageCode]: [...state.localMenu[languageCode].filter(_uuid => _uuid !== uuid)]
+          },
+          menuItems
+        };
+      }
+    case _menuState_types__WEBPACK_IMPORTED_MODULE_0__.MenuStateActionType.SUB_MENU_ITEMS_COLUMNS_INITED:
+      {
+        if (!state.menuItemForm) return state;
+        const {
+          uuid
+        } = action.payload;
+        return {
+          ...state,
+          menuItemForm: {
+            ...state.menuItemForm,
+            subMenuItemsColumnsUuid: uuid
+          },
+          subMenuItemsColumns: {
+            ...state.subMenuItemsColumns,
+            [uuid]: [[], [], []]
+          }
+        };
+      }
+    case _menuState_types__WEBPACK_IMPORTED_MODULE_0__.MenuStateActionType.SUB_MENU_ITEM_FORM_INITED:
+      {
+        if (!state.menuItemForm) return state;
+        const {
+          columnIndex
+        } = action.payload;
+        return {
+          ...state,
+          subMenuItemForm: {
+            url: '',
+            description: '',
+            title: '',
+            isSubmitted: false,
+            columnIndex
+          }
+        };
+      }
+    case _menuState_types__WEBPACK_IMPORTED_MODULE_0__.MenuStateActionType.SUB_MENU_ITEM_FORM_INITED_FOR_EDITING:
+      {
+        if (!state.menuItemForm) return state;
+        const {
+          uuid: subMenuItemUuid
+        } = action.payload;
+        return {
+          ...state,
+          subMenuItemForm: {
+            ...state.subMenuItems[subMenuItemUuid],
+            isSubmitted: false
+          }
+        };
+      }
+    case _menuState_types__WEBPACK_IMPORTED_MODULE_0__.MenuStateActionType.SUB_MENU_ITEM_FORM_REMOVED:
+      {
+        return {
+          ...state,
+          subMenuItemForm: null
+        };
+      }
+    case _menuState_types__WEBPACK_IMPORTED_MODULE_0__.MenuStateActionType.SUB_MENU_ITEM_FORM_FIELD_CHANGED:
+      {
+        if (!state.subMenuItemForm) return state;
+        const {
+          fieldName,
+          value
+        } = action.payload;
+        return {
+          ...state,
+          subMenuItemForm: {
+            ...state.subMenuItemForm,
+            [fieldName]: value,
+            isSubmitted: false
+          }
+        };
+      }
+    case _menuState_types__WEBPACK_IMPORTED_MODULE_0__.MenuStateActionType.SUB_MENU_ITEM_FORM_SAVED:
+      {
+        if (!state.subMenuItemForm || !state.menuItemForm) return state;
+        const {
+          menuItems,
+          menuItemForm,
+          subMenuItemForm,
+          subMenuItemsColumns
+        } = state;
+        const {
+          isSubmitted,
+          ...submittedSubMenuItemForm
+        } = state.subMenuItemForm;
+        const subMenuItemUuid = submittedSubMenuItemForm.uuid || crypto.randomUUID();
+        const menuItem = menuItems[menuItemForm.uuid];
+        const column = new Set(subMenuItemsColumns[menuItemForm.subMenuItemsColumnsUuid][subMenuItemForm.columnIndex]);
+        column.add(subMenuItemUuid);
+        subMenuItemsColumns[menuItemForm.subMenuItemsColumnsUuid][subMenuItemForm.columnIndex] = [...column];
+        return {
+          ...state,
+          menuItems: {
+            ...state.menuItems,
+            [menuItem.uuid]: {
+              ...menuItem,
+              subMenuItemsColumnsUuid: menuItemForm.subMenuItemsColumnsUuid
+            }
+          },
+          subMenuItemForm: {
+            ...submittedSubMenuItemForm,
+            isSubmitted: true
+          },
+          subMenuItems: {
+            ...state.subMenuItems,
+            [subMenuItemUuid]: {
+              ...submittedSubMenuItemForm,
+              uuid: subMenuItemUuid
+            }
+          },
+          subMenuItemsColumns: {
+            ...subMenuItemsColumns
+          }
+        };
+      }
+    case _menuState_types__WEBPACK_IMPORTED_MODULE_0__.MenuStateActionType.SUB_MENU_ITEM_REMOVED:
+      {
+        const {
+          menuItems,
+          menuItemForm,
+          subMenuItemForm,
+          subMenuItemsColumns,
+          subMenuItems
+        } = state;
+        if (!subMenuItemForm || !subMenuItemForm.uuid || !menuItemForm) return state;
+        const {
+          [subMenuItemForm.uuid]: _,
+          ...newSubMenuItems
+        } = subMenuItems;
+        subMenuItemsColumns[menuItemForm.subMenuItemsColumnsUuid][subMenuItemForm.columnIndex] = subMenuItemsColumns[menuItemForm.subMenuItemsColumnsUuid][subMenuItemForm.columnIndex].filter(uuid => uuid !== subMenuItemForm.uuid);
+        return {
+          ...state,
+          subMenuItemForm: {
+            ...subMenuItemForm,
+            isSubmitted: true
+          },
+          subMenuItems: {
+            ...newSubMenuItems
+          },
+          subMenuItemsColumns: {
+            ...subMenuItemsColumns
+          }
+        };
+      }
     default:
       return state;
   }
@@ -1173,8 +1704,9 @@ ___CSS_LOADER_EXPORT___.push([module.id, `:root {
   --devmcee-mega-menu-admin-action-button-primary-color-disabled: #BABABA;
   --devmcee-mega-menu-admin-action-button-primary-color-delete: #b32d2e;
   --devmcee-mega-menu-admin-action-button-primary-color-delete-hover: #721d1d;
-  --devmcee-mega-menu-admin-background-secondary-color: #F5F6FA;
-  --devmcee-mega-menu-admin-border-secondary-color: #dcdcde;
+  --devmcee-mega-menu-admin-background-secondary-color: #f0f0f1;
+  --devmcee-mega-menu-admin-header-background-primary-color: #f6f7f7;
+  --devmcee-mega-menu-admin-border-secondary-color: #c3c4c7;
   --devmcee-mega-menu-admin-builder-container-root-column-width: 300px;
   --devmcee-mega-menu-admin-builder-secondary-font-size: 10px;
   --devmcee-mega-menu-primary-color: #4462ff;
@@ -1197,7 +1729,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `:root {
   flex-direction: column;
   height: 100%;
   min-height: 600px;
-}`, "",{"version":3,"sources":["webpack://./src/app.styles.scss"],"names":[],"mappings":"AAAA;EACE,6CAAA;EACA,sDAAA;EACA,kDAAA;EACA,uDAAA;EACA,yDAAA;EACA,+DAAA;EACA,8DAAA;EACA,oEAAA;EACA,uEAAA;EACA,qEAAA;EACA,2EAAA;EACA,6DAAA;EACA,yDAAA;EAEA,oEAAA;EACA,2DAAA;EAEA,0CAAA;EACA,4CAAA;EACA,4CAAA;EACA,iDAAA;EACA,iDAAA;EACA,uDAAA;EACA,mDAAA;EACA,yDAAA;EACA,4DAAA;EACA,sDAAA;EACA,yCAAA;EACA,mDAAA;AADF;;AAKE;EACE,cAAA;EACA,aAAA;EACA,sBAAA;EACA,YAAA;EACA,iBAAA;AAFJ","sourcesContent":[":root {\n  --devmcee-mega-menu-admin-primary-color: #000;\n  --devmcee-mega-menu-admin-primary-contrast-color: #fff;\n  --devmcee-mega-menu-admin-secondary-color: #f8f9fa;\n  --devmcee-mega-menu-admin-button-primary-color: #3a3a3a;\n  --devmcee-mega-menu-admin-button-secondary-color: #F5F6FA;\n  --devmcee-mega-menu-admin-button-secondary-hover-color: #D9DADF;\n  --devmcee-mega-menu-admin-action-button-primary-color: #2782ad;\n  --devmcee-mega-menu-admin-action-button-primary-color-hover: #1f6789;\n  --devmcee-mega-menu-admin-action-button-primary-color-disabled: #BABABA;\n  --devmcee-mega-menu-admin-action-button-primary-color-delete: #b32d2e;\n  --devmcee-mega-menu-admin-action-button-primary-color-delete-hover: #721d1d;\n  --devmcee-mega-menu-admin-background-secondary-color: #F5F6FA;\n  --devmcee-mega-menu-admin-border-secondary-color: #dcdcde;\n\n  --devmcee-mega-menu-admin-builder-container-root-column-width: 300px;\n  --devmcee-mega-menu-admin-builder-secondary-font-size: 10px;\n\n  --devmcee-mega-menu-primary-color: #4462ff;\n  --devmcee-mega-menu-secondary-color: #f8f9fa;\n  --devmcee-mega-menu-font-primary-color: #000;\n  --devmcee-mega-menu-font-secondary-color: #5B6073;\n  --devmcee-mega-menu-button-primary-color: #4462ff;\n  --devmcee-mega-menu-button-primary-hover-color: #3650d1;\n  --devmcee-mega-menu-button-secondary-color: #F5F6FA;\n  --devmcee-mega-menu-button-secondary-hover-color: #D9DADF;\n  --devmcee-mega-menu-mobile-menu-button-secondary-color: #fff;\n  --devmcee-mega-menu-column-background-color: #1EA52317;\n  --devmcee-mega-menu-border-color: #c3c4c7;\n  --devmcee-mega-menu-border-secondary-color: #d3d5e6;\n}\n\n.devmcee-mega-menu-builder {\n  &-container {\n    margin: 16px 0;\n    display: flex;\n    flex-direction: column;\n    height: 100%;\n    min-height: 600px;\n  }\n}"],"sourceRoot":""}]);
+}`, "",{"version":3,"sources":["webpack://./src/app.styles.scss"],"names":[],"mappings":"AAAA;EACE,6CAAA;EACA,sDAAA;EACA,kDAAA;EACA,uDAAA;EACA,yDAAA;EACA,+DAAA;EACA,8DAAA;EACA,oEAAA;EACA,uEAAA;EACA,qEAAA;EACA,2EAAA;EACA,6DAAA;EACA,kEAAA;EACA,yDAAA;EAEA,oEAAA;EACA,2DAAA;EAEA,0CAAA;EACA,4CAAA;EACA,4CAAA;EACA,iDAAA;EACA,iDAAA;EACA,uDAAA;EACA,mDAAA;EACA,yDAAA;EACA,4DAAA;EACA,sDAAA;EACA,yCAAA;EACA,mDAAA;AADF;;AAKE;EACE,cAAA;EACA,aAAA;EACA,sBAAA;EACA,YAAA;EACA,iBAAA;AAFJ","sourcesContent":[":root {\n  --devmcee-mega-menu-admin-primary-color: #000;\n  --devmcee-mega-menu-admin-primary-contrast-color: #fff;\n  --devmcee-mega-menu-admin-secondary-color: #f8f9fa;\n  --devmcee-mega-menu-admin-button-primary-color: #3a3a3a;\n  --devmcee-mega-menu-admin-button-secondary-color: #F5F6FA;\n  --devmcee-mega-menu-admin-button-secondary-hover-color: #D9DADF;\n  --devmcee-mega-menu-admin-action-button-primary-color: #2782ad;\n  --devmcee-mega-menu-admin-action-button-primary-color-hover: #1f6789;\n  --devmcee-mega-menu-admin-action-button-primary-color-disabled: #BABABA;\n  --devmcee-mega-menu-admin-action-button-primary-color-delete: #b32d2e;\n  --devmcee-mega-menu-admin-action-button-primary-color-delete-hover: #721d1d;\n  --devmcee-mega-menu-admin-background-secondary-color: #f0f0f1;\n  --devmcee-mega-menu-admin-header-background-primary-color: #f6f7f7;\n  --devmcee-mega-menu-admin-border-secondary-color: #c3c4c7;\n\n  --devmcee-mega-menu-admin-builder-container-root-column-width: 300px;\n  --devmcee-mega-menu-admin-builder-secondary-font-size: 10px;\n\n  --devmcee-mega-menu-primary-color: #4462ff;\n  --devmcee-mega-menu-secondary-color: #f8f9fa;\n  --devmcee-mega-menu-font-primary-color: #000;\n  --devmcee-mega-menu-font-secondary-color: #5B6073;\n  --devmcee-mega-menu-button-primary-color: #4462ff;\n  --devmcee-mega-menu-button-primary-hover-color: #3650d1;\n  --devmcee-mega-menu-button-secondary-color: #F5F6FA;\n  --devmcee-mega-menu-button-secondary-hover-color: #D9DADF;\n  --devmcee-mega-menu-mobile-menu-button-secondary-color: #fff;\n  --devmcee-mega-menu-column-background-color: #1EA52317;\n  --devmcee-mega-menu-border-color: #c3c4c7;\n  --devmcee-mega-menu-border-secondary-color: #d3d5e6;\n}\n\n.devmcee-mega-menu-builder {\n  &-container {\n    margin: 16px 0;\n    display: flex;\n    flex-direction: column;\n    height: 100%;\n    min-height: 600px;\n  }\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -1308,6 +1840,10 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.devmcee-mega-menu-builder-content-con
 .devmcee-mega-menu-builder-content-action-button--delete:hover {
   color: var(--devmcee-mega-menu-admin-action-button-primary-color-delete-hover);
 }
+.devmcee-mega-menu-builder-content-action-button--delete:disabled:hover {
+  color: var(--devmcee-mega-menu-admin-action-button-primary-color-disabled);
+  cursor: not-allowed !important;
+}
 .devmcee-mega-menu-builder-content-menu-container {
   border: 1px solid var(--devmcee-mega-menu-border-color);
   display: flex;
@@ -1315,7 +1851,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.devmcee-mega-menu-builder-content-con
   flex-grow: 1;
   height: 100%;
   width: var(--devmcee-mega-menu-admin-builder-container-root-column-width);
-}`, "",{"version":3,"sources":["webpack://./src/components/MegaMenuContainer.scss"],"names":[],"mappings":"AACE;EACE,aAAA;EACA,YAAA;EACA,YAAA;EACA,uEAAA;EACA,6EAAA;AAAJ;AAGE;EACE,aAAA;EACA,sBAAA;AADJ;AAIE;EACE,YAAA;EACA,aAAA;EACA,8BAAA;EACA,4DAAA;EACA,6DAAA;AAFJ;AAKE;EACE,eAAA;EACA,YAAA;EACA,6BAAA;EACA,0BAAA;EACA,iEAAA;AAHJ;AAKI;EACE,uEAAA;AAHN;AAMI;EACE,0EAAA;EACA,mBAAA;AAJN;AAOI;EACE,wEAAA;AALN;AAQI;EACE,8EAAA;AANN;AAUE;EACE,uDAAA;EACA,aAAA;EACA,sBAAA;EACA,YAAA;EACA,YAAA;EACA,yEAAA;AARJ","sourcesContent":[".devmcee-mega-menu-builder-content {\n  &-container {\n    display: flex;\n    flex-grow: 1;\n    height: 100%;\n    background-color: var(--devmcee-mega-menu-admin-primary-contrast-color);\n    min-width: var(--devmcee-mega-menu-admin-builder-container-root-column-width);\n  }\n\n  &__root-menu {\n    display: flex;\n    flex-direction: column;\n  }\n\n  &-action-bar {\n    padding: 8px;\n    display: flex;\n    justify-content: space-between;\n    border-left: 1px solid var(--devmcee-mega-menu-border-color);\n    border-right: 1px solid var(--devmcee-mega-menu-border-color);\n  }\n\n  &-action-button {\n    cursor: pointer;\n    border: none;\n    background-color: transparent;\n    text-decoration: underline;\n    color: var(--devmcee-mega-menu-admin-action-button-primary-color);\n\n    &:hover {\n      color: var(--devmcee-mega-menu-admin-action-button-primary-color-hover);\n    }\n\n    &:disabled {\n      color: var(--devmcee-mega-menu-admin-action-button-primary-color-disabled);\n      cursor: not-allowed;\n    }\n\n    &--delete {\n      color: var(--devmcee-mega-menu-admin-action-button-primary-color-delete);\n    }\n\n    &--delete:hover {\n      color: var(--devmcee-mega-menu-admin-action-button-primary-color-delete-hover);\n    }\n  }\n\n  &-menu-container {\n    border: 1px solid var(--devmcee-mega-menu-border-color);\n    display: flex;\n    flex-direction: column;\n    flex-grow: 1;\n    height: 100%;\n    width: var(--devmcee-mega-menu-admin-builder-container-root-column-width);\n  }\n}"],"sourceRoot":""}]);
+}`, "",{"version":3,"sources":["webpack://./src/components/MegaMenuContainer.scss"],"names":[],"mappings":"AACE;EACE,aAAA;EACA,YAAA;EACA,YAAA;EACA,uEAAA;EACA,6EAAA;AAAJ;AAGE;EACE,aAAA;EACA,sBAAA;AADJ;AAIE;EACE,YAAA;EACA,aAAA;EACA,8BAAA;EACA,4DAAA;EACA,6DAAA;AAFJ;AAKE;EACE,eAAA;EACA,YAAA;EACA,6BAAA;EACA,0BAAA;EACA,iEAAA;AAHJ;AAKI;EACE,uEAAA;AAHN;AAMI;EACE,0EAAA;EACA,mBAAA;AAJN;AAOI;EACE,wEAAA;AALN;AAQI;EACE,8EAAA;AANN;AASI;EACE,0EAAA;EACA,8BAAA;AAPN;AAWE;EACE,uDAAA;EACA,aAAA;EACA,sBAAA;EACA,YAAA;EACA,YAAA;EACA,yEAAA;AATJ","sourcesContent":[".devmcee-mega-menu-builder-content {\n  &-container {\n    display: flex;\n    flex-grow: 1;\n    height: 100%;\n    background-color: var(--devmcee-mega-menu-admin-primary-contrast-color);\n    min-width: var(--devmcee-mega-menu-admin-builder-container-root-column-width);\n  }\n\n  &__root-menu {\n    display: flex;\n    flex-direction: column;\n  }\n\n  &-action-bar {\n    padding: 8px;\n    display: flex;\n    justify-content: space-between;\n    border-left: 1px solid var(--devmcee-mega-menu-border-color);\n    border-right: 1px solid var(--devmcee-mega-menu-border-color);\n  }\n\n  &-action-button {\n    cursor: pointer;\n    border: none;\n    background-color: transparent;\n    text-decoration: underline;\n    color: var(--devmcee-mega-menu-admin-action-button-primary-color);\n\n    &:hover {\n      color: var(--devmcee-mega-menu-admin-action-button-primary-color-hover);\n    }\n\n    &:disabled {\n      color: var(--devmcee-mega-menu-admin-action-button-primary-color-disabled);\n      cursor: not-allowed;\n    }\n\n    &--delete {\n      color: var(--devmcee-mega-menu-admin-action-button-primary-color-delete);\n    }\n\n    &--delete:hover {\n      color: var(--devmcee-mega-menu-admin-action-button-primary-color-delete-hover);\n    }\n\n    &--delete:disabled:hover {\n      color: var(--devmcee-mega-menu-admin-action-button-primary-color-disabled);\n      cursor: not-allowed!important;\n    }\n  }\n\n  &-menu-container {\n    border: 1px solid var(--devmcee-mega-menu-border-color);\n    display: flex;\n    flex-direction: column;\n    flex-grow: 1;\n    height: 100%;\n    width: var(--devmcee-mega-menu-admin-builder-container-root-column-width);\n  }\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -1374,10 +1910,10 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.devmcee-mega-menu-builder-menu-item {
 
 /***/ }),
 
-/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/MenuItemForm.scss":
-/*!***********************************************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/MenuItemForm.scss ***!
-  \***********************************************************************************************************************/
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/SubMenuItem.scss":
+/*!**********************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/SubMenuItem.scss ***!
+  \**********************************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -1393,27 +1929,12 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, `.devmcee-mega-menu-builder-menu-item-form-title-bar {
-  padding: 8px;
+___CSS_LOADER_EXPORT___.push([module.id, `.devmcee-mega-menu-builder-content__sub-menu-item {
   display: flex;
   justify-content: space-between;
-  background-color: var(--devmcee-mega-menu-admin-background-secondary-color);
-}
-.devmcee-mega-menu-builder-menu-item-form__fields-container {
+  border-bottom: 1px solid var(--devmcee-mega-menu-admin-border-secondary-color);
   padding: 8px;
-  display: flex;
-  flex-direction: column;
-  row-gap: 8px;
-}
-.devmcee-mega-menu-builder-menu-item-form__fields-container textarea, .devmcee-mega-menu-builder-menu-item-form__fields-container input {
-  width: 100%;
-  border-color: var(--devmcee-mega-menu-admin-border-secondary-color);
-}
-.devmcee-mega-menu-builder-menu-item-form__footer-actions-container {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px;
-}`, "",{"version":3,"sources":["webpack://./src/components/MenuItemForm.scss"],"names":[],"mappings":"AAEI;EACE,YAAA;EACA,aAAA;EACA,8BAAA;EACA,2EAAA;AADN;AAKE;EACE,YAAA;EACA,aAAA;EACA,sBAAA;EACA,YAAA;AAHJ;AAKI;EAEE,WAAA;EACA,mEAAA;AAJN;AAQE;EACE,aAAA;EACA,8BAAA;EACA,YAAA;AANJ","sourcesContent":[".devmcee-mega-menu-builder-menu-item-form {\n  &-title {\n    &-bar {\n      padding: 8px;\n      display: flex;\n      justify-content: space-between;\n      background-color: var(--devmcee-mega-menu-admin-background-secondary-color);\n    }\n  }\n\n  &__fields-container {\n    padding: 8px;\n    display: flex;\n    flex-direction: column;\n    row-gap: 8px;\n\n    & textarea,\n    & input {\n      width: 100%;\n      border-color: var(--devmcee-mega-menu-admin-border-secondary-color);\n    }\n  }\n\n  &__footer-actions-container {\n    display: flex;\n    justify-content: space-between;\n    padding: 8px;\n  }\n}"],"sourceRoot":""}]);
+}`, "",{"version":3,"sources":["webpack://./src/components/SubMenuItem.scss"],"names":[],"mappings":"AAAA;EACE,aAAA;EACA,8BAAA;EACA,8EAAA;EACA,YAAA;AACF","sourcesContent":[".devmcee-mega-menu-builder-content__sub-menu-item {\n  display: flex;\n  justify-content: space-between;\n  border-bottom: 1px solid var(--devmcee-mega-menu-admin-border-secondary-color);\n  padding: 8px;\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -1450,6 +1971,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.devmcee-mega-menu-builder-content__su
   justify-content: space-between;
   column-gap: 8px;
   align-items: flex-start;
+  background-color: var(--devmcee-mega-menu-admin-background-secondary-color);
 }
 .devmcee-mega-menu-builder-content__sub-menu-column {
   display: flex;
@@ -1458,6 +1980,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.devmcee-mega-menu-builder-content__su
   border: 1px solid var(--devmcee-mega-menu-admin-border-secondary-color);
   width: 33.33%;
   height: 100%;
+  background-color: var(--devmcee-mega-menu-admin-primary-contrast-color);
 }
 .devmcee-mega-menu-builder-content__sub-menu-column-header {
   display: flex;
@@ -1465,9 +1988,62 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.devmcee-mega-menu-builder-content__su
   padding: 8px;
   border-bottom: 1px solid var(--devmcee-mega-menu-admin-border-secondary-color);
 }
-.devmcee-mega-menu-builder-content__sub-menu-column-content {
+.devmcee-mega-menu-builder-content__sub-menu-column-content-placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
   padding: 8px;
-}`, "",{"version":3,"sources":["webpack://./src/components/SubMenuItemsContainer.scss"],"names":[],"mappings":"AACE;EACE,aAAA;EACA,WAAA;AAAJ;AACI;EACE,YAAA;EACA,aAAA;EACA,YAAA;EACA,8BAAA;EACA,eAAA;EACA,uBAAA;AACN;AACI;EACE,aAAA;EACA,sBAAA;EACA,YAAA;EACA,uEAAA;EACA,aAAA;EACA,YAAA;AACN;AACM;EACE,aAAA;EACA,mBAAA;EACA,YAAA;EACA,8EAAA;AACR;AAEM;EACE,YAAA;AAAR","sourcesContent":[".devmcee-mega-menu-builder-content {\n  &__sub-menu {\n    display: flex;\n    width: 100%;\n    &-container {\n      padding: 8px;\n      display: flex;\n      flex-grow: 1;\n      justify-content: space-between;\n      column-gap: 8px;\n      align-items: flex-start;\n    }\n    &-column {\n      display: flex;\n      flex-direction: column;\n      flex-grow: 1;\n      border: 1px solid var(--devmcee-mega-menu-admin-border-secondary-color);\n      width: 33.33%;\n      height: 100%;\n      \n      &-header {\n        display: flex;\n        align-items: center;\n        padding: 8px;\n        border-bottom: 1px solid var(--devmcee-mega-menu-admin-border-secondary-color);\n      }\n\n      &-content {\n        padding: 8px;\n      }\n    }\n  }\n}"],"sourceRoot":""}]);
+}`, "",{"version":3,"sources":["webpack://./src/components/SubMenuItemsContainer.scss"],"names":[],"mappings":"AACE;EACE,aAAA;EACA,WAAA;AAAJ;AAEI;EACE,YAAA;EACA,aAAA;EACA,YAAA;EACA,8BAAA;EACA,eAAA;EACA,uBAAA;EACA,2EAAA;AAAN;AAGI;EACE,aAAA;EACA,sBAAA;EACA,YAAA;EACA,uEAAA;EACA,aAAA;EACA,YAAA;EACA,uEAAA;AADN;AAGM;EACE,aAAA;EACA,mBAAA;EACA,YAAA;EACA,8EAAA;AADR;AAMQ;EACE,aAAA;EACA,uBAAA;EACA,mBAAA;EACA,YAAA;EACA,YAAA;AAJV","sourcesContent":[".devmcee-mega-menu-builder-content {\n  &__sub-menu {\n    display: flex;\n    width: 100%;\n\n    &-container {\n      padding: 8px;\n      display: flex;\n      flex-grow: 1;\n      justify-content: space-between;\n      column-gap: 8px;\n      align-items: flex-start;\n      background-color: var(--devmcee-mega-menu-admin-background-secondary-color);\n    }\n\n    &-column {\n      display: flex;\n      flex-direction: column;\n      flex-grow: 1;\n      border: 1px solid var(--devmcee-mega-menu-admin-border-secondary-color);\n      width: 33.33%;\n      height: 100%;\n      background-color: var(--devmcee-mega-menu-admin-primary-contrast-color);\n\n      &-header {\n        display: flex;\n        align-items: center;\n        padding: 8px;\n        border-bottom: 1px solid var(--devmcee-mega-menu-admin-border-secondary-color);\n      }\n\n      &-content {\n\n        &-placeholder {\n          display: flex;\n          justify-content: center;\n          align-items: center;\n          height: 100%;\n          padding: 8px;\n        }\n      }\n    }\n  }\n}"],"sourceRoot":""}]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/forms/MenuItemForm.scss":
+/*!*****************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/forms/MenuItemForm.scss ***!
+  \*****************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/sourceMaps.js */ "./node_modules/css-loader/dist/runtime/sourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `.devmcee-mega-menu-builder-menu-item-form {
+  border-bottom: 1px solid var(--devmcee-mega-menu-admin-border-secondary-color);
+}
+.devmcee-mega-menu-builder-menu-item-form-title-bar {
+  padding: 8px;
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--devmcee-mega-menu-admin-header-background-primary-color);
+}
+.devmcee-mega-menu-builder-menu-item-form__fields-container {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 8px;
+}
+.devmcee-mega-menu-builder-menu-item-form__fields-container textarea, .devmcee-mega-menu-builder-menu-item-form__fields-container input {
+  width: 100%;
+  border-color: var(--devmcee-mega-menu-admin-border-secondary-color);
+}
+.devmcee-mega-menu-builder-menu-item-form__footer-actions-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px;
+}`, "",{"version":3,"sources":["webpack://./src/components/forms/MenuItemForm.scss"],"names":[],"mappings":"AAAA;EACE,8EAAA;AACF;AAEI;EACE,YAAA;EACA,aAAA;EACA,8BAAA;EACA,gFAAA;AAAN;AAIE;EACE,YAAA;EACA,aAAA;EACA,sBAAA;EACA,YAAA;AAFJ;AAII;EAEE,WAAA;EACA,mEAAA;AAHN;AAOE;EACE,aAAA;EACA,8BAAA;EACA,YAAA;AALJ","sourcesContent":[".devmcee-mega-menu-builder-menu-item-form {\n  border-bottom: 1px solid var(--devmcee-mega-menu-admin-border-secondary-color);\n\n  &-title {\n    &-bar {\n      padding: 8px;\n      display: flex;\n      justify-content: space-between;\n      background-color: var(--devmcee-mega-menu-admin-header-background-primary-color);\n    }\n  }\n\n  &__fields-container {\n    padding: 8px;\n    display: flex;\n    flex-direction: column;\n    row-gap: 8px;\n\n    & textarea,\n    & input {\n      width: 100%;\n      border-color: var(--devmcee-mega-menu-admin-border-secondary-color);\n    }\n  }\n\n  &__footer-actions-container {\n    display: flex;\n    justify-content: space-between;\n    padding: 8px;\n  }\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -1801,10 +2377,10 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
 
 /***/ }),
 
-/***/ "./src/components/MenuItemForm.scss":
-/*!******************************************!*\
-  !*** ./src/components/MenuItemForm.scss ***!
-  \******************************************/
+/***/ "./src/components/SubMenuItem.scss":
+/*!*****************************************!*\
+  !*** ./src/components/SubMenuItem.scss ***!
+  \*****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -1823,7 +2399,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/styleTagTransform.js */ "./node_modules/style-loader/dist/runtime/styleTagTransform.js");
 /* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_MenuItemForm_scss__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../node_modules/css-loader/dist/cjs.js!../../node_modules/sass-loader/dist/cjs.js!./MenuItemForm.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/MenuItemForm.scss");
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_SubMenuItem_scss__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../node_modules/css-loader/dist/cjs.js!../../node_modules/sass-loader/dist/cjs.js!./SubMenuItem.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/SubMenuItem.scss");
 
       
       
@@ -1843,12 +2419,12 @@ options.insert = _node_modules_style_loader_dist_runtime_insertBySelector_js__WE
 options.domAPI = (_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default());
 options.insertStyleElement = (_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default());
 
-var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_MenuItemForm_scss__WEBPACK_IMPORTED_MODULE_6__["default"], options);
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_SubMenuItem_scss__WEBPACK_IMPORTED_MODULE_6__["default"], options);
 
 
 
 
-       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_MenuItemForm_scss__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_MenuItemForm_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_MenuItemForm_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
+       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_SubMenuItem_scss__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_SubMenuItem_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_SubMenuItem_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
 
 
 /***/ }),
@@ -1901,6 +2477,58 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
 
 
        /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_SubMenuItemsContainer_scss__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_SubMenuItemsContainer_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_SubMenuItemsContainer_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
+
+
+/***/ }),
+
+/***/ "./src/components/forms/MenuItemForm.scss":
+/*!************************************************!*\
+  !*** ./src/components/forms/MenuItemForm.scss ***!
+  \************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/styleDomAPI.js */ "./node_modules/style-loader/dist/runtime/styleDomAPI.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/insertBySelector.js */ "./node_modules/style-loader/dist/runtime/insertBySelector.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js */ "./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/insertStyleElement.js */ "./node_modules/style-loader/dist/runtime/insertStyleElement.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/styleTagTransform.js */ "./node_modules/style-loader/dist/runtime/styleTagTransform.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_MenuItemForm_scss__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/sass-loader/dist/cjs.js!./MenuItemForm.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/forms/MenuItemForm.scss");
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+var options = {};
+
+options.styleTagTransform = (_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default());
+options.setAttributes = (_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default());
+options.insert = _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default().bind(null, "head");
+options.domAPI = (_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default());
+options.insertStyleElement = (_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default());
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_MenuItemForm_scss__WEBPACK_IMPORTED_MODULE_6__["default"], options);
+
+
+
+
+       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_MenuItemForm_scss__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_MenuItemForm_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_MenuItemForm_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
 
 
 /***/ }),
@@ -2277,6 +2905,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _App__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./App */ "./src/App.tsx");
 /* harmony import */ var _providers_MenuDataContextProvider__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./providers/MenuDataContextProvider */ "./src/providers/MenuDataContextProvider.tsx");
 /* harmony import */ var _providers_MenuMetaContextProvider__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./providers/MenuMetaContextProvider */ "./src/providers/MenuMetaContextProvider.tsx");
+/* harmony import */ var _providers_ApiServiceProvider__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./providers/ApiServiceProvider */ "./src/providers/ApiServiceProvider.tsx");
+
 
 
 
@@ -2285,7 +2915,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const rootElement = document.getElementById('devmcee-mega-menu-root');
   if (rootElement) {
     const root = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createRoot)(rootElement);
-    root.render(/*#__PURE__*/React.createElement(_providers_MenuMetaContextProvider__WEBPACK_IMPORTED_MODULE_3__.MenuMetaContextProvider, null, /*#__PURE__*/React.createElement(_providers_MenuDataContextProvider__WEBPACK_IMPORTED_MODULE_2__.MenuDataContextProvider, null, /*#__PURE__*/React.createElement(_App__WEBPACK_IMPORTED_MODULE_1__.App, null))));
+    root.render(/*#__PURE__*/React.createElement(_providers_MenuMetaContextProvider__WEBPACK_IMPORTED_MODULE_3__.MenuMetaContextProvider, null, /*#__PURE__*/React.createElement(_providers_MenuDataContextProvider__WEBPACK_IMPORTED_MODULE_2__.MenuDataContextProvider, null, /*#__PURE__*/React.createElement(_providers_ApiServiceProvider__WEBPACK_IMPORTED_MODULE_4__.ApiServiceProvider, null, /*#__PURE__*/React.createElement(_App__WEBPACK_IMPORTED_MODULE_1__.App, null)))));
   }
 });
 })();

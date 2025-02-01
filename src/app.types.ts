@@ -1,11 +1,9 @@
-import { UUID } from 'node:crypto';
-
 export type ValueOf<T> = T[keyof T];
 export type MegaMenuData = {
-	menuItemsListToLocaleMap: MenuItemsListToLocaleMap;
-	menuItemsMap: MenuItemsMap;
-	subMenuItemsMap: SubMenuItemsMap;
-	subMenuItemsColumnsMap: SubMenuItemsColumnsMap;
+	localMenu: LocalMenu;
+	menuItems: MenuItems;
+	subMenuItems: SubMenuItems;
+	subMenuItemsColumns: SubMenuItemsColumns;
 };
 
 export type LanguageCode = string;
@@ -15,13 +13,13 @@ export const EndpointName = {
 } as const;
 
 export type EndpointName = ValueOf<typeof EndpointName>;
-export type EndpointMap =  Record<EndpointName, string>;
+export type EndpointMap = Record<EndpointName, string>;
 
 export type MegaMenuInitData = {
 	languages: LanguageCode[];
 	defaultLanguage: LanguageCode;
 	data: MegaMenuData;
-	endpoints:EndpointMap;
+	endpoints: EndpointMap;
 	customNonce: string;
 	postID: number;
 };
@@ -33,23 +31,25 @@ export type MenuItemBase = {
 	classes?: string;
 };
 
-export type SubMenuItemsColumn = SubMenuItem['uuid'][];
+export type SubMenuItemsList = SubMenuItem['uuid'][];
 
 export type MenuItem = MenuItemBase & {
-	subMenuItemsColumnsUuid: keyof SubMenuItemsColumnsMap | null;
+	languageCode: LanguageCode,
+	subMenuItemsColumnsUuid: keyof SubMenuItemsColumns | null;
 };
 
-export type MenuItemsMap = Record<MenuItem['uuid'], MenuItem>;
+export type MenuItems = Record<MenuItem['uuid'], MenuItem>;
 export type MenuItemsList = MenuItem['uuid'][];
 
-export type MenuItemsListToLocaleMap = Record<LanguageCode, MenuItemsList>;
+export type LocalMenu = Record<LanguageCode, MenuItemsList>;
 
 export type SubMenuItem = MenuItemBase & {
 	description: string;
+	columnIndex: number;
 };
 
-export type SubMenuItemsMap = Record<SubMenuItem['uuid'], SubMenuItem>;
-export type SubMenuItemsColumnsMap = Record<UUID, SubMenuItemsColumn[]>;
+export type SubMenuItems = Record<SubMenuItem['uuid'], SubMenuItem>;
+export type SubMenuItemsColumns = Record<UUID, SubMenuItemsList[]>;
 
 export type MenuItemFormData = Omit<MenuItem, 'uuid'> & {
 	uuid?: MenuItem['uuid'];
@@ -63,7 +63,9 @@ export type SaveMenuRequestBody = {
 };
 
 // reducers
-export type UnknownAction<T extends string, P> = {
-  type: T;
-  payload: P;
+export type Action<T extends string, P extends unknown> = {
+	type: T;
+	payload: P;
 }
+
+export type UUID = `${string}-${string}-${string}-${string}-${string}`;

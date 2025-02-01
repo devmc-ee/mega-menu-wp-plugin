@@ -2,6 +2,7 @@ import { createRoot } from '@wordpress/element';
 import { App } from './App';
 import { MenuDataContextProvider } from './providers/MenuDataContextProvider';
 import { MenuMetaContextProvider } from './providers/MenuMetaContextProvider';
+import { ApiServiceProvider } from './providers/ApiServiceProvider';
 
 document.addEventListener('DOMContentLoaded', () => {
 	const rootElement = document.getElementById('devmcee-mega-menu-root');
@@ -11,7 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
 		root.render(
 			<MenuMetaContextProvider>
 				<MenuDataContextProvider>
-					<App />
+					<ApiServiceProvider>
+						<App />
+					</ApiServiceProvider>
 				</MenuDataContextProvider>
 			</MenuMetaContextProvider>
 		);

@@ -43,6 +43,11 @@
     &--delete:hover {
       color: var(--devmcee-mega-menu-admin-action-button-primary-color-delete-hover);
     }
+
+    &--delete:disabled:hover {
+      color: var(--devmcee-mega-menu-admin-action-button-primary-color-disabled);
+      cursor: not-allowed!important;
+    }
   }
 
   &-menu-container {

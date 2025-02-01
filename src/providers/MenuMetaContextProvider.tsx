@@ -1,30 +1,35 @@
 import { createContext, Dispatch, FC, useReducer } from "react"
-import { MenuStateAction } from "../reducers/menuState.types";
 import { EndpointName, MegaMenuInitData } from "../app.types";
 import { menuMetaReducer } from "../reducers/menuMetaReducer";
-import { MenuMetaState } from "../reducers/menuMeta.type";
+import { MenuMetaAction, MenuMetaState } from "../reducers/menuMeta.type";
 
 // Provided by WordPress wp_localize_script
 declare var devmceeMegaMenuInitData: MegaMenuInitData;
+
+let externalMetaData = {};
+
+if (typeof devmceeMegaMenuInitData !== 'undefined') {
+  const { ['data']: _, ...meta } = devmceeMegaMenuInitData;
+  externalMetaData = meta;
+}
 
 type Props = {
   children: React.ReactNode;
 }
 
-const {['data']: _, ...meta} =  devmceeMegaMenuInitData;
-
 export const menuMetaInitialState: MenuMetaState = Object.assign({
   languages: [],
   defaultLanguage: 'en',
+  activeLanguageTab: 'en',
   endpoints: {
     [EndpointName.SAVE]: '',
   },
   customNonce: "",
   postID: 0
-}, meta);
+}, externalMetaData);
 
 export const MenuMetaStateContext = createContext<MenuMetaState>(menuMetaInitialState);
-export const MenuMetaDispatchContext = createContext<Dispatch<MenuStateAction>>(() => void (0));
+export const MenuMetaDispatchContext = createContext<Dispatch<MenuMetaAction>>(() => void (0));
 
 export const MenuMetaContextProvider: FC<Props> = ({ children }) => {
   const [state, dispatch] = useReducer(menuMetaReducer, menuMetaInitialState);

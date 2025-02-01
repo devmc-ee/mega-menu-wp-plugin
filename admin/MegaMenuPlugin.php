@@ -70,7 +70,7 @@ class MegaMenuPlugin
 
     if (empty($data)) {
       $data = $this->get_mega_menu_init_data();
-      update_post_meta( $postID, $this->post_meta_key, $data );
+      update_post_meta($postID, $this->post_meta_key, $data);
     };
 
     wp_localize_script('devmcee-mm-admin-ui-script', 'devmceeMegaMenuInitData', [
@@ -81,7 +81,7 @@ class MegaMenuPlugin
         'save' => esc_url_raw(rest_url($this->endpoint_base . '/save'))
       ),
       'customNonce'    => wp_create_nonce('wp_rest'),
-      'postID' =>$postID
+      'postID' => $postID
     ]);
 
     wp_enqueue_script('devmcee-mm-admin-ui-script');
@@ -117,7 +117,7 @@ class MegaMenuPlugin
     $result = update_post_meta($post_id, $this->post_meta_key, $data);
 
     if ($result) {
-      return  rest_ensure_response('success');
+      return  rest_ensure_response(['message' => 'success']);
     }
 
     return  new \WP_REST_Response(
@@ -227,22 +227,24 @@ class MegaMenuPlugin
     return $output;
   }
 
-  private function get_mega_menu_init_data() {
+  private function get_mega_menu_init_data()
+  {
     $languages = $this->languageService->get_active_languages();
-    $menuItemsListToLocaleMap = [];
+    $localMenu = [];
 
     foreach ($languages as $language) {
-      $menuItemsListToLocaleMap[$language] = [];
+      $localMenu[$language] = [];
     }
 
-    if (empty($menuItemsListToLocaleMap)) {
-      $menuItemsListToLocaleMap['en'] = [];
+    if (empty($localMenu)) {
+      $localMenu['en'] = [];
     }
 
     return array(
-      'menuItemsListToLocaleMap' => $menuItemsListToLocaleMap,
-      'menuItemsMap' => new \stdClass(),
-      'subMenuItemsMap' => new \stdClass(),
+      'localMenu' => $localMenu,
+      'menuItems' => new \stdClass(),
+      'subMenuItems' => new \stdClass(),
+      'subMenuItemsColumns' => new \stdClass(),
     );
   }
 }

@@ -1,69 +1,50 @@
-import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react';
-import { MenuItem, MenuItemFormData } from '../app.types';
+import { ChangeEvent, FormEvent, useMemo } from 'react';
+import { useMenuState } from './useMenuState';
+import { MenuItemForm } from '../reducers/menuState.types';
 
-type UseMenuItemFormData = Omit<
-	MenuItemFormData,
-	'subMenuItemsColumnsUuid'
-> & {
-	columnIndex?: number;
-	subMenuItemsColumnsUuid?: MenuItem['subMenuItemsColumnsUuid'];
-	onSave: (menuItem: MenuItemFormData) => void;
-	onDelete: (uuid?: MenuItem['uuid']) => void;
-};
-
-export const useMenuItemForm = ({
-	title,
-	url,
-	classes,
-	uuid,
-	subMenuItemsColumnsUuid,
-	description,
-	columnIndex,
-	onSave,
-	onDelete,
-}: UseMenuItemFormData) => {
-	const [form, setForm] = useState<MenuItemFormData>({
-		title,
-		url,
-		classes,
-		uuid,
-		description,
-		subMenuItemsColumnsUuid: subMenuItemsColumnsUuid || null,
-		columnIndex,
-	});
-
-	const isSubMenu = useMemo(
-		() => typeof columnIndex === 'number',
-		[columnIndex]
-	);
+export const useMenuItemForm = () => {
+	const {
+		state: {
+			menuItemForm,
+		},
+		dispatchers: {
+			changeMenuItemFieldValue,
+			saveMenuItem,
+			removeMenuItem,
+			removeMenuItemForm,
+			initSubMenuItemColumns
+		}
+	} = useMenuState();
 
 	const canSubmit = useMemo(
-		() =>
-			!isSubMenu
-				? !!form.title && !!form.url
-				: !!form.title && !!form.url && !!form.description,
-		[form.title, form.url, form.description]
+		() => menuItemForm && menuItemForm.title && menuItemForm.url,
+		[menuItemForm?.title, menuItemForm?.url]
 	);
 
 	const headerTitle = useMemo(
-		() => (uuid ? form.title : `${form.title || 'New item'}`),
-		[uuid, form.title]
+		() => {
+			if (!menuItemForm) {
+				return '';
+			}
+
+			return menuItemForm.uuid ? menuItemForm.title : `${menuItemForm.title || 'New item'}`
+		},
+		[menuItemForm?.uuid, menuItemForm?.title]
 	);
 
-	const save = (
+	const save = async (
 		event: FormEvent<HTMLButtonElement | HTMLFormElement>
 	) => {
 		event.preventDefault();
 
 		if (
-			!form.title ||
-			!form.url ||
-			(isSubMenu && !form.description)
+			!menuItemForm?.title
+			|| !menuItemForm?.url
 		) {
 			return;
 		}
 
-		onSave(form);
+		saveMenuItem();
 	};
 
 	const changeField = (
@@ -71,28 +52,33 @@ export const useMenuItemForm = ({
 	) => {
 		const { name, value } = event.target;
 
-		setForm((prev) => ({
-			...prev,
-			[name]: value,
-		}));
+		changeMenuItemFieldValue(name as keyof MenuItemForm, value);
 	};
 
 	const deleteItem = () => {
-		onDelete(form.uuid);
+		if (!menuItemForm?.uuid) {
+			return removeMenuItemForm();
+		}
+
+		return removeMenuItem()
 	};
 
-	useEffect(() => {
-		setForm((prev) => ({
-			...prev,
-			subMenuItemsColumnsUuid: subMenuItemsColumnsUuid || null,
-		}));
-	}, [subMenuItemsColumnsUuid]);
+	const closeForm = () => {
+		removeMenuItemForm();
+	};
+	
+	const addSubMenuItemColumns = () => {
+		initSubMenuItemColumns(crypto.randomUUID());
+	}
+	
 	return {
-		form,
+		form: menuItemForm,
 		headerTitle,
 		canSubmit,
 		save,
 		changeField,
 		deleteItem,
+		closeForm,
+		addSubMenuItemColumns
 	};
 };
