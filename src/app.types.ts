@@ -34,7 +34,7 @@ export type MenuItemBase = {
 export type SubMenuItemsList = SubMenuItem['uuid'][];
 
 export type MenuItem = MenuItemBase & {
-	languageCode: LanguageCode,
+	languageCode: LanguageCode;
 	subMenuItemsColumnsUuid: keyof SubMenuItemsColumns | null;
 };
 
@@ -46,6 +46,7 @@ export type LocalMenu = Record<LanguageCode, MenuItemsList>;
 export type SubMenuItem = MenuItemBase & {
 	description: string;
 	columnIndex: number;
+	subMenuItemsColumnsUuid: keyof SubMenuItemsColumns;
 };
 
 export type SubMenuItems = Record<SubMenuItem['uuid'], SubMenuItem>;
@@ -66,6 +67,7 @@ export type SaveMenuRequestBody = {
 export type Action<T extends string, P extends unknown> = {
 	type: T;
 	payload: P;
-}
+};
 
-export type UUID = `${string}-${string}-${string}-${string}-${string}`;
+export type UUID =
+	`${string}-${string}-${string}-${string}-${string}`;

@@ -15,7 +15,8 @@
   &-action-bar {
     padding: 8px;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
+    column-gap: 8px;
     border-left: 1px solid var(--devmcee-mega-menu-border-color);
     border-right: 1px solid var(--devmcee-mega-menu-border-color);
   }
@@ -46,7 +47,7 @@
 
     &--delete:disabled:hover {
       color: var(--devmcee-mega-menu-admin-action-button-primary-color-disabled);
-      cursor: not-allowed!important;
+      cursor: not-allowed !important;
     }
   }
 

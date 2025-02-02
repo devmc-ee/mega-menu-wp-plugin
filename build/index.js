@@ -152,6 +152,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _MenuItem_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MenuItem.scss */ "./src/components/MenuItem.scss");
 /* harmony import */ var _buttons_Button__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./buttons/Button */ "./src/components/buttons/Button.tsx");
+/* harmony import */ var _buttons_ArrowUpButton__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./buttons/ArrowUpButton */ "./src/components/buttons/ArrowUpButton.tsx");
+/* harmony import */ var _buttons_ArrowDownButton__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./buttons/ArrowDownButton */ "./src/components/buttons/ArrowDownButton.tsx");
+
+
 
 
 const MenuItem = ({
@@ -159,7 +163,12 @@ const MenuItem = ({
   setActiveFormUuid: setFormActive,
   title,
   subMenuItemsAmount,
-  uuid
+  uuid,
+  isMoveUpAllowed,
+  isMoveDownAllowed,
+  menuOrderModeEnabled,
+  moveUp,
+  moveDown
 }) => {
   return /*#__PURE__*/React.createElement("div", {
     className: "devmcee-mega-menu-builder-menu-item"
@@ -174,7 +183,15 @@ const MenuItem = ({
     testId: `${title}-edit-button`
   })), /*#__PURE__*/React.createElement("div", {
     className: "devmcee-mega-menu-builder-menu-item__sub-title-container"
-  }, `${subMenuItemsAmount} Sub Items`));
+  }, /*#__PURE__*/React.createElement("span", null, `${subMenuItemsAmount} Sub Items`), menuOrderModeEnabled && /*#__PURE__*/React.createElement("div", {
+    className: "devmcee-mega-menu-builder-menu-item__re-order-buttons-container"
+  }, isMoveUpAllowed && /*#__PURE__*/React.createElement(_buttons_ArrowUpButton__WEBPACK_IMPORTED_MODULE_2__.ArrowUpButton, {
+    disabled: !isMoveUpAllowed,
+    onClick: () => moveUp(uuid)
+  }), isMoveDownAllowed && /*#__PURE__*/React.createElement(_buttons_ArrowDownButton__WEBPACK_IMPORTED_MODULE_3__.ArrowDownButton, {
+    disabled: !isMoveDownAllowed,
+    onClick: () => moveDown(uuid)
+  }))));
 };
 
 /***/ }),
@@ -195,19 +212,32 @@ __webpack_require__.r(__webpack_exports__);
 
 const MenuItemsActionBar = () => {
   const {
-    addNewMenuItem
+    menuOrderModeEnabled,
+    addNewMenuItem,
+    saveMenuOrder,
+    enableOrderMode,
+    disableOrderMode
   } = (0,_hooks_useMenuItems__WEBPACK_IMPORTED_MODULE_0__.useMenuItems)();
   return /*#__PURE__*/React.createElement("div", {
     className: "devmcee-mega-menu-builder-content-action-bar"
-  }, /*#__PURE__*/React.createElement(_buttons_Button__WEBPACK_IMPORTED_MODULE_1__.Button, {
+  }, !menuOrderModeEnabled && /*#__PURE__*/React.createElement(_buttons_Button__WEBPACK_IMPORTED_MODULE_1__.Button, {
+    disabled: menuOrderModeEnabled,
     title: "Add menu item",
-    testId: "add-menu-item-button",
+    testId: "menu-items-action-bar__add-menu-item-button",
     onClick: addNewMenuItem
-  }), /*#__PURE__*/React.createElement(_buttons_Button__WEBPACK_IMPORTED_MODULE_1__.Button, {
-    title: "Import",
-    testId: "import-menu-items-button",
-    onClick: addNewMenuItem,
-    disabled: true
+  }), menuOrderModeEnabled && /*#__PURE__*/React.createElement("span", null, "Re-Order Mode:"), menuOrderModeEnabled && /*#__PURE__*/React.createElement(_buttons_Button__WEBPACK_IMPORTED_MODULE_1__.Button, {
+    title: 'Cancel',
+    testId: "menu-items-action-bar__toggle-order-mode-button",
+    onClick: disableOrderMode,
+    theme: "danger"
+  }), !menuOrderModeEnabled && /*#__PURE__*/React.createElement(_buttons_Button__WEBPACK_IMPORTED_MODULE_1__.Button, {
+    title: 'Re-Order',
+    testId: "menu-items-action-bar__toggle-order-mode-button",
+    onClick: enableOrderMode
+  }), menuOrderModeEnabled && /*#__PURE__*/React.createElement(_buttons_Button__WEBPACK_IMPORTED_MODULE_1__.Button, {
+    title: "Save",
+    testId: "menu-items-action-bar__save-order-button",
+    onClick: saveMenuOrder
   }));
 };
 
@@ -236,16 +266,24 @@ const MenuItemsContainer = () => {
     menuItems,
     isNewMenuItemForm: isNewMenuItemForm,
     activeFormUuid,
+    menuOrderModeEnabled,
+    moveMenuItemUp,
+    moveMenuItemDown,
     getSubMenuItemsAmount,
     setActiveFormUuid
   } = (0,_hooks_useMenuItems__WEBPACK_IMPORTED_MODULE_0__.useMenuItems)();
   return /*#__PURE__*/React.createElement("div", {
     className: "devmcee-mega-menu-builder-content-menu-container"
-  }, menuItemUuidList.map(uuid => {
+  }, menuItemUuidList.map((uuid, i) => {
     return !activeFormUuid || activeFormUuid !== uuid ? /*#__PURE__*/React.createElement(_MenuItem__WEBPACK_IMPORTED_MODULE_1__.MenuItem, _extends({
       key: uuid,
       activeFormUuid: activeFormUuid,
-      setActiveFormUuid: setActiveFormUuid
+      setActiveFormUuid: setActiveFormUuid,
+      menuOrderModeEnabled: menuOrderModeEnabled,
+      isMoveUpAllowed: i > 0,
+      isMoveDownAllowed: i < menuItemUuidList.length - 1,
+      moveUp: moveMenuItemUp,
+      moveDown: moveMenuItemDown
     }, menuItems[uuid], {
       subMenuItemsAmount: getSubMenuItemsAmount(uuid)
     })) : /*#__PURE__*/React.createElement("div", {
@@ -272,19 +310,36 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _buttons_Button__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./buttons/Button */ "./src/components/buttons/Button.tsx");
 /* harmony import */ var _SubMenuItem_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SubMenuItem.scss */ "./src/components/SubMenuItem.scss");
+/* harmony import */ var _buttons_ArrowUpButton__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./buttons/ArrowUpButton */ "./src/components/buttons/ArrowUpButton.tsx");
+/* harmony import */ var _buttons_ArrowDownButton__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./buttons/ArrowDownButton */ "./src/components/buttons/ArrowDownButton.tsx");
+
+
 
 
 const SubMenuItem = ({
   uuid,
   title,
   activeSubItemFormUuid,
-  setFormActive
+  orderModeEnabled,
+  isMoveUpAllowed,
+  isMoveDownAllowed,
+  setFormActive,
+  moveUp,
+  moveDown
 }) => {
   return /*#__PURE__*/React.createElement("div", {
     className: "devmcee-mega-menu-builder-content__sub-menu-item"
   }, /*#__PURE__*/React.createElement("span", {
     className: "devmcee-mega-menu-builder-content__sub-menu-item-title"
-  }, title), /*#__PURE__*/React.createElement(_buttons_Button__WEBPACK_IMPORTED_MODULE_0__.Button, {
+  }, title), orderModeEnabled ? /*#__PURE__*/React.createElement("div", {
+    className: "devmcee-mega-menu-builder-menu-item__re-order-buttons-container"
+  }, isMoveUpAllowed && /*#__PURE__*/React.createElement(_buttons_ArrowUpButton__WEBPACK_IMPORTED_MODULE_2__.ArrowUpButton, {
+    disabled: !isMoveUpAllowed,
+    onClick: () => moveUp(uuid)
+  }), isMoveDownAllowed && /*#__PURE__*/React.createElement(_buttons_ArrowDownButton__WEBPACK_IMPORTED_MODULE_3__.ArrowDownButton, {
+    disabled: !isMoveDownAllowed,
+    onClick: () => moveDown(uuid)
+  })) : /*#__PURE__*/React.createElement(_buttons_Button__WEBPACK_IMPORTED_MODULE_0__.Button, {
     title: "Edit",
     onClick: () => setFormActive(uuid),
     disabled: !!activeSubItemFormUuid && activeSubItemFormUuid !== uuid,
@@ -320,8 +375,11 @@ const SubMenuItemColumn = ({
   const {
     subMenuItems,
     subMenuItemForm,
+    orderModeEnabled,
     initSubMenuItemForm,
-    initSubMenuItemFormForEditing
+    initSubMenuItemFormForEditing,
+    moveSubMenuItemUp,
+    moveSubMenuItemDown
   } = (0,_hooks_useSubMenuItemColumn__WEBPACK_IMPORTED_MODULE_0__.useSubMenuItemColumn)({
     subItemUuidList
   });
@@ -337,14 +395,17 @@ const SubMenuItemColumn = ({
     className: "devmcee-mega-menu-builder-content__sub-menu-column-content"
   }, !subMenuItemForm && subItemUuidList.length === 0 && /*#__PURE__*/React.createElement("div", {
     className: "devmcee-mega-menu-builder-content__sub-menu-column-content-placeholder"
-  }, "No sub items"), subMenuItems.map(subMenuItem => {
-    return !subMenuItemForm || subMenuItemForm && subMenuItemForm?.uuid !== subMenuItem.uuid ? /*#__PURE__*/React.createElement(_SubMenuItem__WEBPACK_IMPORTED_MODULE_3__.SubMenuItem, _extends({
-      activeSubItemFormUuid: subMenuItemForm?.uuid,
-      key: subMenuItem.uuid
-    }, subMenuItem, {
-      setFormActive: initSubMenuItemFormForEditing
-    })) : /*#__PURE__*/React.createElement(_forms_SubMenuItemForm__WEBPACK_IMPORTED_MODULE_2__.SubMenuItemForm, null);
-  }), subMenuItemForm && !subMenuItemForm?.uuid && subMenuItemForm?.columnIndex === columnIndex && /*#__PURE__*/React.createElement("div", {
+  }, "No sub items"), subMenuItems.map((subMenuItem, i) => !subMenuItemForm || subMenuItemForm && subMenuItemForm?.uuid !== subMenuItem.uuid ? /*#__PURE__*/React.createElement(_SubMenuItem__WEBPACK_IMPORTED_MODULE_3__.SubMenuItem, _extends({
+    activeSubItemFormUuid: subMenuItemForm?.uuid,
+    key: subMenuItem.uuid,
+    orderModeEnabled: orderModeEnabled,
+    isMoveUpAllowed: i > 0,
+    isMoveDownAllowed: i < subMenuItems.length - 1,
+    moveUp: moveSubMenuItemUp,
+    moveDown: moveSubMenuItemDown
+  }, subMenuItem, {
+    setFormActive: initSubMenuItemFormForEditing
+  })) : /*#__PURE__*/React.createElement(_forms_SubMenuItemForm__WEBPACK_IMPORTED_MODULE_2__.SubMenuItemForm, null)), subMenuItemForm && !subMenuItemForm?.uuid && subMenuItemForm?.columnIndex === columnIndex && /*#__PURE__*/React.createElement("div", {
     className: "devmcee-mega-menu-builder-content__sub-menu-item-container"
   }, /*#__PURE__*/React.createElement(_forms_SubMenuItemForm__WEBPACK_IMPORTED_MODULE_2__.SubMenuItemForm, null))));
 };
@@ -376,13 +437,65 @@ const SubMenuItemsContainer = () => {
     className: "devmcee-mega-menu-builder-content__sub-menu-container"
   }, (!activeMenuItem || activeMenuItem && !activeMenuItem.uuid) && /*#__PURE__*/React.createElement("div", {
     className: "devmcee-mega-menu-builder-content__sub-menu-placeholder"
-  }, !activeMenuItem ? `Select a menu item to edit its sub items` : `Save menu item to add sub items`), activeMenuItem && columnsData?.length && columnsData.map((subItemUuidList, i) => {
+  }, !activeMenuItem ? `` : `Save menu item to add sub items`), activeMenuItem && columnsData?.length && columnsData.map((subItemUuidList, i) => {
     return /*#__PURE__*/React.createElement(_SubMenuItemColumn__WEBPACK_IMPORTED_MODULE_2__.SubMenuItemColumn, {
       key: i,
       columnIndex: i,
       subItemUuidList: subItemUuidList
     });
   }));
+};
+
+/***/ }),
+
+/***/ "./src/components/buttons/ArrowDownButton.tsx":
+/*!****************************************************!*\
+  !*** ./src/components/buttons/ArrowDownButton.tsx ***!
+  \****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ArrowDownButton: () => (/* binding */ ArrowDownButton)
+/* harmony export */ });
+/* harmony import */ var _icons__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../icons */ "./src/icons/index.ts");
+/* harmony import */ var _IconButton__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./IconButton */ "./src/components/buttons/IconButton.tsx");
+
+
+const ArrowDownButton = ({
+  onClick,
+  disabled
+}) => {
+  return /*#__PURE__*/React.createElement(_IconButton__WEBPACK_IMPORTED_MODULE_1__.IconButton, {
+    disabled: disabled,
+    onClick: onClick
+  }, /*#__PURE__*/React.createElement(_icons__WEBPACK_IMPORTED_MODULE_0__.ArrowDownIcon, null));
+};
+
+/***/ }),
+
+/***/ "./src/components/buttons/ArrowUpButton.tsx":
+/*!**************************************************!*\
+  !*** ./src/components/buttons/ArrowUpButton.tsx ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ArrowUpButton: () => (/* binding */ ArrowUpButton)
+/* harmony export */ });
+/* harmony import */ var _icons__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../icons */ "./src/icons/index.ts");
+/* harmony import */ var _IconButton__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./IconButton */ "./src/components/buttons/IconButton.tsx");
+
+
+const ArrowUpButton = ({
+  onClick,
+  disabled
+}) => {
+  return /*#__PURE__*/React.createElement(_IconButton__WEBPACK_IMPORTED_MODULE_1__.IconButton, {
+    disabled: disabled,
+    onClick: onClick
+  }, /*#__PURE__*/React.createElement(_icons__WEBPACK_IMPORTED_MODULE_0__.ArrowUpIcon, null));
 };
 
 /***/ }),
@@ -397,9 +510,45 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Button: () => (/* binding */ Button)
 /* harmony export */ });
+/* harmony import */ var _Button_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Button.scss */ "./src/components/buttons/Button.scss");
+
 const Button = ({
   onClick,
   title,
+  testId,
+  disabled = false,
+  classes = '',
+  type = 'button',
+  theme = 'primary'
+}) => {
+  const args = Object.assign({
+    'data-TestId': testId,
+    disabled,
+    className: `devmcee-mega-menu__action-button devmcee-mega-menu__action-button--${theme} ${classes}`.trim(),
+    type
+  }, type === 'submit' ? {
+    onSubmit: onClick
+  } : {
+    onClick
+  });
+  return /*#__PURE__*/React.createElement("button", args, title);
+};
+
+/***/ }),
+
+/***/ "./src/components/buttons/IconButton.tsx":
+/*!***********************************************!*\
+  !*** ./src/components/buttons/IconButton.tsx ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   IconButton: () => (/* binding */ IconButton)
+/* harmony export */ });
+const IconButton = ({
+  onClick,
+  children,
   testId,
   disabled = false,
   classes = '',
@@ -415,7 +564,7 @@ const Button = ({
   } : {
     onClick
   });
-  return /*#__PURE__*/React.createElement("button", args, title);
+  return /*#__PURE__*/React.createElement("button", args, children);
 };
 
 /***/ }),
@@ -492,7 +641,7 @@ const MenuItemForm = ({
     disabled: !form?.uuid || !!subMenuItemsAmount && subMenuItemsAmount > 0,
     onClick: deleteItem,
     testId: `${form?.title || 'menu-item-form'}__delete-button`,
-    classes: "devmcee-mega-menu-builder-content-action-button--delete"
+    theme: "danger"
   }), form?.uuid && !form?.subMenuItemsColumnsUuid && /*#__PURE__*/React.createElement(_buttons_Button__WEBPACK_IMPORTED_MODULE_2__.Button, {
     title: "Add sub items",
     onClick: addSubMenuItemColumns,
@@ -524,7 +673,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const SubMenuItemForm = ({}) => {
+const SubMenuItemForm = () => {
   const {
     headerTitle,
     canSubmit,
@@ -585,7 +734,7 @@ const SubMenuItemForm = ({}) => {
     disabled: !form?.uuid,
     onClick: deleteItem,
     testId: `sub-menu-item-form__delete-button`,
-    classes: "devmcee-mega-menu-builder-content-action-button--delete"
+    theme: "danger"
   }), /*#__PURE__*/React.createElement(_buttons_Button__WEBPACK_IMPORTED_MODULE_1__.Button, {
     title: "Save",
     testId: "sub-menu-item-form__save-button",
@@ -623,7 +772,7 @@ const useApiRequest = () => {
     postID,
     endpoints
   } = metaState;
-  const url = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => endpoints[_app_types__WEBPACK_IMPORTED_MODULE_1__.EndpointName.SAVE], [endpoints, _app_types__WEBPACK_IMPORTED_MODULE_1__.EndpointName.SAVE]);
+  const url = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => endpoints[_app_types__WEBPACK_IMPORTED_MODULE_1__.EndpointName.SAVE], [endpoints]);
   const sendRequest = async data => {
     const response = await fetch(url, {
       method: 'POST',
@@ -676,13 +825,13 @@ const useMenuItemForm = () => {
       initSubMenuItemColumns
     }
   } = (0,_useMenuState__WEBPACK_IMPORTED_MODULE_1__.useMenuState)();
-  const canSubmit = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => menuItemForm && menuItemForm.title && menuItemForm.url, [menuItemForm?.title, menuItemForm?.url]);
+  const canSubmit = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => menuItemForm?.title && menuItemForm.url, [menuItemForm?.title, menuItemForm?.url]);
   const headerTitle = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
     if (!menuItemForm) {
       return '';
     }
     return menuItemForm.uuid ? menuItemForm.title : `${menuItemForm.title || 'New item'}`;
-  }, [menuItemForm?.uuid, menuItemForm?.title]);
+  }, [menuItemForm]);
   const save = async event => {
     event.preventDefault();
     if (!menuItemForm?.title || !menuItemForm?.url) {
@@ -747,21 +896,29 @@ const useMenuItems = () => {
       localMenu,
       menuItems,
       subMenuItems,
-      subMenuItemsColumns
+      subMenuItemsColumns,
+      subMenuItemForm
     },
     dispatchers: {
       initMenuItemForm,
       initMenuItemFormForEditing,
       removeMenuItemForm,
-      deleteMenuItemUuidFromLocalMenu
+      deleteMenuItemUuidFromLocalMenu,
+      moveMenuItemUp,
+      moveMenuItemDown
     }
   } = (0,_useMenuState__WEBPACK_IMPORTED_MODULE_1__.useMenuState)();
   const {
-    state: metaState
+    state: {
+      activeLanguageTab: selectedLanguage,
+      orderModeEnabled
+    },
+    dispatchers: {
+      enableOrderMode,
+      disableOrderMode,
+      saveMenuOrder
+    }
   } = (0,_useMenuMetaState__WEBPACK_IMPORTED_MODULE_2__.useMenuMetaState)();
-  const {
-    activeLanguageTab: selectedLanguage
-  } = metaState;
   const activeFormUuid = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => menuItemForm?.uuid, [menuItemForm]);
   const setActiveFormUuid = uuid => initMenuItemFormForEditing(selectedLanguage, uuid);
   const addNewMenuItem = () => initMenuItemForm(selectedLanguage);
@@ -774,8 +931,20 @@ const useMenuItems = () => {
   };
   const getSubMenuItemsAmount = uuid => {
     const menuItem = menuItems[uuid];
-    if (!menuItem.subMenuItemsColumnsUuid) return 0;
+    if (!menuItem.subMenuItemsColumnsUuid) {
+      return 0;
+    }
     return subMenuItemsColumns[menuItem.subMenuItemsColumnsUuid]?.reduce((acc, column) => acc + column.length, 0);
+  };
+  const disableOrderModeWithReaload = () => {
+    disableOrderMode();
+    window.location.reload();
+  };
+  const reorderMenuItemUp = uuid => {
+    moveMenuItemUp(uuid, selectedLanguage);
+  };
+  const reorderMenuItemDown = uuid => {
+    moveMenuItemDown(uuid, selectedLanguage);
   };
   return {
     menuItems,
@@ -784,10 +953,17 @@ const useMenuItems = () => {
     subMenuItemsColumnsMap: subMenuItemsColumns,
     isNewMenuItemForm: menuItemForm && !menuItemForm?.uuid,
     activeFormUuid,
+    menuOrderModeEnabled: orderModeEnabled,
+    isAllowedToEnableOrderMode: !menuItemForm && !subMenuItemForm,
+    moveMenuItemUp: reorderMenuItemUp,
+    moveMenuItemDown: reorderMenuItemDown,
+    saveMenuOrder,
     addNewMenuItem,
     deletMenuItem,
     setActiveFormUuid,
-    getSubMenuItemsAmount
+    getSubMenuItemsAmount,
+    enableOrderMode,
+    disableOrderMode: disableOrderModeWithReaload
   };
 };
 
@@ -806,7 +982,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _providers_MenuMetaContextProvider__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../providers/MenuMetaContextProvider */ "./src/providers/MenuMetaContextProvider.tsx");
-/* harmony import */ var _reducers_menuMeta_type__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../reducers/menuMeta.type */ "./src/reducers/menuMeta.type.ts");
+/* harmony import */ var _reducers_menuMeta_types__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../reducers/menuMeta.types */ "./src/reducers/menuMeta.types.ts");
 
 
 
@@ -814,14 +990,31 @@ const useMenuMetaState = () => {
   const state = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(_providers_MenuMetaContextProvider__WEBPACK_IMPORTED_MODULE_1__.MenuMetaStateContext);
   const dispatch = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(_providers_MenuMetaContextProvider__WEBPACK_IMPORTED_MODULE_1__.MenuMetaDispatchContext);
   const setActiveLanguageTab = languageCode => dispatch({
-    type: _reducers_menuMeta_type__WEBPACK_IMPORTED_MODULE_2__.MenuMetaActionType.ACTIVE_LANGUAGE_TAB_SET,
+    type: _reducers_menuMeta_types__WEBPACK_IMPORTED_MODULE_2__.MenuMetaActionType.ACTIVE_LANGUAGE_TAB_SET,
     payload: languageCode
   });
+  const enableOrderMode = () => {
+    dispatch({
+      type: _reducers_menuMeta_types__WEBPACK_IMPORTED_MODULE_2__.MenuMetaActionType.MENU_ORDER_MODE_ENABLED
+    });
+  };
+  const saveMenuOrder = () => {
+    dispatch({
+      type: _reducers_menuMeta_types__WEBPACK_IMPORTED_MODULE_2__.MenuMetaActionType.MENU_ORDER_SAVED
+    });
+  };
+  const disableOrderMode = () => {
+    dispatch({
+      type: _reducers_menuMeta_types__WEBPACK_IMPORTED_MODULE_2__.MenuMetaActionType.MENU_ORDER_MODE_DISABLED
+    });
+  };
   return {
     state,
     dispatchers: {
-      dispatch,
-      setActiveLanguageTab
+      setActiveLanguageTab,
+      disableOrderMode,
+      enableOrderMode,
+      saveMenuOrder
     }
   };
 };
@@ -953,6 +1146,44 @@ const useMenuState = () => {
       type: _reducers_menuState_types__WEBPACK_IMPORTED_MODULE_2__.MenuStateActionType.SUB_MENU_ITEM_REMOVED
     });
   };
+  const moveMenuItemUp = (uuid, languageCode) => {
+    dispatch({
+      type: _reducers_menuState_types__WEBPACK_IMPORTED_MODULE_2__.MenuStateActionType.MENU_ITEM_MOVED_UP,
+      payload: {
+        uuid,
+        languageCode
+      }
+    });
+  };
+  const moveMenuItemDown = (uuid, languageCode) => {
+    dispatch({
+      type: _reducers_menuState_types__WEBPACK_IMPORTED_MODULE_2__.MenuStateActionType.MENU_ITEM_MOVED_DOWN,
+      payload: {
+        uuid,
+        languageCode
+      }
+    });
+  };
+  const moveSubMenuItemUp = (uuid, columnIndex, subMenuItemsColumnsUuid) => {
+    dispatch({
+      type: _reducers_menuState_types__WEBPACK_IMPORTED_MODULE_2__.MenuStateActionType.SUB_MENU_ITEM_MOVED_UP,
+      payload: {
+        uuid,
+        columnIndex,
+        subMenuItemsColumnsUuid
+      }
+    });
+  };
+  const moveSubMenuItemDown = (uuid, columnIndex, subMenuItemsColumnsUuid) => {
+    dispatch({
+      type: _reducers_menuState_types__WEBPACK_IMPORTED_MODULE_2__.MenuStateActionType.SUB_MENU_ITEM_MOVED_DOWN,
+      payload: {
+        uuid,
+        columnIndex,
+        subMenuItemsColumnsUuid
+      }
+    });
+  };
   return {
     state,
     dispatchers: {
@@ -970,7 +1201,11 @@ const useMenuState = () => {
       changeSubMenuItemFieldValue,
       initMenuItemFormForEditing,
       initSubMenuItemFormForEditing,
-      initSubMenuItemColumns
+      initSubMenuItemColumns,
+      moveMenuItemUp,
+      moveMenuItemDown,
+      moveSubMenuItemUp,
+      moveSubMenuItemDown
     }
   };
 };
@@ -990,6 +1225,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _useMenuState__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./useMenuState */ "./src/hooks/useMenuState.ts");
+/* harmony import */ var _useMenuMetaState__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./useMenuMetaState */ "./src/hooks/useMenuMetaState.ts");
+
 
 
 const useSubMenuItemColumn = ({
@@ -1002,13 +1239,37 @@ const useSubMenuItemColumn = ({
     },
     dispatchers: {
       initSubMenuItemForm,
-      initSubMenuItemFormForEditing
+      initSubMenuItemFormForEditing,
+      moveSubMenuItemUp,
+      moveSubMenuItemDown
     }
   } = (0,_useMenuState__WEBPACK_IMPORTED_MODULE_1__.useMenuState)();
+  const {
+    state: {
+      orderModeEnabled
+    }
+  } = (0,_useMenuMetaState__WEBPACK_IMPORTED_MODULE_2__.useMenuMetaState)();
   const subMenuItems = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => subItemUuidList.map(uuid => allSubMenuItems[uuid]), [allSubMenuItems, subItemUuidList]);
+  const reorderSubMenuItemUp = uuid => {
+    const {
+      columnIndex,
+      subMenuItemsColumnsUuid
+    } = allSubMenuItems[uuid];
+    moveSubMenuItemUp(uuid, columnIndex, subMenuItemsColumnsUuid);
+  };
+  const reorderSubMenuItemDown = uuid => {
+    const {
+      columnIndex,
+      subMenuItemsColumnsUuid
+    } = allSubMenuItems[uuid];
+    moveSubMenuItemDown(uuid, columnIndex, subMenuItemsColumnsUuid);
+  };
   return {
     subMenuItems,
     subMenuItemForm,
+    orderModeEnabled,
+    moveSubMenuItemUp: reorderSubMenuItemUp,
+    moveSubMenuItemDown: reorderSubMenuItemDown,
     initSubMenuItemForm,
     initSubMenuItemFormForEditing
   };
@@ -1043,13 +1304,13 @@ const useSubMenuItemForm = () => {
       removeSubMenuItemForm
     }
   } = (0,_useMenuState__WEBPACK_IMPORTED_MODULE_1__.useMenuState)();
-  const canSubmit = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => subMenuItemForm && subMenuItemForm.title && subMenuItemForm.url, [subMenuItemForm?.title, subMenuItemForm?.url]);
+  const canSubmit = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => subMenuItemForm?.title && subMenuItemForm.url, [subMenuItemForm?.title, subMenuItemForm?.url]);
   const headerTitle = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
     if (!subMenuItemForm) {
       return '';
     }
     return subMenuItemForm.uuid ? subMenuItemForm.title : `${subMenuItemForm.title || 'New sub item'}`;
-  }, [subMenuItemForm?.uuid, subMenuItemForm?.title]);
+  }, [subMenuItemForm]);
   const save = async event => {
     event.preventDefault();
     if (!subMenuItemForm?.title || !subMenuItemForm?.url) {
@@ -1112,8 +1373,9 @@ const useSubMenuItemsContainer = () => {
   const [activeColumnIndex, setActiveColumnIndex] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const [activeSubMenuItemUuid, setActiveSubMenuItemUuid] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const columnsData = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
-    if (!menuItemForm || !subMenuItemsColumns) return null;
-    if (!menuItemForm.subMenuItemsColumnsUuid) return null;
+    if (!menuItemForm?.subMenuItemsColumnsUuid || !subMenuItemsColumns) {
+      return null;
+    }
     return subMenuItemsColumns[menuItemForm.subMenuItemsColumnsUuid];
   }, [menuItemForm?.subMenuItemsColumnsUuid, subMenuItemsColumns]);
   const addNewSubItem = columnIndex => {
@@ -1137,6 +1399,137 @@ const useSubMenuItemsContainer = () => {
 
 /***/ }),
 
+/***/ "./src/icons/ArrowDownIcon.tsx":
+/*!*************************************!*\
+  !*** ./src/icons/ArrowDownIcon.tsx ***!
+  \*************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ArrowDownIcon: () => (/* binding */ ArrowDownIcon)
+/* harmony export */ });
+const ArrowDownIcon = () => {
+  return /*#__PURE__*/React.createElement("svg", {
+    width: "24",
+    height: "24",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg"
+  }, /*#__PURE__*/React.createElement("path", {
+    fillRule: "evenodd",
+    clipRule: "evenodd",
+    d: "M12.707 15.707C12.5194 15.8945 12.2651 15.9998 12 15.9998C11.7348 15.9998 11.4805 15.8945 11.293 15.707L5.63598 10.05C5.54047 9.95775 5.46428 9.84741 5.41188 9.7254C5.35947 9.6034 5.33188 9.47218 5.33073 9.3394C5.32957 9.20662 5.35487 9.07494 5.40516 8.95205C5.45544 8.82915 5.52969 8.7175 5.62358 8.6236C5.71747 8.52971 5.82913 8.45546 5.95202 8.40518C6.07492 8.3549 6.2066 8.3296 6.33938 8.33075C6.47216 8.3319 6.60338 8.35949 6.72538 8.4119C6.84739 8.46431 6.95773 8.54049 7.04998 8.636L12 13.586L16.95 8.636C17.1386 8.45384 17.3912 8.35305 17.6534 8.35533C17.9156 8.3576 18.1664 8.46277 18.3518 8.64818C18.5372 8.83359 18.6424 9.0844 18.6447 9.3466C18.6469 9.6088 18.5461 9.8614 18.364 10.05L12.707 15.707Z",
+    fill: "currentColor"
+  }));
+};
+
+/***/ }),
+
+/***/ "./src/icons/ArrowUpIcon.tsx":
+/*!***********************************!*\
+  !*** ./src/icons/ArrowUpIcon.tsx ***!
+  \***********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ArrowUpIcon: () => (/* binding */ ArrowUpIcon)
+/* harmony export */ });
+const ArrowUpIcon = () => {
+  return /*#__PURE__*/React.createElement("svg", {
+    width: "24",
+    height: "24",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg"
+  }, /*#__PURE__*/React.createElement("path", {
+    fillRule: "evenodd",
+    clipRule: "evenodd",
+    d: "M11.293 8.293C11.4806 8.10553 11.7349 8.00021 12 8.00021C12.2652 8.00021 12.5195 8.10553 12.707 8.293L18.364 13.95C18.4595 14.0422 18.5357 14.1526 18.5881 14.2746C18.6405 14.3966 18.6681 14.5278 18.6693 14.6606C18.6704 14.7934 18.6451 14.9251 18.5948 15.048C18.5446 15.1708 18.4703 15.2825 18.3764 15.3764C18.2825 15.4703 18.1709 15.5445 18.048 15.5948C17.9251 15.6451 17.7934 15.6704 17.6606 15.6693C17.5278 15.6681 17.3966 15.6405 17.2746 15.5881C17.1526 15.5357 17.0423 15.4595 16.95 15.364L12 10.414L7.05002 15.364C6.86142 15.5462 6.60882 15.647 6.34662 15.6447C6.08443 15.6424 5.83361 15.5372 5.6482 15.3518C5.4628 15.1664 5.35763 14.9156 5.35535 14.6534C5.35307 14.3912 5.45386 14.1386 5.63602 13.95L11.293 8.293Z",
+    fill: "currentColor"
+  }));
+};
+
+/***/ }),
+
+/***/ "./src/icons/ArrowsUpDownIcon.tsx":
+/*!****************************************!*\
+  !*** ./src/icons/ArrowsUpDownIcon.tsx ***!
+  \****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ArrowsUpDownIcon: () => (/* binding */ ArrowsUpDownIcon)
+/* harmony export */ });
+const ArrowsUpDownIcon = () => {
+  return /*#__PURE__*/React.createElement("svg", {
+    width: "24",
+    height: "24",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M17 3V21M17 3L20 6M17 3L14 6M10 18L7 21M7 21L4 18M7 21V3",
+    stroke: "currentcolor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  }));
+};
+
+/***/ }),
+
+/***/ "./src/icons/PlusIcon.tsx":
+/*!********************************!*\
+  !*** ./src/icons/PlusIcon.tsx ***!
+  \********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   PlusIcon: () => (/* binding */ PlusIcon)
+/* harmony export */ });
+const PlusIcon = () => {
+  return /*#__PURE__*/React.createElement("svg", {
+    width: 24,
+    height: 24,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M18 12.998H13V17.998C13 18.2632 12.8946 18.5176 12.7071 18.7051C12.5196 18.8926 12.2652 18.998 12 18.998C11.7348 18.998 11.4804 18.8926 11.2929 18.7051C11.1054 18.5176 11 18.2632 11 17.998V12.998H6C5.73478 12.998 5.48043 12.8926 5.29289 12.7051C5.10536 12.5176 5 12.2632 5 11.998C5 11.7328 5.10536 11.4784 5.29289 11.2909C5.48043 11.1033 5.73478 10.998 6 10.998H11V5.99799C11 5.73277 11.1054 5.47842 11.2929 5.29088C11.4804 5.10334 11.7348 4.99799 12 4.99799C12.2652 4.99799 12.5196 5.10334 12.7071 5.29088C12.8946 5.47842 13 5.73277 13 5.99799V10.998H18C18.2652 10.998 18.5196 11.1033 18.7071 11.2909C18.8946 11.4784 19 11.7328 19 11.998C19 12.2632 18.8946 12.5176 18.7071 12.7051C18.5196 12.8926 18.2652 12.998 18 12.998Z",
+    fill: "currentcolor"
+  }));
+};
+
+/***/ }),
+
+/***/ "./src/icons/index.ts":
+/*!****************************!*\
+  !*** ./src/icons/index.ts ***!
+  \****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ArrowDownIcon: () => (/* reexport safe */ _ArrowDownIcon__WEBPACK_IMPORTED_MODULE_3__.ArrowDownIcon),
+/* harmony export */   ArrowUpIcon: () => (/* reexport safe */ _ArrowUpIcon__WEBPACK_IMPORTED_MODULE_2__.ArrowUpIcon),
+/* harmony export */   ArrowsUpDownIcon: () => (/* reexport safe */ _ArrowsUpDownIcon__WEBPACK_IMPORTED_MODULE_1__.ArrowsUpDownIcon),
+/* harmony export */   PlusIcon: () => (/* reexport safe */ _PlusIcon__WEBPACK_IMPORTED_MODULE_0__.PlusIcon)
+/* harmony export */ });
+/* harmony import */ var _PlusIcon__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./PlusIcon */ "./src/icons/PlusIcon.tsx");
+/* harmony import */ var _ArrowsUpDownIcon__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ArrowsUpDownIcon */ "./src/icons/ArrowsUpDownIcon.tsx");
+/* harmony import */ var _ArrowUpIcon__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ArrowUpIcon */ "./src/icons/ArrowUpIcon.tsx");
+/* harmony import */ var _ArrowDownIcon__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ArrowDownIcon */ "./src/icons/ArrowDownIcon.tsx");
+
+
+
+
+
+/***/ }),
+
 /***/ "./src/providers/ApiServiceProvider.tsx":
 /*!**********************************************!*\
   !*** ./src/providers/ApiServiceProvider.tsx ***!
@@ -1151,6 +1544,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _hooks_useMenuState__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../hooks/useMenuState */ "./src/hooks/useMenuState.ts");
 /* harmony import */ var _hooks_useApiRequest__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../hooks/useApiRequest */ "./src/hooks/useApiRequest.ts");
+/* harmony import */ var _hooks_useMenuMetaState__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../hooks/useMenuMetaState */ "./src/hooks/useMenuMetaState.ts");
+
 
 
 
@@ -1164,6 +1559,11 @@ const ApiServiceProvider = ({
       removeSubMenuItemForm: closeSubMenuItemForm
     }
   } = (0,_hooks_useMenuState__WEBPACK_IMPORTED_MODULE_1__.useMenuState)();
+  const {
+    state: {
+      orderSubmitted
+    }
+  } = (0,_hooks_useMenuMetaState__WEBPACK_IMPORTED_MODULE_3__.useMenuMetaState)();
   const {
     sendRequest
   } = (0,_hooks_useApiRequest__WEBPACK_IMPORTED_MODULE_2__.useApiRequest)();
@@ -1184,6 +1584,16 @@ const ApiServiceProvider = ({
       });
     }
   }, [state.menuItemForm?.isSubmitted, state.subMenuItemForm?.isSubmitted]);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (orderSubmitted) {
+      sendRequest({
+        menuItems: state.menuItems,
+        subMenuItems: state.subMenuItems,
+        localMenu: state.localMenu,
+        subMenuItemsColumns: state.subMenuItemsColumns
+      });
+    }
+  }, [orderSubmitted, state]);
   return children;
 };
 
@@ -1265,7 +1675,7 @@ __webpack_require__.r(__webpack_exports__);
 let externalMetaData = {};
 if (typeof devmceeMegaMenuInitData !== 'undefined') {
   const {
-    ['data']: _,
+    data: _,
     ...meta
   } = devmceeMegaMenuInitData;
   externalMetaData = meta;
@@ -1277,8 +1687,10 @@ const menuMetaInitialState = Object.assign({
   endpoints: {
     [_app_types__WEBPACK_IMPORTED_MODULE_1__.EndpointName.SAVE]: ''
   },
-  customNonce: "",
-  postID: 0
+  customNonce: '',
+  postID: 0,
+  orderModeEnabled: false,
+  orderSubmitted: false
 }, externalMetaData);
 const MenuMetaStateContext = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.createContext)(menuMetaInitialState);
 const MenuMetaDispatchContext = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.createContext)(() => void 0);
@@ -1295,18 +1707,25 @@ const MenuMetaContextProvider = ({
 
 /***/ }),
 
-/***/ "./src/reducers/menuMeta.type.ts":
-/*!***************************************!*\
-  !*** ./src/reducers/menuMeta.type.ts ***!
-  \***************************************/
+/***/ "./src/reducers/menuMeta.types.ts":
+/*!****************************************!*\
+  !*** ./src/reducers/menuMeta.types.ts ***!
+  \****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   MenuMetaActionType: () => (/* binding */ MenuMetaActionType)
 /* harmony export */ });
+const ACTIVE_LANGUAGE_TAB_SET = 'meta/ACTIVE_LANGUAGE_TAB_SET';
+const MENU_ORDER_MODE_ENABLED = 'meta/MENU_ORDER_MODE_ENABLED';
+const MENU_ORDER_MODE_DISABLED = 'meta/MENU_ORDER_MODE_DISABLED';
+const MENU_ORDER_SAVED = 'meta/MENU_ORDER_SAVED';
 const MenuMetaActionType = {
-  ACTIVE_LANGUAGE_TAB_SET: 'meta/ACTIVE_LANGUAGE_TAB_SET'
+  ACTIVE_LANGUAGE_TAB_SET,
+  MENU_ORDER_MODE_ENABLED,
+  MENU_ORDER_MODE_DISABLED,
+  MENU_ORDER_SAVED
 };
 
 /***/ }),
@@ -1321,16 +1740,38 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   menuMetaReducer: () => (/* binding */ menuMetaReducer)
 /* harmony export */ });
-/* harmony import */ var _menuMeta_type__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./menuMeta.type */ "./src/reducers/menuMeta.type.ts");
+/* harmony import */ var _menuMeta_types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./menuMeta.types */ "./src/reducers/menuMeta.types.ts");
 
 const menuMetaReducer = (state, action) => {
   console.log('[MenuMetaReducer:action]', action);
   switch (action.type) {
-    case _menuMeta_type__WEBPACK_IMPORTED_MODULE_0__.MenuMetaActionType.ACTIVE_LANGUAGE_TAB_SET:
+    case _menuMeta_types__WEBPACK_IMPORTED_MODULE_0__.MenuMetaActionType.ACTIVE_LANGUAGE_TAB_SET:
       {
         return {
           ...state,
           activeLanguageTab: action.payload
+        };
+      }
+    case _menuMeta_types__WEBPACK_IMPORTED_MODULE_0__.MenuMetaActionType.MENU_ORDER_MODE_ENABLED:
+      {
+        return {
+          ...state,
+          orderModeEnabled: true
+        };
+      }
+    case _menuMeta_types__WEBPACK_IMPORTED_MODULE_0__.MenuMetaActionType.MENU_ORDER_MODE_DISABLED:
+      {
+        return {
+          ...state,
+          orderModeEnabled: false
+        };
+      }
+    case _menuMeta_types__WEBPACK_IMPORTED_MODULE_0__.MenuMetaActionType.MENU_ORDER_SAVED:
+      {
+        return {
+          ...state,
+          orderModeEnabled: false,
+          orderSubmitted: true
         };
       }
     default:
@@ -1350,22 +1791,47 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   MenuStateActionType: () => (/* binding */ MenuStateActionType)
 /* harmony export */ });
+const MENU_ITEM_FORM_INITED = 'menu/MENU_ITEM_FORM_INITED';
+const MENU_ITEM_FORM_INITED_FOR_EDITING = 'menu/MENU_ITEM_FORM_INITED_FOR_EDITING';
+const MENU_ITEM_FORM_REMOVED = 'menu/MENU_ITEM_FORM_REMOVED';
+const MENU_ITEM_FORM_FIELD_CHANGED = 'menu/MENU_ITEM_FORM_FIELD_CHANGED';
+const MENU_ITEM_UUID_ADDED_TO_LOCAL_MENU = 'menu/MENU_ITEM_UUID_ADDED_TO_LOCAL_MENU';
+const MENU_ITEM_UUID_DELETED_FROM_LOCAL_MENU = 'menu/MENU_ITEM_UUID_DELETED_FROM_LOCAL_MENU';
+const MENU_ITEM_SAVED = 'menu/MENU_ITEM_SAVED';
+const MENU_ITEM_REMOVED = 'menu/MENU_ITEM_REMOVED';
+const SUB_MENU_ITEMS_COLUMNS_INITED = 'menu/SUB_MENU_ITEMS_COLUMNS_INITED';
+const SUB_MENU_ITEM_FORM_INITED = 'menu/SUB_MENU_ITEM_FORM_INITED';
+const SUB_MENU_ITEM_FORM_INITED_FOR_EDITING = 'menu/SUB_MENU_ITEM_FORM_INITED_FOR_EDITING';
+const SUB_MENU_ITEM_FORM_REMOVED = 'menu/SUB_MENU_ITEM_FORM_REMOVED';
+const SUB_MENU_ITEM_FORM_FIELD_CHANGED = 'menu/SUB_MENU_ITEM_FORM_FIELD_CHANGED';
+const SUB_MENU_ITEM_FORM_SAVED = 'menu/SUB_MENU_ITEM_FORM_SAVED';
+const SUB_MENU_ITEM_REMOVED = 'menu/SUB_MENU_ITEM_REMOVED';
+const MENU_ITEMS_ORDER_CHANGE_TOGGLED = 'menu/MENU_ITEMS_ORDER_CHANGE_TOGGLED';
+const MENU_ITEM_MOVED_UP = 'menu/MENU_ITEM_MOVED_UP';
+const MENU_ITEM_MOVED_DOWN = 'menu/MENU_ITEM_MOVED_DOWN';
+const SUB_MENU_ITEM_MOVED_UP = 'menu/SUB_MENU_ITEM_MOVED_UP';
+const SUB_MENU_ITEM_MOVED_DOWN = 'menu/SUB_MENU_ITEM_MOVED_DOWN';
 const MenuStateActionType = {
-  MENU_ITEM_FORM_INITED: 'menu/MENU_ITEM_FORM_INITED',
-  MENU_ITEM_FORM_INITED_FOR_EDITING: 'menu/MENU_ITEM_FORM_INITED_FOR_EDITING',
-  MENU_ITEM_FORM_REMOVED: 'menu/MENU_ITEM_FORM_REMOVED',
-  MENU_ITEM_FORM_FIELD_CHANGED: 'menu/MENU_ITEM_FORM_FIELD_CHANGED',
-  MENU_ITEM_UUID_ADDED_TO_LOCAL_MENU: 'menu/MENU_ITEM_UUID_ADDED_TO_LOCAL_MENU',
-  MENU_ITEM_UUID_DELETED_FROM_LOCAL_MENU: 'menu/MENU_ITEM_UUID_DELETED_FROM_LOCAL_MENU',
-  MENU_ITEM_SAVED: 'menu/MENU_ITEM_SAVED',
-  MENU_ITEM_REMOVED: 'menu/MENU_ITEM_REMOVED',
-  SUB_MENU_ITEMS_COLUMNS_INITED: 'menu/SUB_MENU_ITEMS_COLUMNS_INITED',
-  SUB_MENU_ITEM_FORM_INITED: 'menu/SUB_MENU_ITEM_FORM_INITED',
-  SUB_MENU_ITEM_FORM_INITED_FOR_EDITING: 'menu/SUB_MENU_ITEM_FORM_INITED_FOR_EDITING',
-  SUB_MENU_ITEM_FORM_REMOVED: 'menu/SUB_MENU_ITEM_FORM_REMOVED',
-  SUB_MENU_ITEM_FORM_FIELD_CHANGED: 'menu/SUB_MENU_ITEM_FORM_FIELD_CHANGED',
-  SUB_MENU_ITEM_FORM_SAVED: 'menu/SUB_MENU_ITEM_FORM_SAVED',
-  SUB_MENU_ITEM_REMOVED: 'menu/SUB_MENU_ITEM_REMOVED'
+  MENU_ITEM_FORM_INITED,
+  MENU_ITEM_FORM_INITED_FOR_EDITING,
+  MENU_ITEM_FORM_REMOVED,
+  MENU_ITEM_FORM_FIELD_CHANGED,
+  MENU_ITEM_UUID_ADDED_TO_LOCAL_MENU,
+  MENU_ITEM_UUID_DELETED_FROM_LOCAL_MENU,
+  MENU_ITEM_SAVED,
+  MENU_ITEM_REMOVED,
+  SUB_MENU_ITEMS_COLUMNS_INITED,
+  SUB_MENU_ITEM_FORM_INITED,
+  SUB_MENU_ITEM_FORM_INITED_FOR_EDITING,
+  SUB_MENU_ITEM_FORM_REMOVED,
+  SUB_MENU_ITEM_FORM_FIELD_CHANGED,
+  SUB_MENU_ITEM_FORM_SAVED,
+  SUB_MENU_ITEM_REMOVED,
+  MENU_ITEMS_ORDER_CHANGE_TOGGLED,
+  MENU_ITEM_MOVED_UP,
+  MENU_ITEM_MOVED_DOWN,
+  SUB_MENU_ITEM_MOVED_UP,
+  SUB_MENU_ITEM_MOVED_DOWN
 };
 
 /***/ }),
@@ -1426,7 +1892,9 @@ const menuStateReducer = (state, action) => {
       }
     case _menuState_types__WEBPACK_IMPORTED_MODULE_0__.MenuStateActionType.MENU_ITEM_FORM_FIELD_CHANGED:
       {
-        if (!state.menuItemForm) return state;
+        if (!state.menuItemForm) {
+          return state;
+        }
         const {
           fieldName,
           value
@@ -1472,7 +1940,9 @@ const menuStateReducer = (state, action) => {
       }
     case _menuState_types__WEBPACK_IMPORTED_MODULE_0__.MenuStateActionType.MENU_ITEM_SAVED:
       {
-        if (!state.menuItemForm) return state;
+        if (!state.menuItemForm) {
+          return state;
+        }
         // save on edit if uuid exists, otherwise - new item
         const uuid = state.menuItemForm.uuid || crypto.randomUUID();
         const localMenu = new Set(state.localMenu[state.menuItemForm.languageCode]);
@@ -1502,7 +1972,9 @@ const menuStateReducer = (state, action) => {
       }
     case _menuState_types__WEBPACK_IMPORTED_MODULE_0__.MenuStateActionType.MENU_ITEM_REMOVED:
       {
-        if (!state.menuItemForm || !state.menuItemForm.uuid) return state;
+        if (!state.menuItemForm || !state.menuItemForm.uuid) {
+          return state;
+        }
         const uuid = state.menuItemForm.uuid;
         const languageCode = state.menuItemForm.languageCode;
         const {
@@ -1524,7 +1996,9 @@ const menuStateReducer = (state, action) => {
       }
     case _menuState_types__WEBPACK_IMPORTED_MODULE_0__.MenuStateActionType.SUB_MENU_ITEMS_COLUMNS_INITED:
       {
-        if (!state.menuItemForm) return state;
+        if (!state.menuItemForm) {
+          return state;
+        }
         const {
           uuid
         } = action.payload;
@@ -1542,7 +2016,9 @@ const menuStateReducer = (state, action) => {
       }
     case _menuState_types__WEBPACK_IMPORTED_MODULE_0__.MenuStateActionType.SUB_MENU_ITEM_FORM_INITED:
       {
-        if (!state.menuItemForm) return state;
+        if (!state.menuItemForm) {
+          return state;
+        }
         const {
           columnIndex
         } = action.payload;
@@ -1553,13 +2029,16 @@ const menuStateReducer = (state, action) => {
             description: '',
             title: '',
             isSubmitted: false,
-            columnIndex
+            columnIndex,
+            subMenuItemsColumnsUuid: state.menuItemForm.subMenuItemsColumnsUuid
           }
         };
       }
     case _menuState_types__WEBPACK_IMPORTED_MODULE_0__.MenuStateActionType.SUB_MENU_ITEM_FORM_INITED_FOR_EDITING:
       {
-        if (!state.menuItemForm) return state;
+        if (!state.menuItemForm) {
+          return state;
+        }
         const {
           uuid: subMenuItemUuid
         } = action.payload;
@@ -1580,7 +2059,9 @@ const menuStateReducer = (state, action) => {
       }
     case _menuState_types__WEBPACK_IMPORTED_MODULE_0__.MenuStateActionType.SUB_MENU_ITEM_FORM_FIELD_CHANGED:
       {
-        if (!state.subMenuItemForm) return state;
+        if (!state.subMenuItemForm) {
+          return state;
+        }
         const {
           fieldName,
           value
@@ -1596,7 +2077,9 @@ const menuStateReducer = (state, action) => {
       }
     case _menuState_types__WEBPACK_IMPORTED_MODULE_0__.MenuStateActionType.SUB_MENU_ITEM_FORM_SAVED:
       {
-        if (!state.subMenuItemForm || !state.menuItemForm) return state;
+        if (!state.subMenuItemForm || !state.menuItemForm) {
+          return state;
+        }
         const {
           menuItems,
           menuItemForm,
@@ -1640,13 +2123,14 @@ const menuStateReducer = (state, action) => {
     case _menuState_types__WEBPACK_IMPORTED_MODULE_0__.MenuStateActionType.SUB_MENU_ITEM_REMOVED:
       {
         const {
-          menuItems,
           menuItemForm,
           subMenuItemForm,
           subMenuItemsColumns,
           subMenuItems
         } = state;
-        if (!subMenuItemForm || !subMenuItemForm.uuid || !menuItemForm) return state;
+        if (!subMenuItemForm || !subMenuItemForm.uuid || !menuItemForm) {
+          return state;
+        }
         const {
           [subMenuItemForm.uuid]: _,
           ...newSubMenuItems
@@ -1663,6 +2147,112 @@ const menuStateReducer = (state, action) => {
           },
           subMenuItemsColumns: {
             ...subMenuItemsColumns
+          }
+        };
+      }
+    case _menuState_types__WEBPACK_IMPORTED_MODULE_0__.MenuStateActionType.MENU_ITEM_MOVED_UP:
+      {
+        const {
+          uuid,
+          languageCode
+        } = action.payload;
+        const {
+          localMenu
+        } = state;
+        const index = localMenu[languageCode].indexOf(uuid);
+        if (index === 0) {
+          return state;
+        }
+        const newLocalMenu = [...localMenu[languageCode]];
+        const prev = newLocalMenu[index - 1];
+        newLocalMenu[index - 1] = uuid;
+        newLocalMenu[index] = prev;
+        return {
+          ...state,
+          localMenu: {
+            ...localMenu,
+            [languageCode]: newLocalMenu
+          }
+        };
+      }
+    case _menuState_types__WEBPACK_IMPORTED_MODULE_0__.MenuStateActionType.MENU_ITEM_MOVED_DOWN:
+      {
+        const {
+          uuid,
+          languageCode
+        } = action.payload;
+        const {
+          localMenu
+        } = state;
+        const index = localMenu[languageCode].indexOf(uuid);
+        if (index === localMenu[languageCode].length - 1) {
+          return state;
+        }
+        const newLocalMenu = [...localMenu[languageCode]];
+        const next = newLocalMenu[index + 1];
+        newLocalMenu[index + 1] = uuid;
+        newLocalMenu[index] = next;
+        return {
+          ...state,
+          localMenu: {
+            ...localMenu,
+            [languageCode]: newLocalMenu
+          }
+        };
+      }
+    case _menuState_types__WEBPACK_IMPORTED_MODULE_0__.MenuStateActionType.SUB_MENU_ITEM_MOVED_UP:
+      {
+        const {
+          uuid,
+          columnIndex,
+          subMenuItemsColumnsUuid
+        } = action.payload;
+        const {
+          subMenuItemsColumns
+        } = state;
+        const column = subMenuItemsColumns[subMenuItemsColumnsUuid][columnIndex];
+        const index = column.indexOf(uuid);
+        if (index === 0) {
+          return state;
+        }
+        const newColumn = [...column];
+        const prev = newColumn[index - 1];
+        newColumn[index - 1] = uuid;
+        newColumn[index] = prev;
+        subMenuItemsColumns[subMenuItemsColumnsUuid][columnIndex] = newColumn;
+        return {
+          ...state,
+          subMenuItemsColumns: {
+            ...subMenuItemsColumns,
+            [subMenuItemsColumnsUuid]: [...subMenuItemsColumns[subMenuItemsColumnsUuid]]
+          }
+        };
+      }
+    case _menuState_types__WEBPACK_IMPORTED_MODULE_0__.MenuStateActionType.SUB_MENU_ITEM_MOVED_DOWN:
+      {
+        const {
+          uuid,
+          columnIndex,
+          subMenuItemsColumnsUuid
+        } = action.payload;
+        const {
+          subMenuItemsColumns
+        } = state;
+        const column = subMenuItemsColumns[subMenuItemsColumnsUuid][columnIndex];
+        const index = column.indexOf(uuid);
+        if (index === column.length - 1) {
+          return state;
+        }
+        const newColumn = [...column];
+        const next = newColumn[index + 1];
+        newColumn[index + 1] = uuid;
+        newColumn[index] = next;
+        subMenuItemsColumns[subMenuItemsColumnsUuid][columnIndex] = newColumn;
+        return {
+          ...state,
+          subMenuItemsColumns: {
+            ...subMenuItemsColumns,
+            [subMenuItemsColumnsUuid]: [...subMenuItemsColumns[subMenuItemsColumnsUuid]]
           }
         };
       }
@@ -1816,7 +2406,8 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.devmcee-mega-menu-builder-content-con
 .devmcee-mega-menu-builder-content-action-bar {
   padding: 8px;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+  column-gap: 8px;
   border-left: 1px solid var(--devmcee-mega-menu-border-color);
   border-right: 1px solid var(--devmcee-mega-menu-border-color);
 }
@@ -1851,7 +2442,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.devmcee-mega-menu-builder-content-con
   flex-grow: 1;
   height: 100%;
   width: var(--devmcee-mega-menu-admin-builder-container-root-column-width);
-}`, "",{"version":3,"sources":["webpack://./src/components/MegaMenuContainer.scss"],"names":[],"mappings":"AACE;EACE,aAAA;EACA,YAAA;EACA,YAAA;EACA,uEAAA;EACA,6EAAA;AAAJ;AAGE;EACE,aAAA;EACA,sBAAA;AADJ;AAIE;EACE,YAAA;EACA,aAAA;EACA,8BAAA;EACA,4DAAA;EACA,6DAAA;AAFJ;AAKE;EACE,eAAA;EACA,YAAA;EACA,6BAAA;EACA,0BAAA;EACA,iEAAA;AAHJ;AAKI;EACE,uEAAA;AAHN;AAMI;EACE,0EAAA;EACA,mBAAA;AAJN;AAOI;EACE,wEAAA;AALN;AAQI;EACE,8EAAA;AANN;AASI;EACE,0EAAA;EACA,8BAAA;AAPN;AAWE;EACE,uDAAA;EACA,aAAA;EACA,sBAAA;EACA,YAAA;EACA,YAAA;EACA,yEAAA;AATJ","sourcesContent":[".devmcee-mega-menu-builder-content {\n  &-container {\n    display: flex;\n    flex-grow: 1;\n    height: 100%;\n    background-color: var(--devmcee-mega-menu-admin-primary-contrast-color);\n    min-width: var(--devmcee-mega-menu-admin-builder-container-root-column-width);\n  }\n\n  &__root-menu {\n    display: flex;\n    flex-direction: column;\n  }\n\n  &-action-bar {\n    padding: 8px;\n    display: flex;\n    justify-content: space-between;\n    border-left: 1px solid var(--devmcee-mega-menu-border-color);\n    border-right: 1px solid var(--devmcee-mega-menu-border-color);\n  }\n\n  &-action-button {\n    cursor: pointer;\n    border: none;\n    background-color: transparent;\n    text-decoration: underline;\n    color: var(--devmcee-mega-menu-admin-action-button-primary-color);\n\n    &:hover {\n      color: var(--devmcee-mega-menu-admin-action-button-primary-color-hover);\n    }\n\n    &:disabled {\n      color: var(--devmcee-mega-menu-admin-action-button-primary-color-disabled);\n      cursor: not-allowed;\n    }\n\n    &--delete {\n      color: var(--devmcee-mega-menu-admin-action-button-primary-color-delete);\n    }\n\n    &--delete:hover {\n      color: var(--devmcee-mega-menu-admin-action-button-primary-color-delete-hover);\n    }\n\n    &--delete:disabled:hover {\n      color: var(--devmcee-mega-menu-admin-action-button-primary-color-disabled);\n      cursor: not-allowed!important;\n    }\n  }\n\n  &-menu-container {\n    border: 1px solid var(--devmcee-mega-menu-border-color);\n    display: flex;\n    flex-direction: column;\n    flex-grow: 1;\n    height: 100%;\n    width: var(--devmcee-mega-menu-admin-builder-container-root-column-width);\n  }\n}"],"sourceRoot":""}]);
+}`, "",{"version":3,"sources":["webpack://./src/components/MegaMenuContainer.scss"],"names":[],"mappings":"AACE;EACE,aAAA;EACA,YAAA;EACA,YAAA;EACA,uEAAA;EACA,6EAAA;AAAJ;AAGE;EACE,aAAA;EACA,sBAAA;AADJ;AAIE;EACE,YAAA;EACA,aAAA;EACA,yBAAA;EACA,eAAA;EACA,4DAAA;EACA,6DAAA;AAFJ;AAKE;EACE,eAAA;EACA,YAAA;EACA,6BAAA;EACA,0BAAA;EACA,iEAAA;AAHJ;AAKI;EACE,uEAAA;AAHN;AAMI;EACE,0EAAA;EACA,mBAAA;AAJN;AAOI;EACE,wEAAA;AALN;AAQI;EACE,8EAAA;AANN;AASI;EACE,0EAAA;EACA,8BAAA;AAPN;AAWE;EACE,uDAAA;EACA,aAAA;EACA,sBAAA;EACA,YAAA;EACA,YAAA;EACA,yEAAA;AATJ","sourcesContent":[".devmcee-mega-menu-builder-content {\n  &-container {\n    display: flex;\n    flex-grow: 1;\n    height: 100%;\n    background-color: var(--devmcee-mega-menu-admin-primary-contrast-color);\n    min-width: var(--devmcee-mega-menu-admin-builder-container-root-column-width);\n  }\n\n  &__root-menu {\n    display: flex;\n    flex-direction: column;\n  }\n\n  &-action-bar {\n    padding: 8px;\n    display: flex;\n    justify-content: flex-end;\n    column-gap: 8px;\n    border-left: 1px solid var(--devmcee-mega-menu-border-color);\n    border-right: 1px solid var(--devmcee-mega-menu-border-color);\n  }\n\n  &-action-button {\n    cursor: pointer;\n    border: none;\n    background-color: transparent;\n    text-decoration: underline;\n    color: var(--devmcee-mega-menu-admin-action-button-primary-color);\n\n    &:hover {\n      color: var(--devmcee-mega-menu-admin-action-button-primary-color-hover);\n    }\n\n    &:disabled {\n      color: var(--devmcee-mega-menu-admin-action-button-primary-color-disabled);\n      cursor: not-allowed;\n    }\n\n    &--delete {\n      color: var(--devmcee-mega-menu-admin-action-button-primary-color-delete);\n    }\n\n    &--delete:hover {\n      color: var(--devmcee-mega-menu-admin-action-button-primary-color-delete-hover);\n    }\n\n    &--delete:disabled:hover {\n      color: var(--devmcee-mega-menu-admin-action-button-primary-color-disabled);\n      cursor: not-allowed !important;\n    }\n  }\n\n  &-menu-container {\n    border: 1px solid var(--devmcee-mega-menu-border-color);\n    display: flex;\n    flex-direction: column;\n    flex-grow: 1;\n    height: 100%;\n    width: var(--devmcee-mega-menu-admin-builder-container-root-column-width);\n  }\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -1901,9 +2492,12 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.devmcee-mega-menu-builder-menu-item {
   width: 100%;
 }
 .devmcee-mega-menu-builder-menu-item__sub-title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 0 8px 8px;
   font-size: var(--devmcee-mega-menu-admin-builder-secondary-font-size);
-}`, "",{"version":3,"sources":["webpack://./src/components/MenuItem.scss"],"names":[],"mappings":"AAAA;EACE,8EAAA;AACF;AAEI;EACE,aAAA;EACA,8BAAA;EACA,YAAA;AAAN;AAMM;EACE,YAAA;EACA,aAAA;EACA,8BAAA;EACA,2EAAA;AAJR;AAQI;EACE,YAAA;EACA,aAAA;EACA,sBAAA;EACA,YAAA;AANN;AAQM;EACE,WAAA;AANR;AAYI;EACE,kBAAA;EACA,qEAAA;AAVN","sourcesContent":[".devmcee-mega-menu-builder-menu-item {\n  border-bottom: 1px solid var(--devmcee-mega-menu-admin-border-secondary-color);\n\n  &-title {\n    &-container {\n      display: flex;\n      justify-content: space-between;\n      padding: 8px;\n    }\n  }\n\n  &-form {\n    &-title {\n      &-bar {\n        padding: 8px;\n        display: flex;\n        justify-content: space-between;\n        background-color: var(--devmcee-mega-menu-admin-background-secondary-color);\n      }\n    }\n\n    &__fields-container {\n      padding: 8px;\n      display: flex;\n      flex-direction: column;\n      row-gap: 8px;\n\n      & input {\n        width: 100%;\n      }\n    }\n  }\n\n  &__sub-title {\n    &-container {\n      padding: 0 8px 8px;\n      font-size: var(--devmcee-mega-menu-admin-builder-secondary-font-size);\n    }\n  }\n}"],"sourceRoot":""}]);
+}`, "",{"version":3,"sources":["webpack://./src/components/MenuItem.scss"],"names":[],"mappings":"AAAA;EACE,8EAAA;AACF;AAEI;EACE,aAAA;EACA,8BAAA;EACA,YAAA;AAAN;AAMM;EACE,YAAA;EACA,aAAA;EACA,8BAAA;EACA,2EAAA;AAJR;AAQI;EACE,YAAA;EACA,aAAA;EACA,sBAAA;EACA,YAAA;AANN;AAQM;EACE,WAAA;AANR;AAYI;EACE,aAAA;EACA,8BAAA;EACA,mBAAA;EACA,kBAAA;EACA,qEAAA;AAVN","sourcesContent":[".devmcee-mega-menu-builder-menu-item {\n  border-bottom: 1px solid var(--devmcee-mega-menu-admin-border-secondary-color);\n\n  &-title {\n    &-container {\n      display: flex;\n      justify-content: space-between;\n      padding: 8px;\n    }\n  }\n\n  &-form {\n    &-title {\n      &-bar {\n        padding: 8px;\n        display: flex;\n        justify-content: space-between;\n        background-color: var(--devmcee-mega-menu-admin-background-secondary-color);\n      }\n    }\n\n    &__fields-container {\n      padding: 8px;\n      display: flex;\n      flex-direction: column;\n      row-gap: 8px;\n\n      & input {\n        width: 100%;\n      }\n    }\n  }\n\n  &__sub-title {\n    &-container {\n      display: flex;\n      justify-content: space-between;\n      align-items: center;\n      padding: 0 8px 8px;\n      font-size: var(--devmcee-mega-menu-admin-builder-secondary-font-size);\n    }\n  }\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -1985,6 +2579,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.devmcee-mega-menu-builder-content__su
 .devmcee-mega-menu-builder-content__sub-menu-column-header {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   padding: 8px;
   border-bottom: 1px solid var(--devmcee-mega-menu-admin-border-secondary-color);
 }
@@ -1994,7 +2589,56 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.devmcee-mega-menu-builder-content__su
   align-items: center;
   height: 100%;
   padding: 8px;
-}`, "",{"version":3,"sources":["webpack://./src/components/SubMenuItemsContainer.scss"],"names":[],"mappings":"AACE;EACE,aAAA;EACA,WAAA;AAAJ;AAEI;EACE,YAAA;EACA,aAAA;EACA,YAAA;EACA,8BAAA;EACA,eAAA;EACA,uBAAA;EACA,2EAAA;AAAN;AAGI;EACE,aAAA;EACA,sBAAA;EACA,YAAA;EACA,uEAAA;EACA,aAAA;EACA,YAAA;EACA,uEAAA;AADN;AAGM;EACE,aAAA;EACA,mBAAA;EACA,YAAA;EACA,8EAAA;AADR;AAMQ;EACE,aAAA;EACA,uBAAA;EACA,mBAAA;EACA,YAAA;EACA,YAAA;AAJV","sourcesContent":[".devmcee-mega-menu-builder-content {\n  &__sub-menu {\n    display: flex;\n    width: 100%;\n\n    &-container {\n      padding: 8px;\n      display: flex;\n      flex-grow: 1;\n      justify-content: space-between;\n      column-gap: 8px;\n      align-items: flex-start;\n      background-color: var(--devmcee-mega-menu-admin-background-secondary-color);\n    }\n\n    &-column {\n      display: flex;\n      flex-direction: column;\n      flex-grow: 1;\n      border: 1px solid var(--devmcee-mega-menu-admin-border-secondary-color);\n      width: 33.33%;\n      height: 100%;\n      background-color: var(--devmcee-mega-menu-admin-primary-contrast-color);\n\n      &-header {\n        display: flex;\n        align-items: center;\n        padding: 8px;\n        border-bottom: 1px solid var(--devmcee-mega-menu-admin-border-secondary-color);\n      }\n\n      &-content {\n\n        &-placeholder {\n          display: flex;\n          justify-content: center;\n          align-items: center;\n          height: 100%;\n          padding: 8px;\n        }\n      }\n    }\n  }\n}"],"sourceRoot":""}]);
+}`, "",{"version":3,"sources":["webpack://./src/components/SubMenuItemsContainer.scss"],"names":[],"mappings":"AACE;EACE,aAAA;EACA,WAAA;AAAJ;AAEI;EACE,YAAA;EACA,aAAA;EACA,YAAA;EACA,8BAAA;EACA,eAAA;EACA,uBAAA;EACA,2EAAA;AAAN;AAGI;EACE,aAAA;EACA,sBAAA;EACA,YAAA;EACA,uEAAA;EACA,aAAA;EACA,YAAA;EACA,uEAAA;AADN;AAGM;EACE,aAAA;EACA,mBAAA;EACA,yBAAA;EACA,YAAA;EACA,8EAAA;AADR;AAMQ;EACE,aAAA;EACA,uBAAA;EACA,mBAAA;EACA,YAAA;EACA,YAAA;AAJV","sourcesContent":[".devmcee-mega-menu-builder-content {\n  &__sub-menu {\n    display: flex;\n    width: 100%;\n\n    &-container {\n      padding: 8px;\n      display: flex;\n      flex-grow: 1;\n      justify-content: space-between;\n      column-gap: 8px;\n      align-items: flex-start;\n      background-color: var(--devmcee-mega-menu-admin-background-secondary-color);\n    }\n\n    &-column {\n      display: flex;\n      flex-direction: column;\n      flex-grow: 1;\n      border: 1px solid var(--devmcee-mega-menu-admin-border-secondary-color);\n      width: 33.33%;\n      height: 100%;\n      background-color: var(--devmcee-mega-menu-admin-primary-contrast-color);\n\n      &-header {\n        display: flex;\n        align-items: center;\n        justify-content: flex-end;\n        padding: 8px;\n        border-bottom: 1px solid var(--devmcee-mega-menu-admin-border-secondary-color);\n      }\n\n      &-content {\n\n        &-placeholder {\n          display: flex;\n          justify-content: center;\n          align-items: center;\n          height: 100%;\n          padding: 8px;\n        }\n      }\n    }\n  }\n}"],"sourceRoot":""}]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/buttons/Button.scss":
+/*!*************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/buttons/Button.scss ***!
+  \*************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/sourceMaps.js */ "./node_modules/css-loader/dist/runtime/sourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `.devmcee-mega-menu__action-button {
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  text-decoration: underline;
+  color: var(--devmcee-mega-menu-admin-action-button-primary-color);
+}
+.devmcee-mega-menu__action-button:hover {
+  color: var(--devmcee-mega-menu-admin-action-button-primary-color-hover);
+}
+.devmcee-mega-menu__action-button:disabled {
+  color: var(--devmcee-mega-menu-admin-action-button-primary-color-disabled);
+  cursor: not-allowed;
+}
+.devmcee-mega-menu__action-button--danger, .devmcee-mega-menu__action-button--delete {
+  color: var(--devmcee-mega-menu-admin-action-button-primary-color-delete);
+}
+.devmcee-mega-menu__action-button--danger:hover, .devmcee-mega-menu__action-button--delete:hover {
+  color: var(--devmcee-mega-menu-admin-action-button-primary-color-delete-hover);
+}
+.devmcee-mega-menu__action-button--danger:disabled:hover, .devmcee-mega-menu__action-button--delete:disabled:hover {
+  color: var(--devmcee-mega-menu-admin-action-button-primary-color-disabled);
+  cursor: not-allowed !important;
+}`, "",{"version":3,"sources":["webpack://./src/components/buttons/Button.scss"],"names":[],"mappings":"AAAA;EACE,eAAA;EACA,YAAA;EACA,6BAAA;EACA,0BAAA;EACA,iEAAA;AACF;AACE;EACE,uEAAA;AACJ;AAEE;EACE,0EAAA;EACA,mBAAA;AAAJ;AAGE;EAEE,wEAAA;AAFJ;AAKE;EAEE,8EAAA;AAJJ;AAOE;EAEE,0EAAA;EACA,8BAAA;AANJ","sourcesContent":[".devmcee-mega-menu__action-button {\n  cursor: pointer;\n  border: none;\n  background-color: transparent;\n  text-decoration: underline;\n  color: var(--devmcee-mega-menu-admin-action-button-primary-color);\n\n  &:hover {\n    color: var(--devmcee-mega-menu-admin-action-button-primary-color-hover);\n  }\n\n  &:disabled {\n    color: var(--devmcee-mega-menu-admin-action-button-primary-color-disabled);\n    cursor: not-allowed;\n  }\n\n  &--danger,\n  &--delete {\n    color: var(--devmcee-mega-menu-admin-action-button-primary-color-delete);\n  }\n\n  &--danger:hover,\n  &--delete:hover {\n    color: var(--devmcee-mega-menu-admin-action-button-primary-color-delete-hover);\n  }\n\n  &--danger:disabled:hover,\n  &--delete:disabled:hover {\n    color: var(--devmcee-mega-menu-admin-action-button-primary-color-disabled);\n    cursor: not-allowed !important;\n  }\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -2477,6 +3121,58 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
 
 
        /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_SubMenuItemsContainer_scss__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_SubMenuItemsContainer_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_SubMenuItemsContainer_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
+
+
+/***/ }),
+
+/***/ "./src/components/buttons/Button.scss":
+/*!********************************************!*\
+  !*** ./src/components/buttons/Button.scss ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/styleDomAPI.js */ "./node_modules/style-loader/dist/runtime/styleDomAPI.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/insertBySelector.js */ "./node_modules/style-loader/dist/runtime/insertBySelector.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js */ "./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/insertStyleElement.js */ "./node_modules/style-loader/dist/runtime/insertStyleElement.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/styleTagTransform.js */ "./node_modules/style-loader/dist/runtime/styleTagTransform.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_Button_scss__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/sass-loader/dist/cjs.js!./Button.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/buttons/Button.scss");
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+var options = {};
+
+options.styleTagTransform = (_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default());
+options.setAttributes = (_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default());
+options.insert = _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default().bind(null, "head");
+options.domAPI = (_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default());
+options.insertStyleElement = (_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default());
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_Button_scss__WEBPACK_IMPORTED_MODULE_6__["default"], options);
+
+
+
+
+       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_Button_scss__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_Button_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_Button_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
 
 
 /***/ }),

@@ -7,7 +7,7 @@ export const App: FC = () => {
 	return (
 		<>
 			<div className="devmcee-mega-menu-builder-container">
-				<MenuContainer/>
+				<MenuContainer />
 			</div>
 			<MenuDataPrinter />
 		</>

@@ -1,0 +1,32 @@
+.devmcee-mega-menu__action-button {
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  text-decoration: underline;
+  color: var(--devmcee-mega-menu-admin-action-button-primary-color);
+
+  &:hover {
+    color: var(--devmcee-mega-menu-admin-action-button-primary-color-hover);
+  }
+
+  &:disabled {
+    color: var(--devmcee-mega-menu-admin-action-button-primary-color-disabled);
+    cursor: not-allowed;
+  }
+
+  &--danger,
+  &--delete {
+    color: var(--devmcee-mega-menu-admin-action-button-primary-color-delete);
+  }
+
+  &--danger:hover,
+  &--delete:hover {
+    color: var(--devmcee-mega-menu-admin-action-button-primary-color-delete-hover);
+  }
+
+  &--danger:disabled:hover,
+  &--delete:disabled:hover {
+    color: var(--devmcee-mega-menu-admin-action-button-primary-color-disabled);
+    cursor: not-allowed !important;
+  }
+}

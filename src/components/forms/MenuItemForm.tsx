@@ -7,9 +7,7 @@ type Props = {
 	subMenuItemsAmount?: number;
 };
 
-export const MenuItemForm: FC<Props> = ({
-	subMenuItemsAmount
-}) => {
+export const MenuItemForm: FC<Props> = ({ subMenuItemsAmount }) => {
 	const {
 		headerTitle,
 		canSubmit,
@@ -18,7 +16,7 @@ export const MenuItemForm: FC<Props> = ({
 		changeField,
 		deleteItem,
 		closeForm,
-		addSubMenuItemColumns
+		addSubMenuItemColumns,
 	} = useMenuItemForm();
 
 	return (
@@ -33,7 +31,7 @@ export const MenuItemForm: FC<Props> = ({
 				</span>
 				<Button
 					title="Cancel"
-					testId='menu-item-form__cancel-button'
+					testId="menu-item-form__cancel-button"
 					onClick={closeForm}
 				/>
 			</div>
@@ -69,21 +67,26 @@ export const MenuItemForm: FC<Props> = ({
 
 			<div className="devmcee-mega-menu-builder-menu-item-form__footer-actions-container">
 				<Button
-					title='Delete'
-					disabled={!form?.uuid || !!subMenuItemsAmount && subMenuItemsAmount > 0}
+					title="Delete"
+					disabled={
+						!form?.uuid
+						|| (!!subMenuItemsAmount && subMenuItemsAmount > 0)
+					}
 					onClick={deleteItem}
-					testId={`${form?.title || 'menu-item-form'}__delete-button`}
-					classes='devmcee-mega-menu-builder-content-action-button--delete'
+					testId={`${form?.title
+						|| 'menu-item-form'}__delete-button`}
+					theme="danger"
 				/>
 				{form?.uuid && !form?.subMenuItemsColumnsUuid && (
 					<Button
 						title="Add sub items"
 						onClick={addSubMenuItemColumns}
-						testId='add-sub-items-button'
-					/>)}
+						testId="add-sub-items-button"
+					/>
+				)}
 				<Button
-					title='Save'
-					testId='menu-item-form__save-button'
+					title="Save"
+					testId="menu-item-form__save-button"
 					onClick={save}
 					type="submit"
 					disabled={!canSubmit}

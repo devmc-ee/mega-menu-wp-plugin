@@ -3,76 +3,70 @@ import { useMenuState } from './useMenuState';
 import { SubMenuItemForm } from '../reducers/menuState.types';
 
 export const useSubMenuItemForm = () => {
-  const {
-    state: {
-      subMenuItemForm,
-    },
-    dispatchers: {
-      saveSubMenuItem,
-      changeSubMenuItemFieldValue,
-      removeSubMenuItem,
-      removeSubMenuItemForm
-    }
-  } = useMenuState();
+	const {
+		state: { subMenuItemForm },
+		dispatchers: {
+			saveSubMenuItem,
+			changeSubMenuItemFieldValue,
+			removeSubMenuItem,
+			removeSubMenuItemForm,
+		},
+	} = useMenuState();
 
-  const canSubmit = useMemo(
-    () => subMenuItemForm && subMenuItemForm.title && subMenuItemForm.url,
-    [subMenuItemForm?.title, subMenuItemForm?.url]
-  );
+	const canSubmit = useMemo(
+		() => subMenuItemForm?.title && subMenuItemForm.url,
+		[subMenuItemForm?.title, subMenuItemForm?.url]
+	);
 
-  const headerTitle = useMemo(
-    () => {
-      if (!subMenuItemForm) {
-        return '';
-      }
+	const headerTitle = useMemo(() => {
+		if (!subMenuItemForm) {
+			return '';
+		}
 
-      return subMenuItemForm.uuid ? subMenuItemForm.title : `${subMenuItemForm.title || 'New sub item'}`
-    },
-    [subMenuItemForm?.uuid, subMenuItemForm?.title]
-  );
+		return subMenuItemForm.uuid
+			? subMenuItemForm.title
+			: `${subMenuItemForm.title || 'New sub item'}`;
+	}, [subMenuItemForm]);
 
-  const save = async (
-    event: FormEvent<HTMLButtonElement | HTMLFormElement>
-  ) => {
-    event.preventDefault();
+	const save = async (
+		event: FormEvent<HTMLButtonElement | HTMLFormElement>
+	) => {
+		event.preventDefault();
 
-    if (
-      !subMenuItemForm?.title
-      || !subMenuItemForm?.url
-    ) {
-      return;
-    }
+		if (!subMenuItemForm?.title || !subMenuItemForm?.url) {
+			return;
+		}
 
-    saveSubMenuItem();
-  };
+		saveSubMenuItem();
+	};
 
-  const changeField = (
-    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = event.target;
+	const changeField = (
+		event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+	) => {
+		const { name, value } = event.target;
 
-    changeSubMenuItemFieldValue(name as keyof SubMenuItemForm, value);
-  };
+		changeSubMenuItemFieldValue(name as keyof SubMenuItemForm, value);
+	};
 
-  const deleteItem = () => {
-    if (!subMenuItemForm?.uuid) {
-      return removeSubMenuItemForm();
-    }
+	const deleteItem = () => {
+		if (!subMenuItemForm?.uuid) {
+			return removeSubMenuItemForm();
+		}
 
-    return removeSubMenuItem()
-  };
+		return removeSubMenuItem();
+	};
 
-  const closeForm = () => {
-    removeSubMenuItemForm();
-  };
+	const closeForm = () => {
+		removeSubMenuItemForm();
+	};
 
-  return {
-    form: subMenuItemForm,
-    headerTitle,
-    canSubmit,
-    save,
-    changeField,
-    deleteItem,
-    closeForm
-  };
+	return {
+		form: subMenuItemForm,
+		headerTitle,
+		canSubmit,
+		save,
+		changeField,
+		deleteItem,
+		closeForm,
+	};
 };

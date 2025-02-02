@@ -4,10 +4,7 @@ import { useMenuState } from './useMenuState';
 
 export const useSubMenuItemsContainer = () => {
 	const {
-		state: {
-			menuItemForm,
-			subMenuItemsColumns
-		},
+		state: { menuItemForm, subMenuItemsColumns },
 	} = useMenuState();
 
 	const [newSubItem, setNewSubItem] = useState<Omit<
@@ -24,8 +21,12 @@ export const useSubMenuItemsContainer = () => {
 	>(null);
 
 	const columnsData = useMemo(() => {
-		if (!menuItemForm || !subMenuItemsColumns) return null;
-		if (!menuItemForm.subMenuItemsColumnsUuid) return null;
+		if (
+			!menuItemForm?.subMenuItemsColumnsUuid
+			|| !subMenuItemsColumns
+		) {
+			return null;
+		}
 
 		return subMenuItemsColumns[menuItemForm.subMenuItemsColumnsUuid];
 	}, [menuItemForm?.subMenuItemsColumnsUuid, subMenuItemsColumns]);

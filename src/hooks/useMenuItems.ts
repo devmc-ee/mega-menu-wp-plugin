@@ -5,20 +5,35 @@ import { useMenuMetaState } from './useMenuMetaState';
 
 export const useMenuItems = () => {
 	const {
-		state: { menuItemForm, localMenu, menuItems, subMenuItems, subMenuItemsColumns },
+		state: {
+			menuItemForm,
+			localMenu,
+			menuItems,
+			subMenuItems,
+			subMenuItemsColumns,
+			subMenuItemForm,
+		},
 		dispatchers: {
 			initMenuItemForm,
 			initMenuItemFormForEditing,
 			removeMenuItemForm,
-			deleteMenuItemUuidFromLocalMenu
-		}
+			deleteMenuItemUuidFromLocalMenu,
+			moveMenuItemUp,
+			moveMenuItemDown,
+		},
 	} = useMenuState();
 
-	const { state: metaState } = useMenuMetaState();
-	const { activeLanguageTab: selectedLanguage } = metaState;
+	const {
+		state: { activeLanguageTab: selectedLanguage, orderModeEnabled },
+		dispatchers: { enableOrderMode, disableOrderMode, saveMenuOrder },
+	} = useMenuMetaState();
 
-	const activeFormUuid = useMemo(() => menuItemForm?.uuid, [menuItemForm]);
-	const setActiveFormUuid = (uuid: MenuItem['uuid']) => initMenuItemFormForEditing(selectedLanguage, uuid);
+	const activeFormUuid = useMemo(
+		() => menuItemForm?.uuid,
+		[menuItemForm]
+	);
+	const setActiveFormUuid = (uuid: MenuItem['uuid']) =>
+		initMenuItemFormForEditing(selectedLanguage, uuid);
 	const addNewMenuItem = () => initMenuItemForm(selectedLanguage);
 
 	const deletMenuItem = async (uuid?: MenuItem['uuid']) => {
@@ -32,12 +47,27 @@ export const useMenuItems = () => {
 
 	const getSubMenuItemsAmount = (uuid: MenuItem['uuid']): number => {
 		const menuItem = menuItems[uuid];
-		if (!menuItem.subMenuItemsColumnsUuid) return 0;
-		
+		if (!menuItem.subMenuItemsColumnsUuid) {
+			return 0;
+		}
+
 		return subMenuItemsColumns[menuItem.subMenuItemsColumnsUuid]?.reduce(
 			(acc, column) => acc + column.length,
 			0
 		);
+	};
+
+	const disableOrderModeWithReaload = () => {
+		disableOrderMode();
+		window.location.reload();
+	};
+
+	const reorderMenuItemUp = (uuid: MenuItem['uuid']) => {
+		moveMenuItemUp(uuid, selectedLanguage);
+	};
+
+	const reorderMenuItemDown = (uuid: MenuItem['uuid']) => {
+		moveMenuItemDown(uuid, selectedLanguage);
 	};
 
 	return {
@@ -47,10 +77,17 @@ export const useMenuItems = () => {
 		subMenuItemsColumnsMap: subMenuItemsColumns,
 		isNewMenuItemForm: menuItemForm && !menuItemForm?.uuid,
 		activeFormUuid,
+		menuOrderModeEnabled: orderModeEnabled,
+		isAllowedToEnableOrderMode: !menuItemForm && !subMenuItemForm,
+		moveMenuItemUp: reorderMenuItemUp,
+		moveMenuItemDown: reorderMenuItemDown,
+		saveMenuOrder,
 		addNewMenuItem,
 		deletMenuItem,
 		setActiveFormUuid,
 		getSubMenuItemsAmount,
+		enableOrderMode,
+		disableOrderMode: disableOrderModeWithReaload,
 	};
 };
 

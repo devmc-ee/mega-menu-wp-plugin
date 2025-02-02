@@ -1,3 +1,3 @@
-import { EventEmitter } from "./EventEmitter";
+import { EventEmitter } from './EventEmitter';
 
 export const apiRequestEmitter = new EventEmitter();

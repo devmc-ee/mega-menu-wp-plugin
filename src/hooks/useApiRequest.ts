@@ -1,42 +1,34 @@
-import { useMemo } from "react";
-import { EndpointName, MegaMenuData } from "../app.types";
-import { useMenuMetaState } from "./useMenuMetaState";
+import { useMemo } from 'react';
+import { EndpointName, MegaMenuData } from '../app.types';
+import { useMenuMetaState } from './useMenuMetaState';
 
 export const useApiRequest = () => {
-  const { state: metaState } = useMenuMetaState();
+	const { state: metaState } = useMenuMetaState();
 
-  const {
-    customNonce,
-    postID,
-    endpoints
-  } = metaState;
+	const { customNonce, postID, endpoints } = metaState;
 
-  const url = useMemo(
-    () => endpoints[EndpointName.SAVE],
-    [endpoints, EndpointName.SAVE]
-  );
+	const url = useMemo(() => endpoints[EndpointName.SAVE], [endpoints]);
 
-  const sendRequest = async (data: MegaMenuData) => {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-WP-Nonce': customNonce,
-      },
-      body: JSON.stringify({
-        data,
-        postID,
-      }),
-    });
+	const sendRequest = async (data: MegaMenuData) => {
+		const response = await fetch(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-WP-Nonce': customNonce,
+			},
+			body: JSON.stringify({
+				data,
+				postID,
+			}),
+		});
 
-    if (!response.ok) {
+		if (!response.ok) {
+			throw new Error('Network response was not ok.');
+		}
+		return response.json();
+	};
 
-      throw new Error('Network response was not ok.');
-    }
-    return response.json();
-  }
-
-  return {
-    sendRequest
-  }
-}
+	return {
+		sendRequest,
+	};
+};

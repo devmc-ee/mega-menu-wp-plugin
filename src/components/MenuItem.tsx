@@ -1,14 +1,19 @@
 import { FC } from 'react';
-import {
-	MenuItem as MenuItemType,
-} from '../app.types';
+import { MenuItem as MenuItemType } from '../app.types';
 import './MenuItem.scss';
 import { Button } from './buttons/Button';
+import { ArrowUpButton } from './buttons/ArrowUpButton';
+import { ArrowDownButton } from './buttons/ArrowDownButton';
 
 type MenuItemProps = MenuItemType & {
 	activeFormUuid?: MenuItemType['uuid'] | null;
 	subMenuItemsAmount: number;
 	setActiveFormUuid: (uuid: MenuItemType['uuid']) => void;
+	menuOrderModeEnabled: boolean;
+	isMoveUpAllowed: boolean;
+	isMoveDownAllowed: boolean;
+	moveUp: (uuid: MenuItemType['uuid']) => void;
+	moveDown: (uuid: MenuItemType['uuid']) => void;
 };
 
 export const MenuItem: FC<MenuItemProps> = ({
@@ -16,7 +21,12 @@ export const MenuItem: FC<MenuItemProps> = ({
 	setActiveFormUuid: setFormActive,
 	title,
 	subMenuItemsAmount,
-	uuid
+	uuid,
+	isMoveUpAllowed,
+	isMoveDownAllowed,
+	menuOrderModeEnabled,
+	moveUp,
+	moveDown,
 }) => {
 	return (
 		<div className="devmcee-mega-menu-builder-menu-item">
@@ -32,7 +42,23 @@ export const MenuItem: FC<MenuItemProps> = ({
 				/>
 			</div>
 			<div className="devmcee-mega-menu-builder-menu-item__sub-title-container">
-				{`${subMenuItemsAmount} Sub Items`}
+				<span>{`${subMenuItemsAmount} Sub Items`}</span>
+				{menuOrderModeEnabled && (
+					<div className="devmcee-mega-menu-builder-menu-item__re-order-buttons-container">
+						{isMoveUpAllowed && (
+							<ArrowUpButton
+								disabled={!isMoveUpAllowed}
+								onClick={() => moveUp(uuid)}
+							/>
+						)}
+						{isMoveDownAllowed && (
+							<ArrowDownButton
+								disabled={!isMoveDownAllowed}
+								onClick={() => moveDown(uuid)}
+							/>
+						)}
+					</div>
+				)}
 			</div>
 		</div>
 	);

@@ -4,43 +4,37 @@ import { MenuItemForm } from '../reducers/menuState.types';
 
 export const useMenuItemForm = () => {
 	const {
-		state: {
-			menuItemForm,
-		},
+		state: { menuItemForm },
 		dispatchers: {
 			changeMenuItemFieldValue,
 			saveMenuItem,
 			removeMenuItem,
 			removeMenuItemForm,
-			initSubMenuItemColumns
-		}
+			initSubMenuItemColumns,
+		},
 	} = useMenuState();
 
 	const canSubmit = useMemo(
-		() => menuItemForm && menuItemForm.title && menuItemForm.url,
+		() => menuItemForm?.title && menuItemForm.url,
 		[menuItemForm?.title, menuItemForm?.url]
 	);
 
-	const headerTitle = useMemo(
-		() => {
-			if (!menuItemForm) {
-				return '';
-			}
+	const headerTitle = useMemo(() => {
+		if (!menuItemForm) {
+			return '';
+		}
 
-			return menuItemForm.uuid ? menuItemForm.title : `${menuItemForm.title || 'New item'}`
-		},
-		[menuItemForm?.uuid, menuItemForm?.title]
-	);
+		return menuItemForm.uuid
+			? menuItemForm.title
+			: `${menuItemForm.title || 'New item'}`;
+	}, [menuItemForm]);
 
 	const save = async (
 		event: FormEvent<HTMLButtonElement | HTMLFormElement>
 	) => {
 		event.preventDefault();
 
-		if (
-			!menuItemForm?.title
-			|| !menuItemForm?.url
-		) {
+		if (!menuItemForm?.title || !menuItemForm?.url) {
 			return;
 		}
 
@@ -60,17 +54,17 @@ export const useMenuItemForm = () => {
 			return removeMenuItemForm();
 		}
 
-		return removeMenuItem()
+		return removeMenuItem();
 	};
 
 	const closeForm = () => {
 		removeMenuItemForm();
 	};
-	
+
 	const addSubMenuItemColumns = () => {
 		initSubMenuItemColumns(crypto.randomUUID());
-	}
-	
+	};
+
 	return {
 		form: menuItemForm,
 		headerTitle,
@@ -79,6 +73,6 @@ export const useMenuItemForm = () => {
 		changeField,
 		deleteItem,
 		closeForm,
-		addSubMenuItemColumns
+		addSubMenuItemColumns,
 	};
 };

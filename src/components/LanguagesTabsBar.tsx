@@ -2,7 +2,10 @@ import { useMenuMetaState } from '../hooks/useMenuMetaState';
 import './LanguagesTabsBar.scss';
 
 export const LanguagesTabsBar = () => {
-	const { state, dispatchers: { setActiveLanguageTab } } = useMenuMetaState();
+	const {
+		state,
+		dispatchers: { setActiveLanguageTab },
+	} = useMenuMetaState();
 	const { languages, activeLanguageTab } = state;
 
 	return (
