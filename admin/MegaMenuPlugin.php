@@ -4,247 +4,279 @@ declare(strict_types=1);
 
 namespace Devmcee\MegaMenu;
 
-class MegaMenuPlugin
-{
-  public $post_type = 'devmcee_mega_menu';
-  public $endpoint_base = 'devmcee-mega-menu/v2';
-  public $post_meta_key = '_devmcee_mega_menu_data';
+class MegaMenuPlugin {
 
-  public function __construct(protected string $pluginFile, private LanguageServiceInterface $languageService)
-  {
-    register_activation_hook($pluginFile, array($this, 'activate'));
-    register_deactivation_hook($pluginFile, array($this, 'deactivate'));
+	public $post_type     = 'devmcee_mega_menu';
+	public $endpoint_base = 'devmcee-mega-menu/v2';
+	public $post_meta_key = '_devmcee_mega_menu_data';
 
-    add_action('init', array($this, 'init'));
-  }
+	public function __construct(
+		protected string $pluginFile,
+		private LanguageServiceInterface $languageService,
+		private MenuBuilderServiceInterface $menuBuilderService
+	) {
+		register_activation_hook( $pluginFile, array( $this, 'activate' ) );
+		register_deactivation_hook( $pluginFile, array( $this, 'deactivate' ) );
 
-  public function init()
-  {
-    $this->register_mega_menu_post_type();
-    // admin
-    add_action('rest_api_init', array($this, 'register_rest_routes'));
+		add_action( 'init', array( $this, 'init' ) );
+	}
 
-    add_filter('manage_devmcee_mega_menu_posts_columns', array($this, 'add_shortcode_column'));
-    add_action('manage_devmcee_mega_menu_posts_custom_column', array($this, 'add_shortcode_data'), 10, 2);
-    add_filter('post_row_actions', array($this, 'remove_quick_edit'), 10, 2);
+	public function init() {
+		$this->register_mega_menu_post_type();
+		// admin
+		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
 
-    add_action('edit_form_after_title',  array($this, 'add_react_root_element'));
-    add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
-    add_shortcode($this->post_type, array($this, 'process_shortcode'));
-  }
+		add_filter( 'manage_devmcee_mega_menu_posts_columns', array( $this, 'add_shortcode_column' ) );
+		add_action( 'manage_devmcee_mega_menu_posts_custom_column', array( $this, 'add_shortcode_data' ), 10, 2 );
+		add_filter( 'post_row_actions', array( $this, 'remove_quick_edit' ), 10, 2 );
 
-  public function activate()
-  {
-    // Register the menu
-    // Clear the permalinks after the post type has been registered.
-    flush_rewrite_rules();
-  }
+		add_action( 'edit_form_after_title', array( $this, 'add_react_root_element' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
 
-  public function deactivate()
-  {
-    // Clear the permalinks to remove our post type's rules from the database.
-    flush_rewrite_rules();
-  }
+		wp_register_script(
+			'devmcee-mega-menu-shortcode-script',
+			plugin_dir_url( $this->pluginFile ) . 'public/devmcee-front-menu.js',
+			array(), // Ensures React is loaded
+			filemtime( plugin_dir_path( $this->pluginFile ) . 'public/devmcee-front-menu.js' ),
+			true
+		);
 
-  function remove_quick_edit($actions, $post)
-  {
-    if ($post->post_type === $this->post_type) {
-      unset($actions['inline hide-if-no-js']);
-    }
+		wp_register_style(
+			'devmcee-mega-menu-shortcode-style',
+			plugin_dir_url( $this->pluginFile ) . 'public/devmcee-front-menu.css',
+			array(),
+			filemtime( plugin_dir_path( $this->pluginFile ) . 'public/devmcee-front-menu.css' ),
+		);
 
-    return $actions;
-  }
+		add_shortcode( $this->post_type, array( $this, 'process_shortcode' ) );
+	}
 
-  public function enqueue_admin_scripts()
-  {
-    wp_register_script(
-      'devmcee-mm-admin-ui-script',
-      plugin_dir_url($this->pluginFile) . 'build/index.js',
-      ['wp-element'], // Ensures React is loaded
-      filemtime(plugin_dir_path($this->pluginFile) . 'build/index.js'),
-      true
-    );
+	public function activate() {
+		// Register the menu
+		// Clear the permalinks after the post type has been registered.
+		flush_rewrite_rules();
+	}
 
-    $postID = get_the_ID();
-    $data = get_post_meta($postID, $this->post_meta_key, true);
+	public function deactivate() {
+		// Clear the permalinks to remove our post type's rules from the database.
+		flush_rewrite_rules();
+	}
 
-    if (empty($data)) {
-      $data = $this->get_mega_menu_init_data();
-      update_post_meta($postID, $this->post_meta_key, $data);
-    };
+	function remove_quick_edit( $actions, $post ) {
+		if ( $post->post_type === $this->post_type ) {
+			unset( $actions['inline hide-if-no-js'] );
+		}
 
-    wp_localize_script('devmcee-mm-admin-ui-script', 'devmceeMegaMenuInitData', [
-      'languages' => $this->languageService->get_active_languages(),
-      'defaultLanguage' => $this->languageService->get_default_language(),
-      'data' => $data,
-      'endpoints' => array(
-        'save' => esc_url_raw(rest_url($this->endpoint_base . '/save'))
-      ),
-      'customNonce'    => wp_create_nonce('wp_rest'),
-      'postID' => $postID
-    ]);
+		return $actions;
+	}
 
-    wp_enqueue_script('devmcee-mm-admin-ui-script');
-  }
+	public function enqueue_admin_scripts() {
+		wp_register_script(
+			'devmcee-mm-admin-ui-script',
+			plugin_dir_url( $this->pluginFile ) . 'build/index.js',
+			array( 'wp-element' ), // Ensures React is loaded
+			filemtime( plugin_dir_path( $this->pluginFile ) . 'build/index.js' ),
+			true
+		);
 
-  function register_rest_routes()
-  {
-    register_rest_route($this->endpoint_base, '/save', array(
-      'methods'  => \WP_REST_Server::CREATABLE,
-      'callback' => array($this, 'save_menu'),
-      'permission_callback' => function () {
-        return current_user_can('edit_posts');
-      }
-    ));
-  }
+		$postID = get_the_ID();
+		$data   = get_post_meta( $postID, $this->post_meta_key, true );
 
-  function save_menu(\WP_REST_Request $request)
-  {
-    $body = $request->get_json_params();
-    $post_id = $body['postID'];
+		if ( empty( $data ) ) {
+			$data = $this->get_mega_menu_init_data();
+			update_post_meta( $postID, $this->post_meta_key, $data );
+		}
 
-    if (empty($post_id)) {
-      return  rest_ensure_response("Invalid post id");
-    }
+		wp_localize_script(
+			'devmcee-mm-admin-ui-script',
+			'devmceeMegaMenuInitData',
+			array(
+				'languages'       => $this->languageService->get_active_languages(),
+				'defaultLanguage' => $this->languageService->get_default_language(),
+				'data'            => $data,
+				'endpoints'       => array(
+					'save' => esc_url_raw( rest_url( $this->endpoint_base . '/save' ) ),
+				),
+				'customNonce'     => wp_create_nonce( 'wp_rest' ),
+				'postID'          => $postID,
+			)
+		);
 
-    $data = $body['data'];
-    $post_type = get_post_type($post_id);
+		wp_enqueue_script( 'devmcee-mm-admin-ui-script' );
+	}
 
-    if ($post_type !== $this->post_type) {
-      return  rest_ensure_response('Invalid post type');
-    }
+	function register_rest_routes() {
+		register_rest_route(
+			$this->endpoint_base,
+			'/save',
+			array(
+				'methods'             => \WP_REST_Server::CREATABLE,
+				'callback'            => array( $this, 'save_menu' ),
+				'permission_callback' => function () {
+					return current_user_can( 'edit_posts' );
+				},
+			)
+		);
+	}
 
-    $result = update_post_meta($post_id, $this->post_meta_key, $data);
+	function save_menu( \WP_REST_Request $request ) {
+		$body    = $request->get_json_params();
+		$post_id = $body['postID'];
 
-    if ($result) {
-      return  rest_ensure_response(['message' => 'success']);
-    }
+		if ( empty( $post_id ) ) {
+			return rest_ensure_response( 'Invalid post id' );
+		}
 
-    return  new \WP_REST_Response(
-      array(
-        'status' => 422,
-        'response' => 'error',
-        'body_response' => 'Failed to save data'
-      )
-    );
-  }
+		$data      = $body['data'];
+		$post_type = get_post_type( $post_id );
 
-  function register_mega_menu_post_type()
-  {
-    $labels = array(
-      'name'               => 'Mega Menus',
-      'singular_name'      => 'Mega Menu',
-      'menu_name'          => 'Mega Menus',
-      'name_admin_bar'     => 'Mega Menu',
-      'add_new'            => 'Add New',
-      'add_new_item'       => 'Add New Menu',
-      'new_item'           => 'New Mega Menu',
-      'edit_item'          => 'Edit Mega Menu',
-      'view_item'          => '',
-      'all_items'          => 'All Mega Menus',
-      'search_items'       => 'Search Mega Menus',
-      'not_found'          => 'No menu found.',
-      'not_found_in_trash' => 'No menu found in Trash.',
-    );
+		if ( $post_type !== $this->post_type ) {
+			return rest_ensure_response( 'Invalid post type' );
+		}
 
-    $args = array(
-      'labels'             => $labels,
-      'public'             => true,
-      'has_archive'        => false,
-      'show_in_rest'       => false, // Enable Gutenberg editor
-      'supports'           => array('title',),
-      'rewrite'            => array('slug' => 'devmcee-mega-menu'),
-      'menu_icon'          => 'dashicons-list-view'
-    );
+		$result = update_post_meta( $post_id, $this->post_meta_key, $data );
 
-    register_post_type($this->post_type, $args);
-  }
+		if ( $result ) {
+			return rest_ensure_response( array( 'message' => 'success' ) );
+		}
 
-  function add_shortcode_column($columns)
-  {
-    unset($columns['date']);
-    $columns['shortcode'] = 'Shortcode';
-    return $columns;
-  }
+		return new \WP_REST_Response(
+			array(
+				'status'        => 422,
+				'response'      => 'error',
+				'body_response' => 'Failed to save data',
+			)
+		);
+	}
 
-  function add_shortcode_data($column, $post_id)
-  {
-    switch ($column) {
-      case 'shortcode':
-        $shortcode = sprintf('[%s id="%s"]', $this->post_type, $post_id);
-        echo esc_html($shortcode);
-        break;
-    }
-  }
+	function register_mega_menu_post_type() {
+		$labels = array(
+			'name'               => 'Mega Menus',
+			'singular_name'      => 'Mega Menu',
+			'menu_name'          => 'Mega Menus',
+			'name_admin_bar'     => 'Mega Menu',
+			'add_new'            => 'Add New',
+			'add_new_item'       => 'Add New Menu',
+			'new_item'           => 'New Mega Menu',
+			'edit_item'          => 'Edit Mega Menu',
+			'view_item'          => '',
+			'all_items'          => 'All Mega Menus',
+			'search_items'       => 'Search Mega Menus',
+			'not_found'          => 'No menu found.',
+			'not_found_in_trash' => 'No menu found in Trash.',
+		);
 
-  function add_react_root_element()
-  {
-    global $post;
-    if ($this->post_type === $post->post_type) {
-      echo '<div id="devmcee-mega-menu-root"></div>';
-    }
-  }
+		$args = array(
+			'labels'       => $labels,
+			'public'       => true,
+			'has_archive'  => false,
+			'show_in_rest' => false, // Enable Gutenberg editor
+			'supports'     => array( 'title' ),
+			'rewrite'      => array( 'slug' => 'devmcee-mega-menu' ),
+			'menu_icon'    => 'dashicons-list-view',
+		);
 
-  function process_shortcode($atts)
-  {
-    $atts = shortcode_atts(
-      array(
-        'id' => '',  // Specific feature list ID
-      ),
-      $atts,
-      $this->post_type
-    );
+		register_post_type( $this->post_type, $args );
+	}
 
-    // Query feature lists (if 'id' is provided, fetch that specific list)
-    $args = array(
-      'post_type'      => $this->post_type,
-      'posts_per_page' => -1,  // Display all
-    );
+	function add_shortcode_column( $columns ) {
+		unset( $columns['date'] );
+		$columns['shortcode'] = 'Shortcode';
+		return $columns;
+	}
 
-    if ($atts['id']) {
-      $args['p'] = $atts['id'];  // Query by specific feature list ID
-    }
+	function add_shortcode_data( $column, $post_id ) {
+		switch ( $column ) {
+			case 'shortcode':
+				$shortcode = sprintf( '[%s id="%s"]', $this->post_type, $post_id );
+				echo esc_html( $shortcode );
+				break;
+		}
+	}
 
-    $query = new \WP_Query($args);
+	function add_react_root_element() {
+		global $post;
+		if ( $this->post_type === $post->post_type ) {
+			echo '<div id="devmcee-mega-menu-root"></div>';
+		}
+	}
 
+	function process_shortcode( $atts ) {
+		wp_enqueue_script( 'devmcee-mega-menu-shortcode-script' );
+		wp_enqueue_style( 'devmcee-mega-menu-shortcode-style' );
 
-    // Check if there are feature lists
-    if ($query->have_posts()) {
-      $output = '<div class="devmcee-mega-menu-container">';
+		$atts = shortcode_atts(
+			array(
+				'id' => '',
+			),
+			$atts,
+			$this->post_type
+		);
 
-      while ($query->have_posts()) {
-        $query->the_post();
+		$args = array(
+			'post_type'      => $this->post_type,
+			'posts_per_page' => -1,  // Display all
+		);
 
-        $output .= $this->languageService->get_current_language();
-      }
+		if ( $atts['id'] ) {
+			$args['p'] = $atts['id'];
+		}
 
-      wp_reset_postdata();
-      $output .= '</div>';
-    } else {
-      $output = 'No feature lists found.';
-    }
+		$query = new \WP_Query( $args );
 
-    return $output;
-  }
+		if ( $query->have_posts() ) {
+			$output = '<div class="devmcee-mega-menu-container">';
 
-  private function get_mega_menu_init_data()
-  {
-    $languages = $this->languageService->get_active_languages();
-    $localMenu = [];
+			while ( $query->have_posts() ) {
+				$query->the_post();
+				$dbData = get_post_meta( get_the_ID(), $this->post_meta_key, true );
 
-    foreach ($languages as $language) {
-      $localMenu[$language] = [];
-    }
+				try {
+					MenuDataValidator::validate( $dbData );
+				} catch ( \Exception $e ) {
+					$output = 'Error: ' . $e->getMessage();
+					break;
+				}
 
-    if (empty($localMenu)) {
-      $localMenu['en'] = [];
-    }
+				try {
+					$output .= $this->menuBuilderService->getMenuHtml(
+						new MenuDTO( $dbData ),
+						$this->languageService->get_current_language(),
+						$this->languageService->get_default_language()
+					);
+				} catch ( \Exception $e ) {
+					$output = 'Error: ' . $e->getMessage();
+					break;
+				}
+			}
 
-    return array(
-      'localMenu' => $localMenu,
-      'menuItems' => new \stdClass(),
-      'subMenuItems' => new \stdClass(),
-      'subMenuItemsColumns' => new \stdClass(),
-    );
-  }
+			wp_reset_postdata();
+
+			$output .= '</div>';
+		} else {
+			$output = 'No feature lists found.';
+		}
+
+		return $output;
+	}
+
+	private function get_mega_menu_init_data() {
+		$languages = $this->languageService->get_active_languages();
+		$localMenu = array();
+
+		foreach ( $languages as $language ) {
+			$localMenu[ $language ] = array();
+		}
+
+		if ( empty( $localMenu ) ) {
+			$localMenu['en'] = array();
+		}
+
+		return array(
+			'localMenu'           => $localMenu,
+			'menuItems'           => new \stdClass(),
+			'subMenuItems'        => new \stdClass(),
+			'subMenuItemsColumns' => new \stdClass(),
+		);
+	}
 }

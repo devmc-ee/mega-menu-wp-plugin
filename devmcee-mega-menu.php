@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -25,6 +26,6 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use Devmcee\MegaMenu\LanguageService;
 use Devmcee\MegaMenu\MegaMenuPlugin;
+use Devmcee\MegaMenu\MenuBuilderService;
 
-$plugin = new MegaMenuPlugin(__FILE__, new LanguageService());
-
+$plugin = new MegaMenuPlugin(__FILE__, new LanguageService(), new MenuBuilderService());
