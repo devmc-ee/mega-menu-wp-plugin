@@ -327,8 +327,6 @@ All Menu Items and Sub Menu Items can be edited, deleted, and reordered. However
     },
     "customNonce": "f3337de404",
     "postID": "12",
-    "orderModeEnabled": false,
-    "orderSubmitted": false
   }
   ```
 </details>
