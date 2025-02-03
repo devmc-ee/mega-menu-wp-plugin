@@ -3,3 +3,4 @@ playwright/
 /vendor/
 /test-results/
 .phpunit.cache
+.vscode/
