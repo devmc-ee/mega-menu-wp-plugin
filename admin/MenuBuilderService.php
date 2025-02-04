@@ -31,7 +31,7 @@ class MenuBuilderService implements MenuBuilderServiceInterface {
 		foreach ( $this->localMenu as $menuItemUuid ) {
 			/** @var MenuItemDTO $menuItem */
 			$menuItem          = $menuData->menuItems()[ $menuItemUuid ];
-			$this->menuItems[] = $menuItem;
+			$this->menuItems[$menuItemUuid] = $menuItem;
 		}
 		$this->subMenuItemsColumns = $menuData->subMenuItemsColumns();
 		$this->menuSubItems        = $menuData->subMenuItems();

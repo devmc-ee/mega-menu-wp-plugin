@@ -202,6 +202,9 @@ class MegaMenuPlugin {
 	}
 
 	function process_shortcode( $atts ) {
+		static $instance = 0;
+		$instance++;
+
 		wp_enqueue_script( 'devmcee-mega-menu-shortcode-script' );
 		wp_enqueue_style( 'devmcee-mega-menu-shortcode-style' );
 
@@ -225,7 +228,7 @@ class MegaMenuPlugin {
 		$query = new \WP_Query( $args );
 
 		if ( $query->have_posts() ) {
-			$output = '<div class="devmcee-mega-menu-container">';
+			$output = sprintf('<div class="devmcee-mega-menu-container" data-instance="%d">', $instance);
 
 			while ( $query->have_posts() ) {
 				$query->the_post();
