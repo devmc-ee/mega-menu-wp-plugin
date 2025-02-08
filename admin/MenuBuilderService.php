@@ -103,14 +103,14 @@ class MenuBuilderService implements MenuBuilderServiceInterface {
          <details class="devmcee-mega-menu__sub-menu-details">
           <summary class="devmcee-mega-menu__sub-menu-summary">%s
             <svg class="devmcee-mega-menu__sub-menu-summary-icon devmcee-mega-menu__sub-menu-summary-icon--arrow-down"
-              width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              width="15" height="15" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M12.9727 19L12.9727 5" stroke="black" stroke-width="2" stroke-linecap="round"
                 stroke-linejoin="round" />
               <path d="M19.9727 12L12.9727 5L5.97266 12" stroke="black" stroke-width="2" stroke-linecap="round"
                 stroke-linejoin="round" />
             </svg>
             <svg class="devmcee-mega-menu__sub-menu-summary-icon devmcee-mega-menu__sub-menu-summary-icon--arrow-up"
-              width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M12.0039 5L12.0039 19" stroke="black" stroke-width="2" stroke-linecap="round"
                 stroke-linejoin="round" />
               <path d="M19.0039 12L12.0039 19L5.00391 12" stroke="black" stroke-width="2" stroke-linecap="round"

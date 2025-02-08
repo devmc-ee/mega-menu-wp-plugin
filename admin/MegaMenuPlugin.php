@@ -33,20 +33,7 @@ class MegaMenuPlugin {
 		add_action( 'edit_form_after_title', array( $this, 'add_react_root_element' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
 
-		wp_register_script(
-			'devmcee-mega-menu-shortcode-script',
-			plugin_dir_url( $this->pluginFile ) . 'public/devmcee-front-menu.js',
-			array(), // Ensures React is loaded
-			filemtime( plugin_dir_path( $this->pluginFile ) . 'public/devmcee-front-menu.js' ),
-			true
-		);
-
-		wp_register_style(
-			'devmcee-mega-menu-shortcode-style',
-			plugin_dir_url( $this->pluginFile ) . 'public/devmcee-front-menu.css',
-			array(),
-			filemtime( plugin_dir_path( $this->pluginFile ) . 'public/devmcee-front-menu.css' ),
-		);
+		add_action('wp_enqueue_scripts', array($this,'enqueue_frontend_scripts'), 1);
 
 		add_shortcode( $this->post_type, array( $this, 'process_shortcode' ) );
 	}
@@ -68,6 +55,23 @@ class MegaMenuPlugin {
 		}
 
 		return $actions;
+	}
+	public function enqueue_frontend_scripts()
+	{
+		wp_enqueue_script(
+			'devmcee-mega-menu-shortcode-script',
+			plugin_dir_url($this->pluginFile) . 'public/devmcee-front-menu.js',
+			array(), // Ensures React is loaded
+			filemtime(plugin_dir_path($this->pluginFile) . 'public/devmcee-front-menu.js'),
+			true
+		);
+
+		wp_enqueue_style(
+			'devmcee-mega-menu-shortcode-style',
+			plugin_dir_url( $this->pluginFile ) . 'public/devmcee-front-menu.css',
+			array(),
+			filemtime( plugin_dir_path( $this->pluginFile ) . 'public/devmcee-front-menu.css' ),
+		);
 	}
 
 	public function enqueue_admin_scripts() {
@@ -204,9 +208,6 @@ class MegaMenuPlugin {
 	function process_shortcode( $atts ) {
 		static $instance = 0;
 		$instance++;
-
-		wp_enqueue_script( 'devmcee-mega-menu-shortcode-script' );
-		wp_enqueue_style( 'devmcee-mega-menu-shortcode-style' );
 
 		$atts = shortcode_atts(
 			array(
